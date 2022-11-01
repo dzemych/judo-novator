@@ -11,7 +11,7 @@ const router = Router()
 
 router.use('/blog', blogRouter)
 router.use('/team', teamRouter)
-router.use('/hall', hallRouter)
+router.use('/halls', hallRouter)
 router.use('/event', eventRouter)
 router.use('/album', albumRouter)
 router.use('/auth', authRouter)

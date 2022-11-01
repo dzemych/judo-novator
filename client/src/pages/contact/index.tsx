@@ -1,14 +1,14 @@
 import {FC} from "react"
-import classes from './Articles.module.sass'
+import classes from './Contact.module.sass'
 import back from "@images/back.jpg";
 import MainBack from "@components/MainBack/MainBack";
 
 
-const Articles: FC = () => {
+const Contact: FC = () => {
    return (
       <div className={classes.container}>
          <MainBack
-            title={'Articles/ Как говориться сложно срать стоя на руках и не испачкать спину'}
+            title={'Как говориться сложно срать стоя на руках и не испачкать спину'}
             imageSrc={back.src}
          />
 
@@ -19,4 +19,4 @@ const Articles: FC = () => {
    )
 }
 
-export default Articles
+export default Contact

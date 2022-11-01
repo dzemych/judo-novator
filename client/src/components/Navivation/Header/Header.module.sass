@@ -1,9 +1,10 @@
 @use 'src/styles/colors.sass'
 
 .container
+  z-index: 1
   position: fixed
   width: 100%
-  padding: 7px 13px
+  padding: 7px 16px 7px 13px
   height: 62px
   background: colors.$primary
   display: flex
@@ -12,17 +13,65 @@
   justify-content: space-between
 
 .menuIcon
-  z-index: 1000
-  //position: absolute
-  //top: 0
-  //right: 0
-  //margin: 7px 13px
+  z-index: 200
   color: colors.$secondary
-  font-size: 2.8em
+  font-size: 1.8em
+  margin-right: 5px
 
 .judo_logo_container
+  z-index: 200
   height: 90%
   & img
     max-height: 100%
     min-height: 100%
     object-fit: contain
+
+.menuBtn
+  z-index: 200
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 30px
+  height: 40px
+  cursor: pointer
+  transition: all .5s ease-in-out
+
+.menuBtn__burger,
+.menuBtn__burger::before,
+.menuBtn__burger::after
+  width: 100%
+  height: 3.5px
+
+.menuBtn__burger
+  background: #fff
+  border-radius: 5px
+  box-shadow: 0 2px 5px rgba(255,101,47,.2)
+  transition: all .5s ease-in-out
+
+.menuBtn__burger::before,
+.menuBtn__burger::after
+  content: ''
+  position: absolute
+  background: #fff
+  border-radius: 5px
+  box-shadow: 0 2px 5px rgba(255,101,47,.2)
+  transition: all .5s ease-in-out
+
+.menuBtn__burger::before
+  transform: translateY(-10.5px)
+
+.menuBtn__burger::after
+  transform: translateY(10.5px)
+
+/* ANIMATION */
+.menuBtn.open .menuBtn__burger
+  transform: translateX(-50px)
+  background: transparent
+  box-shadow: none
+
+.menuBtn.open .menuBtn__burger::before
+  transform: rotate(45deg) translate(35px, -35px)
+
+.menuBtn.open .menuBtn__burger::after
+  transform: rotate(-45deg) translate(35px, 35px)

@@ -1,0 +1,51 @@
+.container
+  position: relative
+  width: 100%
+  height: 95vh
+
+.background
+  z-index: 0
+  position: absolute
+  top: 0
+  width: 100%
+  height: 95vh
+  & img
+    height: 100%
+    max-width: 100%
+    object-fit: cover
+    object-position: center
+
+.opacity
+  z-index: 0
+  position: absolute
+  top: 0
+  width: 100%
+  height: 95vh
+  background: #3b3b3b
+  opacity: .6
+
+.wrapper
+  width: 100%
+  height: 100%
+  position: relative
+  display: flex
+  align-items: center
+  flex-direction: column
+
+.title
+  font-family: 'BigNoodle', sans-serif
+  margin-top: 18vh
+  width: 90%
+  color: white
+  line-height: 2.6rem
+  font-size: 2.2rem
+  font-weight: 400
+  text-transform: uppercase
+  text-align: center
+
+.arrow_container
+  margin: 34vh auto 0
+
+.arrowDown
+  fill: white
+  transform: scale(3.1)

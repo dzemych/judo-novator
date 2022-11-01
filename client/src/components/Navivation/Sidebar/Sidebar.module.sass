@@ -1,54 +1,66 @@
+@use 'src/styles/colors.sass'
+
 .container
+  padding-top: 62px
   position: fixed
-  top: 100%
+  top: 0
   left: 0
   z-index: 200
   width: 100%
-  height: 100%
-  background: #262626
+  background: colors.$primary
   color: white
-  opacity: 1
-  transition: all 500ms cubic-bezier(.3,0,.5,1)
 
-.enterMove
-  top: 100%
-.enterActiveMove
-  top: 0
-.enterDoneMove
-  top: 0
-
-.exitMove
-  top: 0
-.exitActiveMove
-  top: -100%
-.exitDoneMove
-  top: 100%
-  transition: none !important
-
-//.menuToggler
-//  position: absolute
-//  top: 0
-//  right: 0
-//  transform: scale(2.5)
-//  margin: 20px
 .wrapper
   position: relative
   height: 100%
   width: 100%
-  padding: 20px
+  padding: 20px 40px 20px
+  margin-top: 4rem
+  display: flex
+  flex-direction: column
+  align-items: center
 
 .list_container
-  position: absolute
-  top: 50%
-  right: 50%
-  transform: translate(50%, -50%)
   & ul
     padding: 0
     list-style: none
     text-align: center
-  & li
-    margin: 10px
   & a
-    color: white
+    margin: 0
+    padding: 0
     text-decoration: none
+    font-size: 2.125rem
+    line-height: 2.8125rem
+    //font-family: "Helvetica Extra Bold", sans-serif
+    font-family: 'Roboto Regular', sans-serif
+    font-weight: 600
+
+.bottom_icons
+  position: fixed
+  bottom: 8%
+  margin: 0 auto
+  display: flex
+  flex-direction: row
+
+.icon_container
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 3.5rem
+  height: 3.5rem
+  border: 1px solid #a2a7ab
+  border-radius: 10px
+  &:not(:last-child)
+    margin-right: 1.25rem
+  & svg
+    color: #a2a7ab
     font-size: 2rem
+
+.bottom_notation
+  position: fixed
+  margin: 0 auto
+  bottom: 1.8%
+  font-size: .8125rem
+  line-height: 1.25rem
+  letter-spacing: .03em
+  color: colors.$grayLight
