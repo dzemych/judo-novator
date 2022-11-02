@@ -1,7 +1,8 @@
 import {FC} from "react";
 import classes from './MainBack.module.sass'
-import ArrowDown from "../../assets/icons/ArrowDown";
+import ArrowDown from "../../public/icons/ArrowDown";
 import { motion } from "framer-motion";
+import OpacityYDiv from "@components/Animations/OpacityYDiv";
 
 
 interface IProps {
@@ -24,22 +25,9 @@ const MainBack: FC<IProps> = ({ title, imageSrc }) => {
          </div>
 
          <div className={classes.wrapper}>
-            <motion.h1
-               className={classes.title}
-               initial={{
-                  y: 40,
-                  opacity: 0
-               }}
-               animate={{
-                  y: 0,
-                  opacity: 1,
-                  transition: {
-                     duration: .4
-                  }
-               }}
-            >
+            <OpacityYDiv className={classes.title}>
                {title}
-            </motion.h1>
+            </OpacityYDiv>
 
             <motion.div
                className={classes.arrow_container}
@@ -47,8 +35,8 @@ const MainBack: FC<IProps> = ({ title, imageSrc }) => {
                animate={{
                   y: -38,
                   transition: {
-                     duration: .4,
-                     delay: .3,
+                     duration: .5,
+                     delay: .2,
                      yoyo: Infinity,
                      ease: 'easeOut'
                   }

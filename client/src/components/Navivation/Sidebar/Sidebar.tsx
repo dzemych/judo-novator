@@ -1,9 +1,10 @@
-import {FC, useState} from 'react'
+import {FC, useContext} from 'react'
 import classes from './Sidebar.module.sass'
 import {useRouter} from "next/router";
 import {AnimatePresence, motion} from "framer-motion";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faInstagram, faViber, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import {AppContext} from "../../../pages/_app";
 
 interface ILink {
    to: string,
@@ -17,7 +18,7 @@ interface IProps {
 
 const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
 
-   const [newPage, setNewPage] = useState(false)
+   const { toggleNewPage } = useContext(AppContext)
 
    const bottomVariants = {
       inactive: {
@@ -45,7 +46,7 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
 
    const liVariants = {
       inactive: {
-         scale: .8,
+         scale: .7,
          opacity: 0,
       },
       active: (custom: number) => ({
@@ -53,18 +54,14 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
          opacity: 1,
          transition: {
             delay: .3 + custom * .05,
-            duration: .4,
-            // ease: 'linear'
+            duration: .5,
             transitionTimingFunction: 'cubic-bezier(.25,.1,.25,1)'
          }
       }),
       exit: {
          opacity: 0,
-         // y: '100%',
          transition: {
-            duration: .25,
-            ease: 'linear'
-            // transitionTimingFunction: 'cubic-bezier(.25,.1,.25,1)'
+            duration: .4,
          }
       }
    }
@@ -86,6 +83,7 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
          height: 0,
          transition: {
             duration: .5,
+            delay: .4,
             transitionTimingFunction: 'cubic-bezier(.3,0,.5,1)'
          }
       }
@@ -104,7 +102,7 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
    const onLinkClick = (e: React.MouseEvent<Element, MouseEvent>, to: string) => {
       e.preventDefault()
 
-      setNewPage(true)
+      toggleNewPage()
 
       router.push(to)
       toggleSidebar()
@@ -136,7 +134,7 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
                variants={sidebarVariants}
                initial='inactive'
                animate='active'
-               exit={newPage ? 'exit' : 'exit'}
+               exit='exit'
             >
                <div className={classes.wrapper}>
                   <div className={classes.list_container}>

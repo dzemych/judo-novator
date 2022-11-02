@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import classes from 'src/pages/Home.module.sass'
-import back from '@images/back.jpg'
+import back from '../public/images/back.jpg'
 import MainBack from "@components/MainBack/MainBack";
 
 

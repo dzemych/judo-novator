@@ -1,16 +1,28 @@
-import {FC, useEffect, useState} from 'react'
+import {FC, useContext, useEffect, useState} from 'react'
 import classes from './Header.module.sass'
-import bell_logo from '@images/belt_white_club.png'
+import bell_logo from '../../../public/images/belt_white_club.png'
 import Sidebar from '@components/Navivation/Sidebar/Sidebar'
 import OpacityDiv from "@components/Animations/OpacityDiv";
+import {AppContext} from "../../../pages/_app";
+import {useRouter} from "next/router";
 
 
 const Header: FC = () => {
+   const {toggleNewPage} = useContext(AppContext)
+   const router = useRouter()
+
    const [openSidebar, setOpenSidebar] = useState(false)
 
    const burgerCls = [classes.menuBtn]
    if (openSidebar)
       burgerCls.push(classes.open)
+
+   const mainMenuClick = () => {
+      toggleNewPage()
+
+      router.push('/')
+      setOpenSidebar(false)
+   }
 
    const toggleSidebar = () => {
       setOpenSidebar(prev => !prev)
@@ -31,7 +43,11 @@ const Header: FC = () => {
          <Sidebar isOpen={openSidebar} toggleSidebar={toggleSidebar}/>
 
          <OpacityDiv className={classes.judo_logo_container}>
-            <img src={bell_logo.src} alt='' />
+            <img
+               src={bell_logo.src}
+               onClick={mainMenuClick}
+               alt=''
+            />
          </OpacityDiv>
 
          <div

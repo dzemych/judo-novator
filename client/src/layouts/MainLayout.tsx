@@ -10,7 +10,6 @@ interface IProps {
 
 const MainLayout: FC<IProps> = ({ children }) => {
 
-   console.log('main rereder')
    return (
       <div className={classes.container}>
          <Header/>

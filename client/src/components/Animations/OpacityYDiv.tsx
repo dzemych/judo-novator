@@ -11,8 +11,12 @@ const OpacityDiv: FC<IProps> = ({ children, className }) => {
    return (
       <motion.div
          className={className}
-         initial={{ opacity: 0 }}
+         initial={{
+            y: 40,
+            opacity: 0
+         }}
          animate={{
+            y: 0,
             opacity: 1,
             transition: {
                duration: .4
