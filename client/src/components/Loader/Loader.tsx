@@ -12,7 +12,6 @@ const Loader: FC = () => {
                opacity: 0,
                transition: {
                   duration: .4,
-                  delay: .4
                }
             }}
          >

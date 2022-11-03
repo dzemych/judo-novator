@@ -42,7 +42,6 @@ function MyApp({ Component, pageProps }: AppProps) {
    const router = useRouter()
 
    useEffect(() => {
-
       const startHandler = () => {
          setNewPage(true)
          console.log(newPage)
@@ -66,7 +65,7 @@ function MyApp({ Component, pageProps }: AppProps) {
    return (
       <AppContext.Provider value={{ newPage, toggleNewPage }}>
          <MainLayout>
-            <AnimatePresence>
+            <AnimatePresence exitBeforeEnter>
                { newPage
                   ? <Loader/>
                   :  <motion.div

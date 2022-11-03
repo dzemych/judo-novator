@@ -28,6 +28,8 @@ const Footer: FC = () => {
                </div>
             </div>
 
+            <hr className={classes.hr}/>
+
             <span className={classes.copyRight_container}>
                © Copyright {new Date().getFullYear()} Дзюдо-Новатор. Все права защищены
             </span>

@@ -1,9 +1,13 @@
 @use 'src/styles/colors.sass'
 
+*, *::after, *::before
+  box-sizing: border-box
+
 html, body
   scroll-behavior: smooth
-  font-family: 'BigNoodle', sans-serif
-  //font-family: ''
+  //font-family: 'BigNoodle.70df2453.woff2', sans-serif
+  font-family: "Roboto Regular", sans-serif
+  //font-family: 'BigNoodle', sans-serif
   letter-spacing: normal
   padding: 0
   margin: 0
@@ -11,9 +15,6 @@ html, body
 a
   color: inherit
   text-decoration: none
-
-*
-  box-sizing: border-box
 
 @media (prefers-color-scheme: dark)
   html

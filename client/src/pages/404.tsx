@@ -13,13 +13,13 @@ const NotFound: FC = () => {
       }}>
          <h1 style={{
             margin: '0 auto',
-            color: '#5f6164'
+            color: '#ffffff'
          }}>
             Сторінку не найдено
          </h1>
 
          <hr style={{
-            background: '#c0c2c7',
+            background: '#ffffff',
             height: 1,
             border: 'none',
             padding: 'none',
@@ -28,7 +28,7 @@ const NotFound: FC = () => {
 
          <h2 style={{
             margin: '0 auto',
-            color: '#606164'
+            color: '#ffffff'
          }}>
             404
          </h2>
