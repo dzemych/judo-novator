@@ -12,24 +12,27 @@ interface IProps {
 const Button: FC<IProps> =
    ({
        children,
-       type,
+       type= 'white',
        onClick
    }) => {
 
-   const cls = [classes.container, classes.mat]
+   const cls = [classes.container]
+
+   if (type === 'black')
+      cls.push(classes.black)
+
+   if (type === 'white')
+      cls.push(classes.white)
 
    return (
-      // <div className={cls.join(' ')}>
-         <button
-            className={cls.join(' ')}
-            onClick={onClick}
-         >
-            <span>
-               {children}
-            </span>
-            {/*Xenization*/}
-         </button>
-      // </div>
+      <button
+         className={cls.join(' ')}
+         onClick={onClick}
+      >
+         <span>
+            {children}
+         </span>
+      </button>
    )
 }
 
