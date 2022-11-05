@@ -36,7 +36,7 @@ $darkblue: rgb(93, 93, 94)
 .container
   cursor: pointer
   position: relative
-  min-width: 150px
+  min-width: 165px
   font-family: 'BigNoodle', sans-serif
   letter-spacing: .15rem
   font-weight: 550
@@ -52,7 +52,7 @@ $darkblue: rgb(93, 93, 94)
   border: none
   overflow: hidden
   box-shadow: none
-  z-index: 1
+  z-index: 0
   &:active
     transform: translateY(4px)
   &::after, &::before
@@ -65,6 +65,7 @@ $darkblue: rgb(93, 93, 94)
     width: 100%
     height: 100%
     transition: 0.3s
+    z-index: -2
   &:hover::before
     opacity: 0
   &::after
@@ -85,7 +86,6 @@ $darkblue: rgb(93, 93, 94)
     opacity: 1
     transform-origin: 100px 100px
     transform: scale(1) translate(-50%, -50%)
-
 
 .black
   color: colors.$primary

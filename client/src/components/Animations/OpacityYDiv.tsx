@@ -3,29 +3,38 @@ import { motion } from 'framer-motion'
 
 
 interface IProps {
-   children: React.ReactNode,
+   children?: React.ReactNode,
    className?:  string
 }
 
-const OpacityDiv: FC<IProps> = ({ children, className }) => {
+const OpacityYDiv: FC<IProps> = ({ children, className }) => {
+
+   const variants = {
+      initial: {
+         y: 35,
+         opacity: 0
+      },
+      active: {
+         y: 0,
+         opacity: 1,
+         transition: {
+            duration: .45
+         }
+      }
+   }
+
    return (
       <motion.div
+         variants={variants}
          className={className}
-         initial={{
-            y: 40,
-            opacity: 0
-         }}
-         animate={{
-            y: 0,
-            opacity: 1,
-            transition: {
-               duration: .4
-            }
-         }}
+         initial='initial'
+         // animate='active'
+         whileInView='active'
+         viewport={{ once: true }}
       >
          {children}
       </motion.div>
    )
 }
 
-export default OpacityDiv
+export default OpacityYDiv

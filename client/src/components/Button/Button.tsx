@@ -4,7 +4,7 @@ import classes from './Button.module.sass'
 
 interface IProps {
    children: string | React.ReactNode,
-   type?: string,
+   type: 'white' | 'black',
    onClick?: () => void
 }
 

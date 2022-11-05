@@ -69,11 +69,9 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
    const sidebarVariants = {
       inactive: {
          y: '100vh',
-         height: 0
       },
       active: {
          y: 0,
-         height: '100%',
          transition: {
             duration: .5,
             transitionTimingFunction: 'cubic-bezier(.3,0,.5,1)'
