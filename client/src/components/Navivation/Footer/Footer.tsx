@@ -2,30 +2,64 @@ import classes from './Footer.module.sass'
 import { FC } from 'react'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faInstagram, faViber, faFacebook } from "@fortawesome/free-brands-svg-icons";
+import {motion} from "framer-motion";
 
+
+// enum SocialMedia {
+//    instagram = 'instagram',
+//    viber = 'viber',
+//    facebook = 'facebook'
+// }
 
 const Footer: FC = () => {
+
+   const icons = {
+      instagram: { icon: faInstagram, url: 'https://www.instagram.com/judo_novator/' },
+      facebook: { icon: faFacebook, url: 'https://www.facebook.com/judoNovator/' },
+      viber: { icon: faViber, url: 'https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi' },
+   }
+
+   const iconVariants = {
+      initial: {
+         color: '#b5b5b5'
+      },
+      hover: {
+         y: -8,
+         scale: 1.3,
+         color: '#f4f4f4',
+         transition: {
+            duration: .3,
+            ease: 'easeOut'
+         }
+      }
+   }
+
+   const renderIcon = (icon: string) => {
+      const curEl = icons[icon as keyof typeof icons]
+
+      return (
+         <motion.div
+            key={icon}
+            className={classes.icon_container}
+            variants={iconVariants}
+            initial='initial'
+            whileHover='hover'
+         >
+            <FontAwesomeIcon
+               icon={curEl.icon}
+               onClick={() => { window.open(curEl.url) }}
+            />
+         </motion.div>
+      )
+   }
+
    return (
       <div className={classes.container}>
          <div className={classes.wrapper}>
             <div className={classes.icons_container}>
-               <div className={classes.icon_container}>
-                  <a href="https://www.instagram.com/judo_novator/" target="_blank">
-                     <FontAwesomeIcon icon={faInstagram} />
-                  </a>
-               </div>
 
-               <div className={classes.icon_container}>
-                  <a href="https://www.facebook.com/judoNovator/" target="_blank">
-                     <FontAwesomeIcon icon={faFacebook} />
-                  </a>
-               </div>
+               {Object.keys(icons).map(renderIcon)}
 
-               <div className={classes.icon_container}>
-                  <a href="https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi" target="_blank">
-                     <FontAwesomeIcon icon={faViber}/>
-                  </a>
-               </div>
             </div>
 
             <hr className={classes.hr}/>

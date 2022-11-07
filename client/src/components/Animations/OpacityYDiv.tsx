@@ -5,9 +5,17 @@ import { motion } from 'framer-motion'
 interface IProps {
    children?: React.ReactNode,
    className?:  string
+   whileInViewport?: boolean
+   onClick?: (e?: any) => void
 }
 
-const OpacityYDiv: FC<IProps> = ({ children, className }) => {
+const OpacityYDiv: FC<IProps> =
+   ({
+       children,
+       className,
+       whileInViewport,
+       onClick
+   }) => {
 
    const variants = {
       initial: {
@@ -25,11 +33,12 @@ const OpacityYDiv: FC<IProps> = ({ children, className }) => {
 
    return (
       <motion.div
-         variants={variants}
          className={className}
+         onClick={onClick}
+         variants={variants}
          initial='initial'
-         // animate='active'
-         whileInView='active'
+         animate={!whileInViewport ? 'active' : ''}
+         whileInView={whileInViewport ? 'active' : ''}
          viewport={{ once: true }}
       >
          {children}

@@ -12,6 +12,7 @@ const Header: FC = () => {
    const router = useRouter()
 
    const [openSidebar, setOpenSidebar] = useState(false)
+   const [sidebarAnimation, setSidebarAnimation] = useState(false)
 
    const burgerCls = [classes.menuBtn]
    if (openSidebar)
@@ -25,10 +26,16 @@ const Header: FC = () => {
    }
 
    const toggleSidebar = () => {
-      setOpenSidebar(prev => !prev)
+      if (!sidebarAnimation)
+         setOpenSidebar(prev => !prev)
    }
 
    useEffect(() => {
+      setSidebarAnimation(true)
+      setTimeout(() => {
+         setSidebarAnimation(false)
+      }, 500)
+
       if (openSidebar)
          document.body.style.overflow = 'hidden'
 
@@ -50,12 +57,12 @@ const Header: FC = () => {
             />
          </OpacityDiv>
 
-         <div
+         <OpacityDiv
             className={burgerCls.join(' ')}
             onClick={toggleSidebar}
          >
             <div className={classes.menuBtn__burger}></div>
-         </div>
+         </OpacityDiv>
       </div>
    )
 }

@@ -1,19 +1,20 @@
 import {FC} from "react";
-import classes from './BlogCard.module.sass'
-import ex from '@images/ex.jpg'
+import classes from './MainCard.module.sass'
 import Button from "@components/Button/Button";
-import {IBlogCard} from "../../types/IBlogCard";
 import useFormatDate from "../../hooks/useFormatDate";
 import {motion} from "framer-motion";
 import OpacityYDiv from "@components/Animations/OpacityYDiv";
 
 
-interface IProps {
-   type: 'white' | 'black'
-   card: IBlogCard
-}
-
-const BlogCard: FC<IProps> = ({ type = 'black', card }) => {
+const MainCard: FC<ICard> =
+   ({
+       colorSchema = 'black',
+       title,
+       to,
+       text ,
+       date,
+       photoSrc
+   }) => {
    const imgCurtainVariants = {
       initial: {
          height: '100%'
@@ -22,7 +23,7 @@ const BlogCard: FC<IProps> = ({ type = 'black', card }) => {
          height: 0,
          transition: {
             duration: .4,
-            delay: .15,
+            delay: .2,
             ease: 'easeOut'
          }
       }
@@ -35,38 +36,31 @@ const BlogCard: FC<IProps> = ({ type = 'black', card }) => {
       active: {
          filter: 'blur(0px)',
          transition: {
-            duration: .3,
-            delay: .5,
+            duration: .4,
+            delay: .35,
             ease: 'easeOut'
          }
       }
    }
 
-   const formatDate = useFormatDate(card.date)
+   const formatDate = useFormatDate(date)
 
    const cls = [classes.container]
 
-   if (type === 'black')
+   if (colorSchema === 'black')
       cls.push(classes.black)
 
-   if (type === 'white')
+   if (colorSchema === 'white')
       cls.push(classes.white)
 
+   console.log(date)
    return (
       <div className={cls.join(' ')}>
          <div className={classes.wrapper}>
-            <div
-               className={classes.image_container}
-               // variants={imgVariants}
-               // initial='initial'
-               // animate='active'
-               // whileInView='active'
-               // viewport={{ once: true }}
-            >
+            <div className={classes.image_container}>
                <motion.div
                   variants={imgCurtainVariants}
                   initial='initial'
-                  // animate='active'
                   whileInView='active'
                   viewport={{ once: true }}
                   className={classes.image_curtain}
@@ -74,29 +68,30 @@ const BlogCard: FC<IProps> = ({ type = 'black', card }) => {
                <motion.img
                   variants={imgVariants}
                   initial='initial'
-                  // animate='active'
                   whileInView='active'
                   viewport={{ once: true }}
-                  src={ex.src}
+                  src={photoSrc}
                   alt=""
                />
             </div>
 
-            <OpacityYDiv className={classes.content}>
+            <OpacityYDiv whileInViewport className={classes.content}>
                <h1 className={classes.title}>
-                  {card.title}
+                  {title}
                </h1>
 
-               <div className={classes.date}>
-                  {formatDate}
-               </div>
+               {date && (
+                  <div className={classes.date}>
+                     {}
+                  </div>
+               )}
 
                <div className={classes.subTitle_container}>
-                  {card.subTitle}
+                  {text}
                </div>
 
                <div className={classes.btn_container}>
-                  <Button type={type}>
+                  <Button type={colorSchema}>
                      Подробнее
                   </Button>
                </div>
@@ -106,4 +101,4 @@ const BlogCard: FC<IProps> = ({ type = 'black', card }) => {
    )
 }
 
-export default BlogCard
+export default MainCard

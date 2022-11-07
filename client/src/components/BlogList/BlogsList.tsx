@@ -1,16 +1,15 @@
 import {FC} from "react";
-import classes from './BlogList.module.sass'
-import BlogCard from "@components/BlogCard/BlogCard";
-import {IBlogCard} from "../../types/IBlogCard";
+import classes from './BlogsList.module.sass'
+import MainCard from "@components/Card/MainCard";
 
 
 interface IProps {
-   list: IBlogCard[],
+   list: ICard[],
    title: string
    type: 'white' | 'black'
 }
 
-const BlogList: FC<IProps> = ({ list, title, type= 'black' }) => {
+const BlogsList: FC<IProps> = ({ list, title, type= 'black' }) => {
    return (
       <div className={classes.container}>
          <h2
@@ -26,10 +25,13 @@ const BlogList: FC<IProps> = ({ list, title, type= 'black' }) => {
 
          <div className={classes.list}>
             {list.map((el, i) => (
-               <BlogCard
+               <MainCard
                   key={i}
-                  card={el}
-                  type={type}
+                  colorSchema={'white'}
+                  title={el.title}
+                  text={el.title}
+                  to={el.to}
+                  photoSrc={el.photoSrc}
                />
             ))}
          </div>
@@ -37,4 +39,4 @@ const BlogList: FC<IProps> = ({ list, title, type= 'black' }) => {
    )
 }
 
-export default BlogList
+export default BlogsList
