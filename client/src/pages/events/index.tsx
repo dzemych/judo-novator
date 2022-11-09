@@ -1,13 +1,13 @@
 import {FC} from "react"
 import classes from './Events.module.sass'
 import back from "../../public/images/back.jpg";
-import StarringBack from "@components/StarringBack/StarringBack";
+import MainBack from "@components/MainBack/MainBack";
 
 
 const Events: FC = () => {
    return (
       <div className={classes.container}>
-         <StarringBack
+         <MainBack
             title={'Events/ Как говориться сложно срать стоя на руках и не испачкать спину'}
             imageSrc={back.src}
          />

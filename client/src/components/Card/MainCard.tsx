@@ -2,50 +2,35 @@ import {FC} from "react";
 import classes from './MainCard.module.sass'
 import Button from "@components/Button/Button";
 import useFormatDate from "../../hooks/useFormatDate";
-import {motion} from "framer-motion";
 import OpacityYDiv from "@components/Animations/OpacityYDiv";
+import AnimatedImg from "@components/Animations/AnimatedImg";
 
 
-const MainCard: FC<ICard> =
+interface IProps extends ICard {
+   colorSchema?: 'white' | 'black'
+   type: 'small' | 'big'
+   showBtn?: boolean
+}
+
+const MainCard: FC<IProps> =
    ({
        colorSchema = 'black',
        title,
        to,
        text ,
        date,
-       photoSrc
+       photoSrc,
+       type,
+       beforeTitle,
+       showBtn= true
    }) => {
-   const imgCurtainVariants = {
-      initial: {
-         height: '100%'
-      },
-      active: {
-         height: 0,
-         transition: {
-            duration: .4,
-            delay: .2,
-            ease: 'easeOut'
-         }
-      }
-   }
-
-   const imgVariants = {
-      initial: {
-         filter: 'blur(3px)',
-      },
-      active: {
-         filter: 'blur(0px)',
-         transition: {
-            duration: .4,
-            delay: .35,
-            ease: 'easeOut'
-         }
-      }
-   }
-
-   const formatDate = useFormatDate(date)
-
    const cls = [classes.container]
+
+   if (type === 'big')
+      cls.push(classes.big)
+
+   if (type === 'small')
+      cls.push(classes.small)
 
    if (colorSchema === 'black')
       cls.push(classes.black)
@@ -53,48 +38,53 @@ const MainCard: FC<ICard> =
    if (colorSchema === 'white')
       cls.push(classes.white)
 
-   console.log(date)
+   const renderDate = () => {
+      if (date) {
+         const formatDate = useFormatDate(date)
+
+         return (
+            <div className={classes.date}>
+               {formatDate}
+            </div>
+         )
+      }
+
+      return null
+   }
+
    return (
       <div className={cls.join(' ')}>
          <div className={classes.wrapper}>
             <div className={classes.image_container}>
-               <motion.div
-                  variants={imgCurtainVariants}
-                  initial='initial'
-                  whileInView='active'
-                  viewport={{ once: true }}
-                  className={classes.image_curtain}
-               />
-               <motion.img
-                  variants={imgVariants}
-                  initial='initial'
-                  whileInView='active'
-                  viewport={{ once: true }}
-                  src={photoSrc}
-                  alt=""
-               />
+               <AnimatedImg photoSrc={photoSrc} whileInViewport/>
             </div>
 
-            <OpacityYDiv whileInViewport className={classes.content}>
+            <OpacityYDiv className={classes.content} delay={.2} whileInViewport>
+               {beforeTitle && (
+                  <div className={classes.before_title}>
+                     {beforeTitle}
+                  </div>
+               )}
+
                <h1 className={classes.title}>
                   {title}
                </h1>
 
-               {date && (
-                  <div className={classes.date}>
-                     {}
+               {renderDate()}
+
+               {text && (
+                  <div className={classes.subTitle_container}>
+                     {text}
                   </div>
                )}
 
-               <div className={classes.subTitle_container}>
-                  {text}
-               </div>
-
-               <div className={classes.btn_container}>
-                  <Button type={colorSchema}>
-                     Подробнее
-                  </Button>
-               </div>
+               {showBtn && (
+                  <div className={classes.btn_container}>
+                     <Button type={colorSchema}>
+                        Подробнее
+                     </Button>
+                  </div>
+               )}
             </OpacityYDiv>
          </div>
       </div>

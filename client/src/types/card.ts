@@ -1,5 +1,5 @@
 interface ICard {
-   colorSchema?: 'white' | 'black'
+   // colorSchema?: 'white' | 'black'
    to: string
    title: string
    photoSrc: string

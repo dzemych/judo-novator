@@ -1,6 +1,6 @@
 import { FC } from 'react'
-import Header from '../components/Navivation/Header/Header'
-import Footer from '@components/./Navivation/Footer/Footer'
+import Header from '../components/Navigation/Header/Header'
+import Footer from '@components/./Navigation/Footer/Footer'
 import classes from './MainLayout.module.sass'
 
 

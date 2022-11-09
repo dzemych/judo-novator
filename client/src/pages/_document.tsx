@@ -1,38 +1,16 @@
-import { Html, Head, Main, NextScript } from 'next/document'
-import path from 'path'
-import fs from 'fs'
+import {Html, Main, Head, NextScript} from 'next/document'
 
 
 export default function Document() {
-   // const mediaPath = path.join(__dirname, '..', '..', 'static/media')
-   // const allFiles = fs.readdirSync(mediaPath)
-
-   // const fontFiles = allFiles.filter(filePath => {
-   //    const type = filePath.split('.').pop()
-   //
-   //    if (!type)
-   //       return false
-   //
-   //    return /(woff2|ttf|otf)/i.test(type)
-   // })
 
    return (
       <Html>
-         <Head>
-            {/*{fontFiles.map((fontPath) => (*/}
-            {/*   <link*/}
-            {/*      key={fontPath}*/}
-            {/*      rel="preload"*/}
-            {/*      href={`_next/static/media/${fontPath}`}*/}
-            {/*      as="font"*/}
-            {/*      type="font/woff2"*/}
-            {/*   />*/}
-            {/*))}*/}
-         </Head>
+         <Head/>
+
+         <NextScript/>
 
          <body>
             <Main />
-            <NextScript />
          </body>
       </Html>
    )

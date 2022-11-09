@@ -1,9 +1,8 @@
 import {FC} from "react";
-import classes from './StarringBack.module.sass'
+import classes from './MainBack.module.sass'
 import ArrowDown from "../../public/icons/ArrowDown";
 import { motion } from "framer-motion";
 import OpacityYDiv from "@components/Animations/OpacityYDiv";
-import Image from "next/image";
 
 
 interface IProps {
@@ -11,7 +10,7 @@ interface IProps {
    imageSrc: string
 }
 
-const StarringBack: FC<IProps> = ({ title, imageSrc }) => {
+const MainBack: FC<IProps> = ({ title, imageSrc }) => {
 
    const scrollToContent = () => {
       const vh = window.innerHeight
@@ -51,4 +50,4 @@ const StarringBack: FC<IProps> = ({ title, imageSrc }) => {
    )
 }
 
-export default StarringBack
+export default MainBack

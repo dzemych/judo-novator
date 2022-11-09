@@ -1,10 +1,9 @@
-import {FC, useEffect, useRef, useState} from "react"
+import {FC, useEffect, useState} from "react"
 import classes from './WideSlider.module.sass'
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
-import {AnimatePresence, motion} from 'framer-motion'
+import {motion} from 'framer-motion'
 import OpacityDiv from "@components/Animations/OpacityDiv";
-
 
 
 interface IProps {
@@ -26,25 +25,20 @@ const WideSlider: FC<IProps> = ({ elements }) => {
 
    const sliderVariants = {
       initial: {
-         height: 0
+         opacity: 0
       },
       active: {
-         height: '100%',
-         duration: .5,
-         delay: .18
+         opacity: 1,
+         transition: {
+            duration: .5
+         }
       }
-   }
-
-   let itemWidth = 0
-
-   if (typeof window !== "undefined") {
-      itemWidth = window.outerWidth
    }
 
    const [page, setPage] = useState(1)
    const [pages, setPages] = useState(elements)
-   const [offset, setOffset] = useState(itemWidth)
-   const [duration, setDuration] = useState(400)
+   const [itemWidth, setItemWidth] = useState(0)
+   const [duration, setDuration] = useState(0)
    const [pageAnimation, setPageAnimation] = useState(false)
 
    const changePage = (type: 'next' | 'prev') => {
@@ -59,41 +53,15 @@ const WideSlider: FC<IProps> = ({ elements }) => {
       })
    }
 
-   const renderSliderItem = (item: ISliderElement, idx: number) => {
-      if (idx === 1) return (
-         <div key={item.title + idx} className={classes.slider_item}>
-            <motion.div
-               className={classes.img_container}
-               variants={sliderVariants}
-               initial='initial'
-               // animate='active'
-               whileInView='active'
-               viewport={{ once: true }}
-            >
-               <div className={classes.backdrop}/>
+   const renderSliderItem = (item: ISliderElement, idx: number) => (
+      <div key={item.title + idx} className={classes.slider_item}>
+         <div className={classes.img_container}>
+            <div className={classes.backdrop}/>
 
-               <motion.img
-                  src={item.photoSrc}
-                  alt=""
-                  variants={sliderVariants}
-                  initial='initial'
-                  whileInView='active'
-                  viewport={{ once: true }}
-               />
-            </motion.div>
+            <img src={item.photoSrc} alt=""/>
          </div>
-      )
-
-      return (
-         <div key={item.title + idx} className={classes.slider_item}>
-            <div className={classes.img_container}>
-               <div className={classes.backdrop}/>
-
-               <img src={item.photoSrc} alt=""/>
-            </div>
-         </div>
-      )
-   }
+      </div>
+   )
 
    const getPageNumber = () => {
       if (page > elements.length)
@@ -105,13 +73,15 @@ const WideSlider: FC<IProps> = ({ elements }) => {
       return page
    }
 
-   // 1) Adds tail and start elements
+   // 1) Adds tail and start elements and item width
    useEffect(() => {
       setPages([
          elements[elements.length - 1],
          ...elements,
          elements[0]
       ])
+
+      setItemWidth(window.outerWidth)
    }, [])
 
    // 2) Replace elements to have infinite scroll
@@ -143,34 +113,40 @@ const WideSlider: FC<IProps> = ({ elements }) => {
       setTimeout(() => {
          setPageAnimation(false)
       }, 400)
-
-      setOffset(-(itemWidth * page))
    }, [page])
 
+   const sliderStyles = {
+      transform: `translateX(${-(itemWidth * page)}px)`,
+      transition: `${duration}ms ease-out`
+   }
+
    return (
-      <div className={classes.container}>
-         <OpacityDiv whileInViewport className={classes.title} delay={.5}>
+      <motion.div
+         className={classes.container}
+         variants={sliderVariants}
+         initial='initial'
+         whileInView='active'
+         viewport={{ once: true }}
+      >
+         <OpacityDiv whileInViewport className={classes.title} delay={.4}>
             Halls
          </OpacityDiv>
 
-         <OpacityDiv whileInViewport className={classes.pages} delay={.5}>
+         <OpacityDiv whileInViewport className={classes.pages} delay={.4}>
             {getPageNumber()}/{pages.length - 2}
          </OpacityDiv>
 
-         <OpacityDiv whileInViewport className={classes.subTitle} delay={.5}>
+         <OpacityDiv whileInViewport className={classes.subTitle} delay={.4}>
             {pages[page].title}
          </OpacityDiv>
 
          <div className={classes.window}>
-            <motion.div
+            <div
                className={classes.slider_container}
-               style={{
-                  transform: `translateX(${offset}px)`,
-                  transition: `${duration}ms ease-out`
-               }}
+               style={sliderStyles}
             >
                {pages.map((el, i) => renderSliderItem(el, i))}
-            </motion.div>
+            </div>
 
             <OpacityDiv whileInViewport className={classes.slider_btns} delay={.5}>
                <motion.div
@@ -192,7 +168,7 @@ const WideSlider: FC<IProps> = ({ elements }) => {
                </motion.div>
             </OpacityDiv>
          </div>
-      </div>
+      </motion.div>
    )
 }
 

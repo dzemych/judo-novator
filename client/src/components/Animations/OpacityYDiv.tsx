@@ -1,20 +1,15 @@
 import {FC} from "react";
 import { motion } from 'framer-motion'
+import {IAnimatedElProps} from "../../types/IAnimatedElProps";
 
 
-interface IProps {
-   children?: React.ReactNode,
-   className?:  string
-   whileInViewport?: boolean
-   onClick?: (e?: any) => void
-}
-
-const OpacityYDiv: FC<IProps> =
+const OpacityYDiv: FC<IAnimatedElProps> =
    ({
        children,
        className,
        whileInViewport,
-       onClick
+       onClick,
+       delay = 0
    }) => {
 
    const variants = {
@@ -26,7 +21,10 @@ const OpacityYDiv: FC<IProps> =
          y: 0,
          opacity: 1,
          transition: {
-            duration: .45
+            duration: .45,
+            delay: (whileInViewport && !delay) ? .2
+               : (whileInViewport && delay) ? delay
+               : 0
          }
       }
    }
