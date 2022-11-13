@@ -4,6 +4,9 @@ import ex from "@images/ex.jpg";
 import exTwo from "@images/ex2.jpeg";
 import back from "@images/back.jpg";
 import PersonSmallCard from "@components/Card/PersonSmallCard";
+import useNavigation from "../../../hooks/useNavigation";
+import {CardType} from "../../../types/card";
+import OpacityDiv from "@components/Animations/OpacityDiv";
 
 
 interface IProps {
@@ -18,43 +21,33 @@ const PersonSmallList: FC<IProps> =
        colorSchema= 'black',
        length = 5,
    }) => {
-   const cards = [
-      {
-         to: '/',
-         photoSrc: ex.src,
-         position: 'Developer'
-      },
-      {
-         to: '/teams',
-         photoSrc: exTwo.src,
-         position: 'Trainer'
-      },
-      {
-         to: '/teams',
-         photoSrc: back.src,
-         position: 'Doctor'
-      },
-   ]
+
+   const { elements } = useNavigation(length, CardType.TEAM)
+
+   const cls = [classes.container]
+
+   if (colorSchema === 'white')
+      cls.push(classes.white)
+
+   if (colorSchema === 'black')
+      cls.push(classes.black)
 
    return (
-      <div className={classes.container}>
-         <h2
+      <div className={cls.join(' ')}>
+         <OpacityDiv
             className={classes.title}
-            style={{
-               color: colorSchema === 'white'
-                  ? '#f5f5f5'
-                  : '#0a0a0a'
-            }}
+            whileInViewport
+            delay={0}
          >
             {title}
-         </h2>
+         </OpacityDiv>
 
          <div className={classes.list}>
-            {cards.slice(0, length).map((el, i) => (
+            {elements.slice(0, length).map((el, i) => (
                <PersonSmallCard
-                  key={i}
+                  key={i + el.to}
                   photoSrc={el.photoSrc}
-                  position={el.position}
+                  position={el.title}
                />
             ))}
          </div>

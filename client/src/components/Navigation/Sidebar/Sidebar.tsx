@@ -90,11 +90,13 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
    const router = useRouter()
 
    const links: ILink[] = [
-      { to: '/', text: 'Home' },
-      { to: '/halls', text: 'Halls' },
-      { to: '/team', text: 'Team' },
-      { to: '/contact', text: 'Contact' },
-      { to: '/about', text: 'About us' },
+      { to: '/', text: 'Головна' },
+      { to: '/blog', text: 'Блог' },
+      { to: '/team', text: 'Команда' },
+      { to: '/album', text: 'Галерея' },
+      { to: '/events', text: 'Календар' },
+      { to: '/about', text: 'Про нас' },
+      { to: '/contacts', text: 'Контакти' },
    ]
 
    const onLinkClick = (e: React.MouseEvent<Element, MouseEvent>, to: string) => {

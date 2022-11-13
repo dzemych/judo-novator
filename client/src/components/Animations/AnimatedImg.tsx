@@ -13,7 +13,8 @@ const AnimatedImg: FC<IProps> =
        photoSrc,
        delay = .2,
        whileInViewport,
-       onClick
+       onClick,
+       colorSchema = 'black'
    }) => {
    const imgCurtainVariants = {
       initial: {
@@ -26,7 +27,7 @@ const AnimatedImg: FC<IProps> =
             delay: delay,
             ease: 'linear'
          }
-      }
+      },
    }
 
    const imgVariants = {
@@ -45,8 +46,19 @@ const AnimatedImg: FC<IProps> =
       }
    }
 
+   const clsCurtain = [classes.curtain]
+
+   if (colorSchema === 'black')
+      clsCurtain.push(classes.black)
+
+   if (colorSchema === 'white')
+      clsCurtain.push(classes.white)
+
    return (
-      <div className={classes.container} onClick={onClick}>
+      <motion.div
+         className={classes.container}
+         onClick={onClick}
+      >
          <div className={classes.backdrop}/>
 
          <motion.div
@@ -55,19 +67,23 @@ const AnimatedImg: FC<IProps> =
             animate={ !whileInViewport ? 'active' : '' }
             whileInView={ whileInViewport ? 'active' : '' }
             viewport={{ once: true }}
-            className={classes.curtain}
+            className={clsCurtain.join(' ')}
          />
 
-         <motion.img
-            variants={imgVariants}
-            initial='initial'
-            animate={ !whileInViewport ? 'active' : '' }
-            whileInView={ whileInViewport ? 'active' : '' }
-            viewport={{ once: true }}
-            src={photoSrc}
-            alt=""
-         />
-      </div>
+         <div
+            className={classes.img_container}
+         >
+            <motion.img
+               variants={imgVariants}
+               initial='initial'
+               animate={ !whileInViewport ? 'active' : '' }
+               whileInView={ whileInViewport ? 'active' : '' }
+               viewport={{ once: true }}
+               src={photoSrc}
+               alt=""
+            />
+         </div>
+      </motion.div>
    )
 }
 

@@ -10,4 +10,4 @@ const albumSchema = new Schema({
 })
 
 
-module.exports = model('Album', albumSchema)
+module.exports = model('AlbumList', albumSchema)

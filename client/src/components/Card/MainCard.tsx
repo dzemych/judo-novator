@@ -4,6 +4,7 @@ import Button from "@components/Button/Button";
 import useFormatDate from "../../hooks/useFormatDate";
 import OpacityYDiv from "@components/Animations/OpacityYDiv";
 import AnimatedImg from "@components/Animations/AnimatedImg";
+import {ICard} from "../../types/card";
 
 
 interface IProps extends ICard {
@@ -56,7 +57,11 @@ const MainCard: FC<IProps> =
       <div className={cls.join(' ')}>
          <div className={classes.wrapper}>
             <div className={classes.image_container}>
-               <AnimatedImg photoSrc={photoSrc} whileInViewport/>
+               <AnimatedImg
+                  colorSchema={colorSchema === 'white' ? "black" : 'white'}
+                  photoSrc={photoSrc}
+                  whileInViewport
+               />
             </div>
 
             <OpacityYDiv className={classes.content} delay={.2} whileInViewport>

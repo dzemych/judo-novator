@@ -4,4 +4,5 @@ export interface IAnimatedElProps {
    whileInViewport?: boolean
    onClick?: (e?: any) => void
    delay?: number
+   colorSchema?: 'black' | 'white'
 }

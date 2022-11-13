@@ -14,7 +14,7 @@ const OpacityYDiv: FC<IAnimatedElProps> =
 
    const variants = {
       initial: {
-         y: 35,
+         y: 30,
          opacity: 0
       },
       active: {

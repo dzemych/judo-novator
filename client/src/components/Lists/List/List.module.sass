@@ -1,0 +1,39 @@
+.container
+  display: flex
+  flex-direction: column
+  width: 100%
+
+.title
+  font-family: "BigNoodle", sans-serif
+  text-transform: uppercase
+  margin-bottom: 2.5rem
+  margin-top: 0
+  font-size: 1.8rem
+  letter-spacing: .1rem
+  font-weight: 600
+
+.list
+  display: flex
+  flex-direction: column
+  width: 100%
+  & > div:not(:first-child)
+    margin-top: 2.5rem
+
+.empty_list
+  margin: 0 auto
+  & h1
+    margin-top: 1rem
+    text-align: center
+    font-family: BigNoodle, sans-serif
+    letter-spacing: .15rem
+    line-height: 140%
+    font-size: 2.3rem
+    font-weight: 600
+
+.black
+  & .title, & .empty_list h1
+    color: #222222
+
+.white
+  & .title, & .empty_list h1
+    color: #f5f5f5

@@ -15,14 +15,18 @@
     "prettier": "prettier --write src"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.25.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-brands-svg-icons": "^6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@react-google-maps/api": "^2.16.1",
     "framer-motion": "^7.6.1",
+    "i": "^0.3.7",
     "next": "12.2.5",
+    "npm": "^9.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-responsive": "^9.0.0",

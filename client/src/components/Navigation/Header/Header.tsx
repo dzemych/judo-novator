@@ -1,6 +1,6 @@
 import {FC, useContext, useEffect, useState} from 'react'
 import classes from './Header.module.sass'
-import bell_logo from '../../../public/images/belt_white_club.png'
+import bell_logo from '@images/club.png'
 import Sidebar from '@components/Navigation/Sidebar/Sidebar'
 import OpacityDiv from "@components/Animations/OpacityDiv";
 import {AppContext} from "../../../pages/_app";

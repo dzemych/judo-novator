@@ -107,7 +107,7 @@ const WideSlider: FC<IProps> = ({ elements }) => {
          }, 400)
    }, [duration])
 
-   // 4) Change offset when page changes and loading
+   // 4) Change offset when about changes and loading
    useEffect(() => {
       setPageAnimation(true)
       setTimeout(() => {
@@ -119,6 +119,35 @@ const WideSlider: FC<IProps> = ({ elements }) => {
       transform: `translateX(${-(itemWidth * page)}px)`,
       transition: `${duration}ms ease-out`
    }
+
+   if (elements.length === 1)
+      return (
+         <motion.div
+            className={classes.container}
+            variants={sliderVariants}
+            initial='initial'
+            whileInView='active'
+            viewport={{ once: true }}
+         >
+            <OpacityDiv whileInViewport className={classes.title} delay={.4}>
+               Наш зал
+            </OpacityDiv>
+
+            <OpacityDiv whileInViewport className={classes.subTitle} delay={.4}>
+               Вулиця Тернопільська, 13/4
+            </OpacityDiv>
+
+            <div className={classes.slider_item}>
+               <div className={classes.slider_container}>
+                  <div className={classes.img_container}>
+                     <div className={classes.backdrop}/>
+
+                     <img src={elements[0].photoSrc} alt=""/>
+                  </div>
+               </div>
+            </div>
+         </motion.div>
+      )
 
    return (
       <motion.div

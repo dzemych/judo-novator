@@ -1,10 +1,12 @@
 import {FC} from "react"
-import classes from './Albums.module.sass'
+import classes from './Album.module.sass'
 import back from "../../public/images/back.jpg";
 import MainBack from "@components/MainBack/MainBack";
+import List from "@components/Lists/List/List";
+import {CardType} from "../../types/card";
 
 
-const Albums: FC = () => {
+const Album: FC = () => {
    return (
       <div className={classes.container}>
          <MainBack
@@ -13,10 +15,17 @@ const Albums: FC = () => {
          />
 
          <div className={classes.wrapper}>
-
+            <List
+               pageNav={true}
+               title={'Наша галерея'}
+               cardType='big'
+               colorSchema='black'
+               length={5}
+               cardName={CardType.ALBUMS}
+            />
          </div>
       </div>
    )
 }
 
-export default Albums
+export default Album

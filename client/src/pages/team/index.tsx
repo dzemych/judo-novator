@@ -2,6 +2,8 @@ import {FC} from "react"
 import classes from './Team.module.sass'
 import back from "../../public/images/back.jpg";
 import MainBack from "@components/MainBack/MainBack";
+import List from "@components/Lists/List/List";
+import {CardType} from "../../types/card";
 
 
 const Team: FC = () => {
@@ -13,7 +15,13 @@ const Team: FC = () => {
          />
 
          <div className={classes.wrapper}>
-
+            <List
+               title={'Наша команда'}
+               colorSchema={'black'}
+               pageNav={true}
+               cardType={'big'}
+               cardName={CardType.TEAM}
+            />
          </div>
       </div>
    )

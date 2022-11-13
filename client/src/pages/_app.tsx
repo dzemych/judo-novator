@@ -5,7 +5,7 @@ import MainLayout from '../layouts/MainLayout'
 import {useRouter} from "next/router"
 import {createContext, useEffect, useState} from "react"
 import {AnimatePresence, motion} from "framer-motion"
-import Loader from "@components/Loader/Loader";
+import PageLoader from "@components/Loader/PageLoader";
 
 
 export const AppContext = createContext({
@@ -34,6 +34,7 @@ function MyApp({ Component, pageProps }: AppProps) {
    }
 
    const [newPage, setNewPage] = useState(false)
+   const [showFooter, setShowFooter] = useState(true)
 
    const toggleNewPage = () => {
       setNewPage(prev => !prev)
@@ -44,7 +45,7 @@ function MyApp({ Component, pageProps }: AppProps) {
    useEffect(() => {
       const startHandler = () => {
          setNewPage(true)
-         console.log(newPage)
+         document.body.scrollTo(0, 0)
       }
 
       const completeHandler = () => {
@@ -62,12 +63,20 @@ function MyApp({ Component, pageProps }: AppProps) {
       }
    }, [])
 
+   useEffect(() => {
+      if (router.pathname === '/contacts') {
+         setShowFooter(false)
+      } else {
+         setShowFooter(true)
+      }
+   }, [router.pathname])
+
    return (
       <AppContext.Provider value={{ newPage, toggleNewPage }}>
-         <MainLayout>
+         <MainLayout footer={showFooter}>
             <AnimatePresence exitBeforeEnter>
                { newPage
-                  ? <Loader/>
+                  ? <PageLoader/>
                   :  <motion.div
                         key={router.pathname}
                         variants={pageVariants}

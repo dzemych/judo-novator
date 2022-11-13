@@ -1,18 +1,49 @@
 .container
   width: 100%
-  margin-top: 62px
-  min-height: calc(100vh - 62px)
+  height: 100%
+
+.img_container
+  width: 100%
+  height: 100%
   display: flex
   justify-content: center
   align-items: center
-  & svg
-    width: 60%
-    margin: 0 auto
-    animation: 6s linear infinite rotate
+  & img
+    width: 100%
+    height: 100%
+    object-position: center
+    object-fit: contain
+    animation: active 1.1s infinite ease-out
 
-@keyframes rotate
+@keyframes active
   0%
-    transform: rotate(0deg)
+    transform: scale(.7)
+
+  35%
+    transform: scale(1)
+
+  // Start shaking
+  40%
+    transform: rotate(14deg)
+
+  44.15%
+    transform: rotate(-14deg)
+
+  48.3%
+    transform: rotate(14deg)
+
+  52.45%
+    transform: rotate(-14deg)
+
+  56.6%
+    transform: rotate(14deg)
+
+  60.75%
+    transform: rotate(-14deg)
+
+  // Back to scale
+  70%
+    transform: rotate(0)
 
   100%
-    transform: rotate(360deg)
+    transform: scale(.7)

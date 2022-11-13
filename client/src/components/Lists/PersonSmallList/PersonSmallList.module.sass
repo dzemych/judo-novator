@@ -11,10 +11,18 @@
   margin-top: 0
   font-size: 1.8rem
   letter-spacing: .1rem
+  font-weight: 600
 
 .list
   display: flex
-  flex-direction: column
+  flex-direction: row
+  flex-wrap: wrap
   width: 100%
-  & > div:not(:first-child)
-    margin-top: 2.5rem
+
+.black
+  & .title
+    color: #222222
+
+.white
+  & .title
+    color: #f5f5f5

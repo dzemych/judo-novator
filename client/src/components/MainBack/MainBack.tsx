@@ -14,7 +14,7 @@ const MainBack: FC<IProps> = ({ title, imageSrc }) => {
 
    const scrollToContent = () => {
       const vh = window.innerHeight
-      window.scrollTo(0, vh * .8)
+      document.body.scrollTo(0, vh * .8)
    }
 
    return (

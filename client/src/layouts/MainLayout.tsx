@@ -6,17 +6,17 @@ import classes from './MainLayout.module.sass'
 
 interface IProps {
    children: React.ReactNode
+   footer?: boolean
 }
 
-const MainLayout: FC<IProps> = ({ children }) => {
-
+const MainLayout: FC<IProps> = ({ children, footer = true }) => {
    return (
       <div className={classes.container}>
          <Header/>
 
          {children}
 
-         <Footer/>
+         { footer && <Footer/> }
       </div>
    )
 }
