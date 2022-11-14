@@ -1,14 +1,15 @@
 @use 'src/styles/colors'
+@use 'src/styles/media'
 
 
 .container
   width: 100%
-  padding: 7px 13px
   background: darken(colors.$primary, 4%)
   display: flex
   flex-direction: row
   justify-content: space-between
   align-items: center
+  z-index: 1
 
 .wrapper
   padding: 1.875rem 1.25rem
@@ -53,3 +54,35 @@
     cursor: pointer
     text-decoration: none
     color: darken(white, 5%)
+
+
+@media (min-width: media.$phone)
+  .wrapper
+    width: 70%
+    margin: 0 auto
+
+@media (min-width: media.$laptop)
+  .icon_container
+    & svg
+      font-size: 4rem
+    &:not(:last-child)
+      margin-right: 2rem
+
+  .wrapper
+    width: 100%
+    padding: 2.5rem 3rem
+
+  .hr
+    margin: 2rem 0 2.7rem
+
+  .content
+    width: 93%
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+
+  .copyRight_container, .author_container
+    font-size: 1.1rem
+    align-items: center
+    margin: 0

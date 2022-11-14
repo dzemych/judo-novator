@@ -1,8 +1,5 @@
 import {FC} from "react"
 import classes from './PersonSmallList.module.sass'
-import ex from "@images/ex.jpg";
-import exTwo from "@images/ex2.jpeg";
-import back from "@images/back.jpg";
 import PersonSmallCard from "@components/Card/PersonSmallCard";
 import useNavigation from "../../../hooks/useNavigation";
 import {CardType} from "../../../types/card";
@@ -39,7 +36,7 @@ const PersonSmallList: FC<IProps> =
             whileInViewport
             delay={0}
          >
-            {title}
+            <h3>{title}</h3>
          </OpacityDiv>
 
          <div className={classes.list}>

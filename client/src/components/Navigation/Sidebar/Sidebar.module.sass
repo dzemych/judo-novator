@@ -1,4 +1,6 @@
 @use 'src/styles/colors.sass'
+@use 'src/styles/media.sass'
+
 
 .container
   padding-top: 62px
@@ -28,6 +30,7 @@
     list-style: none
     text-align: center
   & a
+    cursor: pointer
     margin: 0
     padding: 0
     text-decoration: none
@@ -35,6 +38,9 @@
     line-height: 2.8125rem
     font-family: 'Roboto Regular', sans-serif
     font-weight: 600
+    transition: 350ms
+    &:hover
+      color: #c7c7cb !important
 
 .bottom_icons
   position: fixed
@@ -51,11 +57,20 @@
   height: 3.5rem
   border: 1px solid #a2a7ab
   border-radius: 10px
+  transition: 350ms
   &:not(:last-child)
     margin-right: 1.25rem
   & svg
+    transition: 350ms
     color: #a2a7ab
     font-size: 2rem
+    cursor: pointer
+  &:hover
+    border-color: #ededf1
+    color: #dedee3
+    transform: scale(1.1)
+    & svg
+      color: #dedee3
 
 .bottom_notation
   position: fixed
@@ -65,3 +80,24 @@
   line-height: 1.25rem
   letter-spacing: .03em
   color: colors.$grayLight
+
+
+@media (min-width: media.$laptop)
+  .bottom_notation
+    font-size: .95rem
+
+  .list_container a
+    font-size: 2.5rem
+    line-height: 130%
+
+  .bottom_icons
+    bottom: 9%
+
+  .wrapper
+    padding-bottom: 18vh
+
+  .icon_container
+    width: 4.5rem
+    height: 4.5rem
+    & svg
+      font-size: 2.7rem

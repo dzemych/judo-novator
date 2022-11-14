@@ -6,23 +6,32 @@ import OpacityYDiv from "@components/Animations/OpacityYDiv";
 
 
 interface IProps {
-   title: string,
+   title: string
    imageSrc: string
+   transparent?: boolean
 }
 
-const MainBack: FC<IProps> = ({ title, imageSrc }) => {
-
+const MainBack: FC<IProps> = ({ title, imageSrc, transparent }) => {
    const scrollToContent = () => {
       const vh = window.innerHeight
-      document.body.scrollTo(0, vh * .8)
+      const dist = transparent ? vh * .70 : vh * .8
+
+      document.body.scrollTo(0, dist)
    }
 
+   const cls = [classes.wrapper]
+
+   if (transparent)
+      cls.push(classes.transparent)
+
    return (
-      <div className={classes.container}>
-         <div className={classes.background}>
-            <img src={imageSrc}/>
-            <div className={classes.opacity}/>
-         </div>
+      <div className={cls.join(' ')}>
+         { !transparent &&
+            <div className={classes.background}>
+               <img src={imageSrc} alt=''/>
+               <div className={classes.opacity}/>
+            </div>
+         }
 
          <div className={classes.wrapper}>
             <OpacityYDiv className={classes.title}>
@@ -37,7 +46,7 @@ const MainBack: FC<IProps> = ({ title, imageSrc }) => {
                   transition: {
                      duration: .5,
                      delay: .2,
-                     yoyo: Infinity,
+                     repeat: Infinity,
                      ease: 'easeOut'
                   }
                }}

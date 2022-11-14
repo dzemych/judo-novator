@@ -1,11 +1,12 @@
 import {FC} from "react"
 import classes from './Contact.module.sass'
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faFacebook, faInstagram, faViber} from "@fortawesome/free-brands-svg-icons";
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import Loader from "@components/Loader/Loader";
-import {AnimatePresence, motion} from "framer-motion";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome"
+import {faFacebook, faInstagram, faViber} from "@fortawesome/free-brands-svg-icons"
+import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api"
+import Loader from "@components/Loader/Loader"
+import {AnimatePresence, motion} from "framer-motion"
 
+// mapboxgl.accessToken = 'pk.eyJ1IjoiZHplbXljaCIsImEiOiJjbDB6cjRramwyNjV4M2lubWtzdjU2ejIyIn0.53BxV3A_eVL8B8TTQMUNZA';
 
 const Contact: FC = () => {
 
@@ -19,6 +20,15 @@ const Contact: FC = () => {
       { title: 'Телефон', text: '+380 (53) 123 12 12' },
       { title: 'Імейл', text: 'some@gmail.com' },
    ]
+
+   // const mapContainer = useRef(null)
+   // const map = useRef(null)
+
+   // const [lng, setLng] = useState(26.949719290231627)
+   // const [lat, setLat] = useState(49.40498750122461)
+   // const [zoom, setZoom] = useState(14)
+
+   // const [state, setState] = useState('loaded')
 
    // @ts-ignore
    const { isLoaded } = useLoadScript({ googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY })
@@ -34,6 +44,19 @@ const Contact: FC = () => {
          </div>
       </div>
    )
+
+   // useEffect(() => {
+   //    if (!mapContainer.current) return
+   //
+   //    if (map.current) return // initialize map only once
+   //
+   //    map.current = new mapboxgl.Map({
+   //       container: mapContainer.current,
+   //       style: 'mapbox://styles/mapbox/streets-v11',
+   //       center: [lng, lat],
+   //       zoom: zoom
+   //    })
+   // })
 
    return (
       <div className={classes.container}>
@@ -54,6 +77,29 @@ const Contact: FC = () => {
                <div className={classes.map_subTitle}>
                   Вулиця Тернопільська, 13/4, Хмельницький
                </div>
+
+               {/*<AnimatePresence>*/}
+               {/*   { state === 'loaded' ? (*/}
+               {/*      <motion.div*/}
+               {/*         variants={mapVariants}*/}
+               {/*         className={classes.map_wrapper}*/}
+               {/*         initial='initial'*/}
+               {/*         animate='active'*/}
+               {/*      >*/}
+               {/*         <div ref={mapContainer}/>*/}
+               {/*      </motion.div>*/}
+               {/*   ) : (*/}
+               {/*      <motion.div*/}
+               {/*         className={classes.loader_container}*/}
+               {/*         variants={mapVariants}*/}
+               {/*         initial='initial'*/}
+               {/*         animate='active'*/}
+               {/*         exit='exit'*/}
+               {/*      >*/}
+               {/*         <Loader/>*/}
+               {/*      </motion.div>*/}
+               {/*   ) }*/}
+               {/*</AnimatePresence>*/}
 
                <AnimatePresence exitBeforeEnter>
                   { isLoaded ?
@@ -83,6 +129,7 @@ const Contact: FC = () => {
                         </motion.div>
                      )}
                </AnimatePresence>
+
             </div>
 
             <div className={classes.social_container}>

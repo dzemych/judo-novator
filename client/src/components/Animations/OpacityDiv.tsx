@@ -1,5 +1,5 @@
 import {FC} from "react";
-import { motion } from 'framer-motion'
+import {AnimatePresence, motion} from 'framer-motion'
 import { IAnimatedElProps } from 'src/types/IAnimatedElProps'
 
 
@@ -9,7 +9,8 @@ const OpacityDiv: FC<IAnimatedElProps> =
        className,
        whileInViewport,
        onClick,
-       delay = 0
+       delay = 0,
+       exit = false
    }) => {
    const variants = {
       initial: {
@@ -23,6 +24,12 @@ const OpacityDiv: FC<IAnimatedElProps> =
                : (whileInViewport && delay) ? delay
                : 0
          }
+      },
+      exit: {
+         opacity: 0,
+         transition: {
+            duration: .45
+         }
       }
    }
 
@@ -33,6 +40,7 @@ const OpacityDiv: FC<IAnimatedElProps> =
          variants={variants}
          initial='initial'
          animate={!whileInViewport ? 'active' : ''}
+         exit={exit ? 'exit' : ''}
          whileInView={whileInViewport ? 'active' : ''}
          viewport={{ once: true }}
       >

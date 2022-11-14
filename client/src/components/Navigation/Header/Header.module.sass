@@ -1,4 +1,6 @@
 @use 'src/styles/colors.sass'
+@use 'src/styles/media.sass'
+
 
 .container
   z-index: 100
@@ -37,7 +39,6 @@
   align-items: center
   width: 30px
   height: 40px
-  cursor: pointer
   transition: all .5s ease-in-out
 
 .menuBtn__burger,
@@ -78,3 +79,9 @@
 
 .menuBtn.open .menuBtn__burger::after
   transform: rotate(-45deg) translate(35px, 35px)
+
+@media (min-width: media.$laptop)
+  .container
+    height: 76px
+    width: 100vw
+    padding: 10px 30px 10px 20px

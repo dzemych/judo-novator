@@ -6,11 +6,12 @@ import back from "@images/back.jpg";
 
 
 type IUseNavigation = ( length: number, type: string, ) => {
-   page: number,
-   pagesCount: number,
+   page: number
+   pagesCount: number
    elements: ICard[]
-   nextPageHandler: () => void,
+   nextPageHandler: () => void
    prevPageHandler: () => void
+   loading: boolean
 }
 
 const blogs: ICard[] = [
@@ -22,12 +23,11 @@ const blogs: ICard[] = [
       photoSrc: ex.src,
    },
    {
-      to: '/halls',
-      title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
+      to: '/',
+      title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: exTwo.src,
-      beforeTitle: '65 Photographs'
+      photoSrc: ex.src,
    },
    {
       to: '/teams',
@@ -35,6 +35,14 @@ const blogs: ICard[] = [
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
       photoSrc: back.src
+   },
+   {
+      to: '/halls',
+      title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: exTwo.src,
+      beforeTitle: '65 Photographs'
    },
    {
       to: '/teams',
@@ -90,49 +98,93 @@ const team: ICard[] = [
       photoSrc: back.src,
       title: 'Doctor'
    },
+   {
+      to: '/teams',
+      photoSrc: back.src,
+      title: 'Doctor'
+   },
+   {
+      to: '/teams',
+      photoSrc: back.src,
+      title: 'Doctor'
+   },
+   {
+      to: '/teams',
+      photoSrc: back.src,
+      title: 'Doctor'
+   },
 ]
 
 const useNavigation: IUseNavigation = (length, type) => {
    const [page, setPage] = useState(1)
    const [elements, setElements] = useState<ICard[]>([])
+   const [loading, setLoading] = useState(false)
 
-   let pagesCount = Math.ceil(elements.length / length)
+   // let pagesCount = Math.ceil(elements.length / length)
+   const [pagesCount, setPagesCount] = useState(0)
+
+   const fetchElements = () => {
+      setTimeout(() => {
+         const startIdx = (page - 1) * length
+
+         switch(type) {
+            case CardType.BLOGS: {
+               const arr = blogs.slice(startIdx, startIdx + length)
+               console.log(startIdx, startIdx + length)
+               console.log(blogs)
+               console.log(arr)
+
+               setElements(arr)
+               setPagesCount(Math.ceil(blogs.length / length))
+
+               break
+            }
+            case CardType.ALBUMS: {
+               const arr = albums.slice(startIdx, length)
+
+               setElements(arr)
+               setPagesCount(Math.ceil(albums.length / length))
+
+               break
+            }
+            case CardType.TEAM: {
+               const arr = team.slice(startIdx, length)
+
+               setElements(arr)
+               setPagesCount(Math.ceil(team.length / length))
+
+               break
+            }
+         }
+
+         setLoading(false)
+      }, 1)
+   }
 
    // 1) Load initial elements
    useEffect(() => {
-      switch(type) {
-         case CardType.BLOGS: {
-            setElements(blogs)
-            break
-         }
-         case CardType.ALBUMS: {
-            setElements(albums)
-            break
-         }
-         case CardType.TEAM: {
-            setElements(team)
-            break
-         }
-      }
-   }, [])
+      setLoading(true)
+
+      fetchElements()
+   }, [page])
 
    const nextPageHandler = () => {
       if (page < pagesCount) {
-         setPage(prev => prev + 1)
+         document.body.scrollTo(0, .5 * window.innerHeight)
 
-         document.body.scrollTo(0, .7 * window.innerHeight)
+         setPage(prev => prev + 1)
       }
    }
 
    const prevPageHandler = () => {
       if (page > 1) {
-         setPage(prev => prev - 1)
+         document.body.scrollTo(0, .5 * window.innerHeight)
 
-         document.body.scrollTo(0, .7 * window.innerHeight)
+         setPage(prev => prev - 1)
       }
    }
 
-   return { page, pagesCount, elements, nextPageHandler, prevPageHandler }
+   return { page, pagesCount, elements, nextPageHandler, prevPageHandler, loading }
 }
 
 export default useNavigation

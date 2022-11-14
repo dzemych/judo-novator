@@ -1,4 +1,6 @@
 @use '../../styles/colors'
+@use '../../styles/media'
+
 
 .container
   width: 100%
@@ -8,39 +10,8 @@
   display: flex
   flex-direction: column
 
-//.image_container
-//  position: relative
-//  height: calc((100vw - 2rem) * .7)
-//  width: 100%
-//  background: colors.$primary
-//  border: none
-//  z-index: 0
-//  & img
-//    border: none
-//    width: 100%
-//    height: 100%
-//    object-fit: cover
-//    object-position: center
-//
-//.img_backdrop
-//  position: absolute
-//  top: 0
-//  left: 0
-//  right: 0
-//  bottom: 0
-//  z-index: 1
-//  background: rgba(95, 92, 92, 0.15)
-//
-//.image_curtain
-//  position: absolute
-//  top: -10%
-//  left: -10%
-//  right: -10%
-//  bottom: -10%
-//  background: colors.$primary
-//  z-index: 1
-
 .image_container
+  max-height: 80vh
   height: calc((100vw - 2rem) * .7)
   width: 100%
 
@@ -51,10 +22,6 @@
   flex-direction: column
   align-items: flex-start
   z-index: 1
-
-.before_title
-  font-size: 1.4rem
-  margin-bottom: .6rem
 
 .title, .date, .before_title
   font-family: "BigNoodle", sans-serif
@@ -105,3 +72,53 @@
     line-height: 1.7rem
   & .subTitle_container
     line-height: 1.2rem
+
+.extraBig
+  max-width: 90vw
+  width: 100% !important
+  & .wrapper
+    width: 100%
+    flex-direction: row
+    justify-content: space-between
+  & .content
+    width: 37%
+  & .image_container
+    width: 60%
+  & .before_title
+    font-size: 1.25rem
+  & .title
+    font-size: 2.1rem
+    line-height: 100%
+  & .date
+    margin-top: .8rem
+    font-size: 1.3rem
+  & .subTitle_container
+    margin-top: .8rem
+    line-height: 110%
+    font-size: 1.18rem
+
+
+@media (min-width: media.$phone)
+  .image_container
+    max-height: 70vh
+
+@media (min-width: media.$laptop)
+  .image_container
+    max-height: 33vw
+
+  .small
+    & .content
+      margin-top: -5rem
+      padding: 0 1.3rem
+    & .before_title
+      font-size: 1.15rem
+    & .title
+      font-size: 2rem
+      line-height: 100%
+    & .date
+      margin-top: .7rem
+      font-size: 1.2rem
+    & .subTitle_container
+      margin-top: .7rem
+      line-height: 110%
+      font-size: 1.08rem

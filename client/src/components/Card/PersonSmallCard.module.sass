@@ -1,10 +1,8 @@
+@use 'src/styles/media'
+
 .container
   width: calc((100vw - 30px - 30px - 15px) / 2)
   height: calc(50vw - 30px)
-  &:nth-child(odd)
-    margin-right: 15px
-  &:nth-child(n + 3)
-    margin-top: 20px
 
 .wrapper
   position: relative
@@ -14,22 +12,6 @@
 .img_container
   width: 100%
   height: 100%
-  //position: absolute
-  //height: 100%
-  //width: 100%
-  //& img
-  //  object-fit: cover
-  //  object-position: center
-  //  height: 100%
-  //  width: 100%
-
-//.backdrop
-//  position: absolute
-//  top: 0
-//  left: 0
-//  right: 0
-//  bottom: 0
-//  background: rgba(56, 55, 55, 0.35)
 
 .position
   position: absolute
@@ -40,3 +22,7 @@
   font-family: BigNoodle, sans-serif
   font-size: 1.5rem
   letter-spacing: .06rem
+
+@media (min-width: media.$laptop)
+  .position
+    font-size: 1.8rem

@@ -1,35 +1,7 @@
 @use 'src/styles/colors'
+@use 'src/styles/media'
 
-//  position: relative
-//  outline: none
-//  border: none
-//  margin: 0
-//  padding: 1.15rem 2rem
-//  width: 180px
-//  background: transparent
 
-//.wrapper
-//  font-size: 1rem
-//  font-family: 'BigNoodle', sans-serif
-//  font-weight: 900
-//  color: black
-//  text-transform: uppercase
-//  letter-spacing: .12em
-
-//.container::before
-//  top: 0
-//  left: 0
-//  position: absolute
-//  content: ''
-//  width: calc(100% - 2px)
-//  height: calc(100% - 2px)
-//  border: 1px solid black
-//  border-radius: 2px
-
-//.container::after
-  //opacity: 0
-
-//$offwhite: darken(white, 10%)
 $offwhite: white
 $darkblue: rgb(93, 93, 94)
 
@@ -104,3 +76,9 @@ $darkblue: rgb(93, 93, 94)
     border: 2px solid darken(white, 10%)
   &::after
     background: darken(white, 5%)
+
+
+@media (min-width: media.$laptop)
+  .container
+    font-size: 1.2rem
+    padding: 1.2rem 2.6rem

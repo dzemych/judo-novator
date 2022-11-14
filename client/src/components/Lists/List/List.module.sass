@@ -1,23 +1,40 @@
+@use 'src/styles/media'
+
+
 .container
   display: flex
   flex-direction: column
   width: 100%
+  margin: 0 auto
 
 .title
+  width: 100%
   font-family: "BigNoodle", sans-serif
   text-transform: uppercase
-  margin-bottom: 2.5rem
+  margin-bottom: 2.8rem
   margin-top: 0
   font-size: 1.8rem
   letter-spacing: .1rem
   font-weight: 600
+  z-index: 1
+  & h3
+    margin: 0
 
 .list
   display: flex
   flex-direction: column
+  align-items: center
   width: 100%
-  & > div:not(:first-child)
+  & > div:nth-child(n+2)
     margin-top: 2.5rem
+
+.loader_container
+  width: 100%
+  height: 60vh
+  margin-top: 5vh
+  & > div
+    width: 50%
+    margin: 0 auto
 
 .empty_list
   margin: 0 auto
@@ -37,3 +54,16 @@
 .white
   & .title, & .empty_list h1
     color: #f5f5f5
+
+
+@media (min-width: media.$laptop)
+  .title
+    font-size: 2rem
+    letter-spacing: .13rem
+
+  .list
+    flex-direction: row
+    flex-wrap: wrap
+    justify-content: space-between
+    & > div
+      width: 47.5%

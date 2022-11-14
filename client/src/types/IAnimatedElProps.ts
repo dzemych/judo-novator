@@ -5,4 +5,5 @@ export interface IAnimatedElProps {
    onClick?: (e?: any) => void
    delay?: number
    colorSchema?: 'black' | 'white'
+   exit?: boolean
 }

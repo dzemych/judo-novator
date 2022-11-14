@@ -1,16 +1,18 @@
 @use 'src/styles/colors.sass'
+@use 'src/styles/media.sass'
+
+
+.container, .background, .opacity
+  height: 95vh
+  width: 100%
 
 .container
   position: relative
-  width: 100%
-  height: 95vh
 
 .background
   z-index: 0
   position: absolute
   top: 0
-  width: 100%
-  height: 95vh
   & img
     height: 100%
     width: 100%
@@ -21,8 +23,6 @@
   z-index: 0
   position: absolute
   top: 0
-  width: 100%
-  height: 95vh
   background: colors.$primary
   opacity: .6
 
@@ -52,3 +52,36 @@
   cursor: pointer
   fill: white
   transform: scale(3.1)
+
+.transparent
+  background: transparent
+  height: 75vh
+  & .title
+    margin-top: 13vh
+    font-size: 3.2rem
+    line-height: 120%
+
+  & .arrow_container
+    margin-top: 30vh
+
+  & .arrowDown
+    transform: scale(3.5)
+
+  & .background, & .opacity
+    height: 75vh
+
+
+@media (min-width: media.$phone)
+  .arrow_container
+    margin-top: 47vh
+
+@media (min-width: media.$laptop)
+  .title
+    font-size: 3.5rem
+    line-height: 120%
+
+  .arrow_container
+    margin-top: 45vh
+
+  .arrowDown
+    transform: scale(4.3)

@@ -9,7 +9,7 @@ import {ICard} from "../../types/card";
 
 interface IProps extends ICard {
    colorSchema?: 'white' | 'black'
-   type: 'small' | 'big'
+   type: 'small' | 'big' | 'extraBig'
    showBtn?: boolean
 }
 
@@ -33,6 +33,9 @@ const MainCard: FC<IProps> =
    if (type === 'small')
       cls.push(classes.small)
 
+   if (type === 'extraBig')
+      cls.push(classes.extraBig)
+
    if (colorSchema === 'black')
       cls.push(classes.black)
 
@@ -41,6 +44,7 @@ const MainCard: FC<IProps> =
 
    const renderDate = () => {
       if (date) {
+         // eslint-disable-next-line react-hooks/rules-of-hooks
          const formatDate = useFormatDate(date)
 
          return (

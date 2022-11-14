@@ -2,12 +2,11 @@ import type {NextPage} from 'next'
 import classes from 'src/pages/Home.module.sass'
 import MainBack from "@components/MainBack/MainBack";
 import back from '../public/images/back.jpg'
-import ex from '@images/ex.jpg'
-import exTwo from '@images/ex2.jpeg'
 import WideSlider from "@components/WideSlider/WideSlider";
 import PersonSmallList from "@components/Lists/PersonSmallList/PersonSmallList";
 import List from "@components/Lists/List/List";
 import {CardType} from "../types/card";
+import {ISliderElement} from "../types/ISliderElement";
 
 
 const Home: NextPage = () => {
@@ -30,6 +29,7 @@ const Home: NextPage = () => {
                   cardType={'small'}
                   cardName={CardType.BLOGS}
                   pageNav={false}
+                  length={4}
                />
             </div>
 

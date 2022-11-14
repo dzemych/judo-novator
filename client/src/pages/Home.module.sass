@@ -1,4 +1,6 @@
 @use 'src/styles/colors.sass'
+@use 'src/styles/media'
+
 
 .container
   width: 100%
@@ -7,7 +9,7 @@
 
 .wrapper
   position: relative
-  padding: 45px 0
+  padding: 2.8rem 0
   width: 100%
 
 .empty_space
@@ -28,4 +30,12 @@
   margin: 55px 0 65px
 
 .list_wrapper
+  width: 100%
   padding: 0 20px
+
+
+@media (min-width: media.$laptop)
+  .list_wrapper
+    width: 88vw
+    margin: 0 auto
+    padding: 0

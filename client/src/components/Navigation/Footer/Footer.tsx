@@ -5,12 +5,6 @@ import { faInstagram, faViber, faFacebook } from "@fortawesome/free-brands-svg-i
 import {motion} from "framer-motion";
 
 
-// enum SocialMedia {
-//    instagram = 'instagram',
-//    viber = 'viber',
-//    facebook = 'facebook'
-// }
-
 const Footer: FC = () => {
 
    const icons = {
@@ -64,15 +58,18 @@ const Footer: FC = () => {
 
             <hr className={classes.hr}/>
 
-            <span className={classes.copyRight_container}>
-               © Copyright {new Date().getFullYear()} Дзюдо-Новатор. Все права защищены
-            </span>
+            <div className={classes.content}>
+               <span className={classes.copyRight_container}>
+                  © Copyright {new Date().getFullYear()} Дзюдо-Новатор. Все права защищены
+               </span>
 
-            <div className={classes.author_container}>
-               Разработано - &nbsp;
-               <a href="https://www.linkedin.com/in/dzemych/" target='_blank'>
-                  Dzemych Ivan
-               </a>
+               <div className={classes.author_container}>
+                  Разработано - &nbsp;
+
+                  <a href="https://www.linkedin.com/in/dzemych/" target='_blank'>
+                     Dzemych Ivan
+                  </a>
+               </div>
             </div>
          </div>
       </div>
