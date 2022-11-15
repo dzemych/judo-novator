@@ -94,24 +94,71 @@ const team: ICard[] = [
       title: 'Trainer'
    },
    {
-      to: '/teams',
+      to: '/23',
       photoSrc: back.src,
       title: 'Doctor'
    },
    {
-      to: '/teams',
+      to: '/4',
       photoSrc: back.src,
       title: 'Doctor'
    },
    {
-      to: '/teams',
+      to: '/5',
       photoSrc: back.src,
       title: 'Doctor'
    },
+]
+
+const events: ICard[] = [
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: ex.src,
+   },
    {
       to: '/teams',
-      photoSrc: back.src,
-      title: 'Doctor'
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: back.src
+   },
+   {
+      to: '/halls',
+      title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: exTwo.src,
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: back.src
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: back.src
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      beforeTitle: 'City Canada',
+      photoSrc: back.src
    },
 ]
 
@@ -125,40 +172,37 @@ const useNavigation: IUseNavigation = (length, type) => {
 
    const fetchElements = () => {
       setTimeout(() => {
-         const startIdx = (page - 1) * length
+         let startIdx = ((page - 1) * length)
+         if (startIdx < 0) startIdx = 0
+
+         const setArrs = (initArr: ICard[]) => {
+            const arr = initArr.slice(startIdx, startIdx + length)
+
+            setElements(arr)
+            setPagesCount(Math.ceil(initArr.length / length))
+         }
 
          switch(type) {
             case CardType.BLOGS: {
-               const arr = blogs.slice(startIdx, startIdx + length)
-               console.log(startIdx, startIdx + length)
-               console.log(blogs)
-               console.log(arr)
-
-               setElements(arr)
-               setPagesCount(Math.ceil(blogs.length / length))
-
+               setArrs(blogs)
                break
             }
             case CardType.ALBUMS: {
-               const arr = albums.slice(startIdx, length)
-
-               setElements(arr)
-               setPagesCount(Math.ceil(albums.length / length))
-
+               setArrs(albums)
                break
             }
             case CardType.TEAM: {
-               const arr = team.slice(startIdx, length)
-
-               setElements(arr)
-               setPagesCount(Math.ceil(team.length / length))
-
+               setArrs(team)
+               break
+            }
+            case CardType.EVENTS: {
+               setArrs(events)
                break
             }
          }
 
          setLoading(false)
-      }, 1)
+      }, 300)
    }
 
    // 1) Load initial elements

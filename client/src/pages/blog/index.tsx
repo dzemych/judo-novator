@@ -5,6 +5,7 @@ import MainBack from "@components/MainBack/MainBack";
 import {CardType} from "../../types/card";
 import List from "@components/Lists/List/List";
 import useMedia from "../../hooks/useMedia";
+import BackImg from "@components/BackImg/BackImg";
 
 
 const Blog: FC = () => {
@@ -12,12 +13,7 @@ const Blog: FC = () => {
 
    return (
       <div className={classes.container}>
-         { isSmallLaptop &&
-            <div className={classes.back}>
-               <div className={classes.back_shadow}/>
-               <img src={back.src} alt=""/>
-            </div>
-         }
+         { isSmallLaptop && <BackImg imageSrc={back.src}/> }
 
          <MainBack
             title={'Blog/ Как говориться сложно срать стоя на руках и не испачкать спину'}
@@ -33,6 +29,7 @@ const Blog: FC = () => {
                title={'Блог'}
                cardType={'big'}
                colorSchema='black'
+               firstBig
                length={5}
                cardName={CardType.BLOGS}
             />

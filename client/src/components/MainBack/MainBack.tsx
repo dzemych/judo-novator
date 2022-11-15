@@ -19,7 +19,7 @@ const MainBack: FC<IProps> = ({ title, imageSrc, transparent }) => {
       document.body.scrollTo(0, dist)
    }
 
-   const cls = [classes.wrapper]
+   const cls = [classes.container]
 
    if (transparent)
       cls.push(classes.transparent)
@@ -47,6 +47,7 @@ const MainBack: FC<IProps> = ({ title, imageSrc, transparent }) => {
                      duration: .5,
                      delay: .2,
                      repeat: Infinity,
+                     repeatType: 'reverse',
                      ease: 'easeOut'
                   }
                }}

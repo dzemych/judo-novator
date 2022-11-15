@@ -22,9 +22,7 @@ const OpacityYDiv: FC<IAnimatedElProps> =
          opacity: 1,
          transition: {
             duration: .45,
-            delay: (whileInViewport && !delay) ? .2
-               : (whileInViewport && delay) ? delay
-               : 0
+            delay
          }
       }
    }

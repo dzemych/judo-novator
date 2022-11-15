@@ -16,6 +16,7 @@ interface IProps {
    length?: number
    pageNav: boolean
    cardType: 'small' | 'big' | 'extraBig'
+   firstBig?: boolean
    cardName: CardType
 }
 
@@ -26,7 +27,8 @@ const List: FC<IProps> =
        length = 5,
        cardType,
        pageNav = false,
-       cardName
+       cardName,
+       firstBig
    }) => {
 
       const {
@@ -48,19 +50,31 @@ const List: FC<IProps> =
       if (colorSchema === 'white')
          cls.push(classes.white)
 
-      const renderCard = (el: ICard, idx: number) => (
-         <MainCard
-            key={idx + el.to}
-            colorSchema={colorSchema}
-            title={el.title}
-            text={el.text}
-            to={el.to}
-            photoSrc={el.photoSrc}
-            date={el.date}
-            type={(isSmallLaptop && idx === 0) ? 'extraBig' : cardType}
-            beforeTitle={el.beforeTitle}
-         />
-      )
+      const renderCard = (el: ICard, idx: number) => {
+         let newCardType = cardType
+
+         if (
+            isSmallLaptop &&
+            ( idx === 0 ) &&
+            firstBig &&
+            ( elements.length > 2 )
+         )
+            newCardType = 'extraBig'
+
+         return (
+            <MainCard
+               key={idx + el.to}
+               colorSchema={colorSchema}
+               title={el.title}
+               text={el.text}
+               to={el.to}
+               photoSrc={el.photoSrc}
+               date={el.date}
+               type={newCardType}
+               beforeTitle={el.beforeTitle}
+            />
+         )
+      }
 
       const renderList = () => {
          if (elements.length < 1 && !loading) return (
@@ -70,7 +84,7 @@ const List: FC<IProps> =
          )
 
          if (loading) return (
-            <OpacityDiv className={classes.loader_container} exit delay={.4}>
+            <OpacityDiv className={classes.loader_container}>
                <Loader/>
             </OpacityDiv>
          )
@@ -87,7 +101,6 @@ const List: FC<IProps> =
             <OpacityDiv
                className={classes.title}
                whileInViewport
-               delay={0}
             >
                <h3>{title}</h3>
             </OpacityDiv>

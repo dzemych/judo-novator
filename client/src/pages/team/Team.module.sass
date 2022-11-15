@@ -1,4 +1,26 @@
+@use "src/styles/media"
+
+
 .wrapper
   width: 100%
-  background: white
   padding: 50px 20px 70px
+  background: white
+  z-index: 1
+  position: relative
+
+.wrapper_back
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  background: white
+  position: absolute
+
+@media (min-width: media.$laptop)
+  .container
+    padding-bottom: 60px
+
+  .wrapper
+    width: 90vw
+    padding: 3rem 3.5vw 65px
+    margin: 0 auto 0
