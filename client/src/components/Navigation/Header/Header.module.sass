@@ -8,7 +8,7 @@
   width: 100%
   padding: 7px 16px 7px 13px
   height: 62px
-  background: darken(colors.$primary, 4%)
+  background: darken(colors.$primary, 4.5%)
   display: flex
   flex-direction: row
   align-items: center
@@ -80,8 +80,30 @@
 .menuBtn.open .menuBtn__burger::after
   transform: rotate(-45deg) translate(35px, 35px)
 
-@media (min-width: media.$laptop)
+.curtain
+  position: absolute
+  top: 0
+  bottom: 0
+  right: 0
+  left: 0
+  background: darken(colors.$primary, 4.5%)
+  z-index: 0
+  transition: 500ms ease-in-out cubic-bezier(.3,0,.5,1)
+
+.close
+  transform: translateX(-100%)
+
+.open
+  transform: translateX(0)
+
+@media (min-width: media.$tablet)
   .container
     height: 76px
     width: 100vw
     padding: 10px 30px 10px 20px
+
+@media (min-width: media.$mediumLaptop)
+  .container
+    height: 90px
+    background: transparent
+    padding: 24px 55px 16px 35px

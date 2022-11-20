@@ -1,5 +1,5 @@
 import type {NextPage} from 'next'
-import classes from 'src/pages/Home.module.sass'
+import classes from 'src/styles/Home.module.sass'
 import MainBack from "@components/MainBack/MainBack";
 import back from '../public/images/back.jpg'
 import WideSlider from "@components/WideSlider/WideSlider";
@@ -39,7 +39,7 @@ const Home: NextPage = () => {
 
             <div className={classes.list_wrapper}>
                <List
-                  title={'Albums'}
+                  title={'Галерея'}
                   colorSchema={'white'}
                   cardType={'small'}
                   cardName={CardType.ALBUMS}
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
 
             <div className={classes.empty_space}/>
 
-            <PersonSmallList title={'Our team'} length={4} colorSchema={'white'}/>
+            <PersonSmallList title={'Команда'} length={4} colorSchema={'white'}/>
          </div>
       </div>
    )

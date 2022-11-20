@@ -24,6 +24,7 @@ const PageNavigation: FC<IProps> = ({ nextPageClick, prevPageClick, page, pagesC
       })
    }
 
+   // TODO btn text disappear on iphone in browser
    return (
       <OpacityDiv className={classes.navigation_container} whileInViewport>
          <div className={classes.btns_container}>

@@ -3,10 +3,10 @@ import { useCallback, useState } from 'react'
 
 export enum httpMethodTypes {
    GET = 'GET',
-   POST = 'POST',
-   PATCH = 'PATCH',
-   DELETE = 'DELETE',
-   PUT = 'PUT'
+   // POST = 'POST',
+   // PATCH = 'PATCH',
+   // DELETE = 'DELETE',
+   // PUT = 'PUT'
 }
 
 interface IRequestProps {
@@ -26,6 +26,7 @@ const useHttp = () => {
       setLoading(true)
 
       try {
+         console.log(method, url, body, headers)
           // TODO axios request
       } catch (e: any) {
          setError(e.message)

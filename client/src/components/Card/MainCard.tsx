@@ -58,7 +58,7 @@ const MainCard: FC<IProps> =
    }
 
    return (
-      <div className={cls.join(' ')}>
+      <div className={cls.join(' ')} id={type === 'extraBig' ? 'extBig_card' : ''}>
          <div className={classes.wrapper}>
             <div className={classes.image_container}>
                <AnimatedImg

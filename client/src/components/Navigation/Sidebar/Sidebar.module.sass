@@ -12,6 +12,31 @@
   height: 100%
   background: colors.$primary
   color: white
+  transition: .5s cubic-bezier(.3,0,.5,1)
+
+.init
+  transform: translateY(100vh)
+
+.close
+  animation: closeCurtain .5s cubic-bezier(.3,0,.5,1)
+  transform: translateY(100vh)
+
+.open
+  animation: openCurtain .5s cubic-bezier(.3,0,.5,1)
+
+@keyframes openCurtain
+  0%
+    transform: translateY(100vh)
+  100%
+    transform: translateY(0vh)
+
+@keyframes closeCurtain
+  0%
+    transform: translateY(0)
+  100%
+    transform: translateY(-100vh)
+  //100%
+  //  transform: translateY(100vh)
 
 .wrapper
   z-index: 200
@@ -82,7 +107,8 @@
   color: colors.$grayLight
 
 
-@media (min-width: media.$laptop)
+
+@media (min-width: media.$tablet)
   .bottom_notation
     font-size: .95rem
 

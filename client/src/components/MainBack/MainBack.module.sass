@@ -73,10 +73,14 @@
   & .background, & .opacity
     height: 75vh
 
-
 @media (min-width: media.$phone)
   .arrow_container
     margin-top: 47vh
+
+@media (min-width: media.$tablet)
+  .title
+    font-size: 3rem
+    line-height: 120%
 
 @media (min-width: media.$laptop)
   .title
@@ -88,3 +92,7 @@
 
   .arrowDown
     transform: scale(4.3)
+
+@media (min-width: media.$mediumLaptop)
+  .title
+    margin-top: 20vh !important

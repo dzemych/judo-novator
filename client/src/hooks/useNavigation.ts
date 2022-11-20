@@ -30,6 +30,62 @@ const blogs: ICard[] = [
       photoSrc: ex.src,
    },
    {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'Sub title with super description Sub title with super description and other imp stuff',
+      photoSrc: ex.src,
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
+      photoSrc: back.src
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
+      photoSrc: back.src
+   },
+   {
       to: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
@@ -43,6 +99,20 @@ const blogs: ICard[] = [
       text: 'Sub title with super description Sub title with super description and other imp stuff',
       photoSrc: exTwo.src,
       beforeTitle: '65 Photographs'
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
+      photoSrc: back.src
+   },
+   {
+      to: '/teams',
+      title: 'Some super super mooper title',
+      date: new Date(),
+      text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
+      photoSrc: back.src
    },
    {
       to: '/teams',
@@ -163,11 +233,12 @@ const events: ICard[] = [
 ]
 
 const useNavigation: IUseNavigation = (length, type) => {
+   // const { isPhone, isBigPhone, isTablet } = useMedia()
+
    const [page, setPage] = useState(1)
    const [elements, setElements] = useState<ICard[]>([])
    const [loading, setLoading] = useState(false)
 
-   // let pagesCount = Math.ceil(elements.length / length)
    const [pagesCount, setPagesCount] = useState(0)
 
    const fetchElements = () => {
@@ -205,6 +276,11 @@ const useNavigation: IUseNavigation = (length, type) => {
       }, 300)
    }
 
+   const scrollHandler = () => {
+      const vh = window.innerHeight
+      document.body.scrollTo(0, .5 * vh)
+   }
+
    // 1) Load initial elements
    useEffect(() => {
       setLoading(true)
@@ -214,16 +290,14 @@ const useNavigation: IUseNavigation = (length, type) => {
 
    const nextPageHandler = () => {
       if (page < pagesCount) {
-         document.body.scrollTo(0, .5 * window.innerHeight)
-
+         scrollHandler()
          setPage(prev => prev + 1)
       }
    }
 
    const prevPageHandler = () => {
       if (page > 1) {
-         document.body.scrollTo(0, .5 * window.innerHeight)
-
+         scrollHandler()
          setPage(prev => prev - 1)
       }
    }

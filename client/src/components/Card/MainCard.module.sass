@@ -82,8 +82,10 @@
     justify-content: space-between
   & .content
     width: 37%
+    margin-top: 3rem
   & .image_container
     width: 60%
+    max-height: 47vh
   & .before_title
     font-size: 1.25rem
   & .title
@@ -102,23 +104,76 @@
   .image_container
     max-height: 70vh
 
+@media (min-width: media.$tablet)
+    .content
+      padding: 0 1.45rem !important
+    .before_title
+      font-size: 1.23rem!important
+    .title
+      font-size: 2.4rem !important
+      line-height: 110% !important
+    .date
+      margin-top: .7rem !important
+      font-size: 1.5rem !important
+    .subTitle_container
+      margin-top: .7rem !important
+      line-height: 110% !important
+      font-size: 1.4rem !important
+
+    .btn_container
+      margin-top: 1.6rem
+
 @media (min-width: media.$laptop)
   .image_container
     max-height: 33vw
 
-  .small
-    & .content
-      margin-top: -5rem
-      padding: 0 1.3rem
-    & .before_title
-      font-size: 1.15rem
-    & .title
-      font-size: 2rem
-      line-height: 100%
-    & .date
-      margin-top: .7rem
-      font-size: 1.2rem
-    & .subTitle_container
-      margin-top: .7rem
-      line-height: 110%
-      font-size: 1.08rem
+  .small .content
+    margin-top: -5rem
+
+  .content
+    padding: 0 1.3rem !important
+  .before_title
+    font-size: 1.15rem !important
+  .title
+    font-size: 2rem !important
+    line-height: 100% !important
+  .date
+    margin-top: .7rem !important
+    font-size: 1.2rem !important
+  .subTitle_container
+    margin-top: .7rem !important
+    line-height: 110% !important
+    font-size: 1.08rem !important
+      
+@media (min-width: 1150px)
+  .image_container
+    max-height: 30vh
+
+  .content
+    padding: 0 .9rem !important
+
+  .title
+    font-size: 1.9rem !important
+  .before_title
+    font-size: 1.15rem !important
+  .date
+    font-size: 1.25rem !important
+  .subTitle_container
+    font-size: 1.07rem !important
+  .text
+    font-size: .97rem !important
+
+@media (min-width: media.$mediumLaptop)
+  .image_container
+    max-height: 30vh
+
+  .title
+    font-size: 2.1rem !important
+  .before_title
+    font-size: 1.25rem !important
+  .date
+    font-size: 1.3rem !important
+  .subTitle_container
+    font-size: 1.18rem !important
+  .text
+    font-size: 1.03rem !important

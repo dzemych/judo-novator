@@ -1,4 +1,4 @@
-import {FC, useContext} from 'react'
+import {FC, useContext, useEffect, useState} from 'react'
 import classes from './Sidebar.module.sass'
 import {useRouter} from "next/router";
 import {AnimatePresence, motion} from "framer-motion";
@@ -16,9 +16,10 @@ interface IProps {
    toggleSidebar: () => void,
 }
 
-const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
+const Sidebar: FC<IProps> = ({ isOpen = undefined, toggleSidebar }) => {
 
    const { toggleNewPage } = useContext(AppContext)
+   const [state, setState] = useState('init')
 
    const bottomVariants = {
       inactive: {
@@ -61,28 +62,7 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
       exit: {
          opacity: 0,
          transition: {
-            duration: .4,
-         }
-      }
-   }
-
-   const sidebarVariants = {
-      inactive: {
-         y: '100vh',
-      },
-      active: {
-         y: 0,
-         transition: {
-            duration: .5,
-            transitionTimingFunction: 'cubic-bezier(.3,0,.5,1)'
-         }
-      },
-      exit: {
-         height: 0,
-         transition: {
-            duration: .5,
-            delay: .4,
-            transitionTimingFunction: 'cubic-bezier(.3,0,.5,1)'
+            duration: .3,
          }
       }
    }
@@ -113,7 +93,10 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
          <motion.li
             variants={liVariants}
             custom={i}
-            key={i}
+            key={i + el.text}
+            initial='inactive'
+            animate='active'
+            exit='exit'
          >
             <a
                onClick={e => onLinkClick(e, el.to)}
@@ -126,16 +109,79 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
       )
    }
 
+   const cls = [classes.container]
+
+   if (isOpen && state !== 'init')
+      cls.push(classes.open)
+
+   if (!isOpen && state !== 'init')
+      cls.push(classes.close)
+
+   if (state === 'init')
+      cls.push(classes.init)
+
+   useEffect(() => {
+      if (isOpen)
+         setState('active')
+   }, [isOpen])
+
+   // return (
+   //    <AnimatePresence>
+   //       {isOpen && (
+   //          <motion.div
+   //             className={classes.container}
+   //             variants={sidebarVariants}
+   //             initial='inactive'
+   //             animate='active'
+   //             exit='exit'
+   //          >
+   //             <div className={classes.wrapper}>
+   //                <div className={classes.list_container}>
+   //                   <ul>
+   //                      {links.map((link, i) => renderLi(link, i))}
+   //                   </ul>
+   //                </div>
+   //
+   //                <motion.div
+   //                   className={classes.bottom_icons}
+   //                   variants={bottomVariants}
+   //                >
+   //                   <div className={classes.icon_container}>
+   //                      <a href="https://www.instagram.com/judo_novator/" target="_blank" rel='noreferrer'>
+   //                         <FontAwesomeIcon icon={faInstagram} />
+   //                      </a>
+   //                   </div>
+   //
+   //                   <div className={classes.icon_container}>
+   //                      <a href="https://www.facebook.com/judoNovator/" target="_blank" rel='noreferrer'>
+   //                         <FontAwesomeIcon icon={faFacebook} />
+   //                      </a>
+   //                   </div>
+   //
+   //                   <div className={classes.icon_container}>
+   //                      <a href="https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi" target="_blank" rel='noreferrer'>
+   //                         <FontAwesomeIcon icon={faViber}/>
+   //                      </a>
+   //                   </div>
+   //                </motion.div>
+   //
+   //                <motion.div
+   //                   className={classes.bottom_notation}
+   //                   variants={bottomVariants}
+   //                   onClick={() => window.open('https://www.linkedin.com/in/dzemych/')}
+   //                >
+   //                   © {new Date().getFullYear()} Dzemych Ivan
+   //                </motion.div>
+   //             </div>
+   //          </motion.div>
+   //       )}
+   //    </AnimatePresence>
+   // )
+
    return (
-      <AnimatePresence>
-         {isOpen && (
-            <motion.div
-               className={classes.container}
-               variants={sidebarVariants}
-               initial='inactive'
-               animate='active'
-               exit='exit'
-            >
+      <div className={cls.join(' ')}>
+         <AnimatePresence mode='wait'>
+            { isOpen &&
                <div className={classes.wrapper}>
                   <div className={classes.list_container}>
                      <ul>
@@ -146,36 +192,45 @@ const Sidebar: FC<IProps> = ({ isOpen = false, toggleSidebar }) => {
                   <motion.div
                      className={classes.bottom_icons}
                      variants={bottomVariants}
+                     key={'icons'}
+                     initial='inactive'
+                     animate='active'
+                     exit='exit'
                   >
                      <div className={classes.icon_container}>
-                        <a href="https://www.instagram.com/judo_novator/" target="_blank">
+                        <a href="https://www.instagram.com/judo_novator/" target="_blank" rel='noreferrer'>
                            <FontAwesomeIcon icon={faInstagram} />
                         </a>
                      </div>
 
                      <div className={classes.icon_container}>
-                        <a href="https://www.facebook.com/judoNovator/" target="_blank">
+                        <a href="https://www.facebook.com/judoNovator/" target="_blank" rel='noreferrer'>
                            <FontAwesomeIcon icon={faFacebook} />
                         </a>
                      </div>
 
                      <div className={classes.icon_container}>
-                        <a href="https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi" target="_blank">
+                        <a href="https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi" target="_blank" rel='noreferrer'>
                            <FontAwesomeIcon icon={faViber}/>
                         </a>
                      </div>
                   </motion.div>
 
                   <motion.div
+                     key={'author'}
                      className={classes.bottom_notation}
+                     onClick={() => window.open('https://www.linkedin.com/in/dzemych/')}
                      variants={bottomVariants}
+                     initial='inactive'
+                     animate='active'
+                     exit='exit'
                   >
                      © {new Date().getFullYear()} Dzemych Ivan
                   </motion.div>
                </div>
-            </motion.div>
-         )}
-      </AnimatePresence>
+            }
+         </AnimatePresence>
+      </div>
    )
 }
 

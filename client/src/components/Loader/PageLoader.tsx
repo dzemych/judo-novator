@@ -7,6 +7,15 @@ import {AnimatePresence, motion} from "framer-motion";
 const PageLoader: FC = () => {
 
    const containerVariants = {
+      initial: {
+         opacity: 0
+      },
+      active: {
+        opacity: 1,
+        transition: {
+           duration: .4
+        }
+      },
       exit: {
          opacity: 0,
          transition: {
@@ -35,22 +44,22 @@ const PageLoader: FC = () => {
    }
 
    return (
-      <AnimatePresence exitBeforeEnter>
+      <motion.div
+         variants={containerVariants}
+         initial='initial'
+         animate='active'
+         exit='exit'
+      >
          <motion.div
-            variants={containerVariants}
+            className={classes.container}
+            variants={circleVariants}
+            initial='initial'
+            animate='active'
             exit='exit'
          >
-            <motion.div
-               className={classes.container}
-               variants={circleVariants}
-               initial='initial'
-               animate='active'
-               exit='exit'
-            >
-               <JudoCircle/>
-            </motion.div>
+            <JudoCircle/>
          </motion.div>
-      </AnimatePresence>
+      </motion.div>
    )
 }
 

@@ -4,7 +4,7 @@
 
 .container
   width: 100%
-  background: darken(colors.$primary, 4%)
+  background: darken(colors.$primary, 4.5%)
   display: flex
   flex-direction: row
   justify-content: space-between
@@ -64,16 +64,16 @@
 @media (min-width: media.$laptop)
   .icon_container
     & svg
-      font-size: 4rem
+      font-size: 3.5rem
     &:not(:last-child)
       margin-right: 2rem
 
   .wrapper
     width: 100%
-    padding: 2.5rem 3rem
+    padding: 2rem 3rem 2rem
 
   .hr
-    margin: 2rem 0 2.7rem
+    margin: 1.8rem 0 2rem
 
   .content
     width: 93%
@@ -86,3 +86,15 @@
     font-size: 1.1rem
     align-items: center
     margin: 0
+
+@media (min-width: 1050px)
+  .wrapper
+    width: 70%
+    max-width: 900px
+    //padding-bottom: 50px
+
+  .copyRight_container
+    width: 50%
+
+  .author_container
+    width: 40%

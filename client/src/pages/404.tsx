@@ -1,39 +1,21 @@
 import {FC} from "react";
+import classes from '../styles/NotFound.module.sass'
 
-const NotFound: FC = () => {
+
+const Custom404: FC = () => {
    return (
-      <div style={{
-         fontFamily: 'Roboto Regular',
-         width: '100vw',
-         height: '100vw',
-         display: 'flex',
-         flexDirection: 'column',
-         justifyContent: 'center',
-         alignItems: 'center'
-      }}>
-         <h1 style={{
-            margin: '0 auto',
-            color: '#ffffff'
-         }}>
+      <div className={classes.container}>
+         <h1 className={classes.title}>
             Сторінку не найдено
          </h1>
 
-         <hr style={{
-            background: '#ffffff',
-            height: 1,
-            border: 'none',
-            padding: 'none',
-            width: '90%',
-         }}/>
+         <hr className={classes.hr}/>
 
-         <h2 style={{
-            margin: '0 auto',
-            color: '#ffffff'
-         }}>
+         <h2 className={classes.title}>
             404
          </h2>
       </div>
    )
 }
 
-export default NotFound
+export default Custom404

@@ -40,7 +40,7 @@ const List: FC<IProps> =
          loading
       } = useNavigation(length, cardName)
 
-      const { isSmallLaptop } = useMedia()
+      const { isSmallLaptop, isNormalLaptop, isBigLaptop } = useMedia()
 
       const cls = [classes.container]
 
@@ -50,14 +50,34 @@ const List: FC<IProps> =
       if (colorSchema === 'white')
          cls.push(classes.white)
 
+      if (cardType === 'small')
+         cls.push(classes.small)
+
+      if (
+         cardType === 'big' &&
+         (isNormalLaptop || isBigLaptop) &&
+         (!firstBig || (firstBig && page !== 1) || (firstBig && elements.length <= 2))
+      )
+         cls.push(classes.big)
+
+      if (
+         cardType === 'big' &&
+         (isNormalLaptop || isBigLaptop) &&
+         firstBig &&
+         page === 1 &&
+         elements.length > 2
+      )
+         cls.push(classes.firstExt)
+
       const renderCard = (el: ICard, idx: number) => {
          let newCardType = cardType
 
          if (
-            isSmallLaptop &&
+            (isSmallLaptop || isNormalLaptop || isBigLaptop) &&
             ( idx === 0 ) &&
             firstBig &&
-            ( elements.length > 2 )
+            ( elements.length > 2 ) &&
+            page === 1
          )
             newCardType = 'extraBig'
 
@@ -83,7 +103,8 @@ const List: FC<IProps> =
             </OpacityDiv>
          )
 
-         if (loading) return (
+         // For some reason don't want work properly on phones (in f12 mode everything works fine)
+         if (loading && window.innerWidth > 950) return (
             <OpacityDiv className={classes.loader_container}>
                <Loader/>
             </OpacityDiv>
@@ -105,7 +126,7 @@ const List: FC<IProps> =
                <h3>{title}</h3>
             </OpacityDiv>
 
-            <AnimatePresence mode='wait' exitBeforeEnter>
+            <AnimatePresence mode='wait'>
                {renderList()}
             </AnimatePresence>
 

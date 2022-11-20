@@ -18,7 +18,7 @@ const Team: FC = () => {
          <MainBack
             title={'Events/ Как говориться сложно срать стоя на руках и не испачкать спину'}
             imageSrc={back.src}
-            transparent
+            transparent={isSmallLaptop}
          />
 
          <div className={classes.wrapper}>

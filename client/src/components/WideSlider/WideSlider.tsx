@@ -4,6 +4,8 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import {motion} from 'framer-motion'
 import OpacityDiv from "@components/Animations/OpacityDiv";
+import {ISliderElement} from "../../types/ISliderElement";
+import {useRouter} from "next/router";
 
 
 interface IProps {
@@ -34,6 +36,18 @@ const WideSlider: FC<IProps> = ({ elements }) => {
          }
       }
    }
+
+   const imgVariants = {
+      hover: {
+         scale: 1.07,
+         transition: {
+            duration: .4,
+            ease: 'easeInOut'
+         }
+      }
+   }
+
+   const router = useRouter()
 
    const [page, setPage] = useState(1)
    const [pages, setPages] = useState(elements)
@@ -73,6 +87,10 @@ const WideSlider: FC<IProps> = ({ elements }) => {
       return page
    }
 
+   const sliderClick = () => {
+      router.push('/hall')
+   }
+
    // 1) Adds tail and start elements and item width
    useEffect(() => {
       setPages([
@@ -97,7 +115,7 @@ const WideSlider: FC<IProps> = ({ elements }) => {
             await setDuration(0)
             setPage(1)
          }, 400)
-   }, [page])
+   }, [page, pages.length])
 
    // 3) Change transition duration to normal
    useEffect(() => {
@@ -137,13 +155,23 @@ const WideSlider: FC<IProps> = ({ elements }) => {
                Вулиця Тернопільська, 13/4
             </OpacityDiv>
 
-            <div className={classes.slider_item}>
+            <div className={classes.slider_item} onClick={sliderClick}>
                <div className={classes.slider_container}>
-                  <div className={classes.img_container}>
-                     <div className={classes.backdrop}/>
+                  <motion.div
+                     className={classes.img_container}
+                     variants={imgVariants}
+                     whileHover='hover'
+                  >
+                     <motion.div
+                        className={classes.backdrop}
+                        whileHover={{ opacity: .35 }}
+                     />
 
-                     <img src={elements[0].photoSrc} alt=""/>
-                  </div>
+                     <img
+                        src={elements[0].photoSrc}
+                        alt=""
+                     />
+                  </motion.div>
                </div>
             </div>
          </motion.div>
@@ -157,15 +185,15 @@ const WideSlider: FC<IProps> = ({ elements }) => {
          whileInView='active'
          viewport={{ once: true }}
       >
-         <OpacityDiv whileInViewport className={classes.title} delay={.4}>
+         <OpacityDiv whileInViewport className={classes.title} delay={.2}>
             Halls
          </OpacityDiv>
 
-         <OpacityDiv whileInViewport className={classes.pages} delay={.4}>
+         <OpacityDiv whileInViewport className={classes.pages} delay={.2}>
             {getPageNumber()}/{pages.length - 2}
          </OpacityDiv>
 
-         <OpacityDiv whileInViewport className={classes.subTitle} delay={.4}>
+         <OpacityDiv whileInViewport className={classes.subTitle} delay={.2}>
             {pages[page].title}
          </OpacityDiv>
 

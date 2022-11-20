@@ -3,6 +3,7 @@ import classes from './MainBack.module.sass'
 import ArrowDown from "../../public/icons/ArrowDown";
 import { motion } from "framer-motion";
 import OpacityYDiv from "@components/Animations/OpacityYDiv";
+import ex from '@images/ex.jpg'
 
 
 interface IProps {
@@ -28,7 +29,7 @@ const MainBack: FC<IProps> = ({ title, imageSrc, transparent }) => {
       <div className={cls.join(' ')}>
          { !transparent &&
             <div className={classes.background}>
-               <img src={imageSrc} alt=''/>
+               <img src={ex.src} alt=''/>
                <div className={classes.opacity}/>
             </div>
          }

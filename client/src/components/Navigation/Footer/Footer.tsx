@@ -51,9 +51,7 @@ const Footer: FC = () => {
       <div className={classes.container}>
          <div className={classes.wrapper}>
             <div className={classes.icons_container}>
-
                {Object.keys(icons).map(renderIcon)}
-
             </div>
 
             <hr className={classes.hr}/>
@@ -66,7 +64,7 @@ const Footer: FC = () => {
                <div className={classes.author_container}>
                   Разработано - &nbsp;
 
-                  <a href="https://www.linkedin.com/in/dzemych/" target='_blank'>
+                  <a href="https://www.linkedin.com/in/dzemych/" target='_blank' rel='noreferrer'>
                      Dzemych Ivan
                   </a>
                </div>
