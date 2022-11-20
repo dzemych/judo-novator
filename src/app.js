@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const errorController = require('./controllers/error.controller')
 const routes = require('./routes.js')
+const pageRouter = require('./routes/page.router')
 const rateLimiter = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
@@ -31,6 +32,10 @@ app.use(express.json())
 // 3) Routes
 app.use('/api', routes)
 app.use('/img', express.static(path.resolve('public/img')))
+
+app.use(express.static(path.join(__dirname, '../client/out')))
+app.use(pageRouter)
+
 
 app.use(errorController)
 

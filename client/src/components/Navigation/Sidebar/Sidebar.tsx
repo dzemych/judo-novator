@@ -6,6 +6,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faInstagram, faViber, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import {AppContext} from "../../../pages/_app";
 
+
 interface ILink {
    to: string,
    text: string
@@ -13,12 +14,11 @@ interface ILink {
 
 interface IProps {
    isOpen: boolean,
-   toggleSidebar: () => void,
 }
 
-const Sidebar: FC<IProps> = ({ isOpen = undefined, toggleSidebar }) => {
+const Sidebar: FC<IProps> = ({ isOpen = undefined }) => {
 
-   const { toggleNewPage } = useContext(AppContext)
+   const { toggleNewPage, setSidebar, isSidebar } = useContext(AppContext)
    const [state, setState] = useState('init')
 
    const bottomVariants = {
@@ -83,9 +83,9 @@ const Sidebar: FC<IProps> = ({ isOpen = undefined, toggleSidebar }) => {
       e.preventDefault()
 
       toggleNewPage()
+      setSidebar(false)
 
       router.push(to)
-      toggleSidebar()
    }
 
    const renderLi = (el: ILink, i: number) => {
@@ -111,10 +111,10 @@ const Sidebar: FC<IProps> = ({ isOpen = undefined, toggleSidebar }) => {
 
    const cls = [classes.container]
 
-   if (isOpen && state !== 'init')
+   if (isSidebar && state !== 'init')
       cls.push(classes.open)
 
-   if (!isOpen && state !== 'init')
+   if (!isSidebar && state !== 'init')
       cls.push(classes.close)
 
    if (state === 'init')
@@ -123,65 +123,12 @@ const Sidebar: FC<IProps> = ({ isOpen = undefined, toggleSidebar }) => {
    useEffect(() => {
       if (isOpen)
          setState('active')
-   }, [isOpen])
-
-   // return (
-   //    <AnimatePresence>
-   //       {isOpen && (
-   //          <motion.div
-   //             className={classes.container}
-   //             variants={sidebarVariants}
-   //             initial='inactive'
-   //             animate='active'
-   //             exit='exit'
-   //          >
-   //             <div className={classes.wrapper}>
-   //                <div className={classes.list_container}>
-   //                   <ul>
-   //                      {links.map((link, i) => renderLi(link, i))}
-   //                   </ul>
-   //                </div>
-   //
-   //                <motion.div
-   //                   className={classes.bottom_icons}
-   //                   variants={bottomVariants}
-   //                >
-   //                   <div className={classes.icon_container}>
-   //                      <a href="https://www.instagram.com/judo_novator/" target="_blank" rel='noreferrer'>
-   //                         <FontAwesomeIcon icon={faInstagram} />
-   //                      </a>
-   //                   </div>
-   //
-   //                   <div className={classes.icon_container}>
-   //                      <a href="https://www.facebook.com/judoNovator/" target="_blank" rel='noreferrer'>
-   //                         <FontAwesomeIcon icon={faFacebook} />
-   //                      </a>
-   //                   </div>
-   //
-   //                   <div className={classes.icon_container}>
-   //                      <a href="https://invite.viber.com/?g2=AQBTy%2FmfSPKX1U5hwJ6RgyMpn3lGJXvi0Z8ZNTWfgv5ZQM777mGDfdh2kN5MXQMi" target="_blank" rel='noreferrer'>
-   //                         <FontAwesomeIcon icon={faViber}/>
-   //                      </a>
-   //                   </div>
-   //                </motion.div>
-   //
-   //                <motion.div
-   //                   className={classes.bottom_notation}
-   //                   variants={bottomVariants}
-   //                   onClick={() => window.open('https://www.linkedin.com/in/dzemych/')}
-   //                >
-   //                   © {new Date().getFullYear()} Dzemych Ivan
-   //                </motion.div>
-   //             </div>
-   //          </motion.div>
-   //       )}
-   //    </AnimatePresence>
-   // )
+   }, [isSidebar])
 
    return (
       <div className={cls.join(' ')}>
          <AnimatePresence mode='wait'>
-            { isOpen &&
+            { isSidebar &&
                <div className={classes.wrapper}>
                   <div className={classes.list_container}>
                      <ul>

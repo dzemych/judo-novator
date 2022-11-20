@@ -7,15 +7,29 @@ import {useRouter} from "next/router"
 import {createContext, useEffect, useState} from "react"
 import {AnimatePresence, motion} from "framer-motion"
 import PageLoader from "@components/Loader/PageLoader";
-// import PageLoader from "@components/Loader/PageLoader";
+import useMedia from "../hooks/useMedia";
 
 
-export const AppContext = createContext({
+type ISetSidebar<T> = (state: T) => T
+
+interface IAppContext {
+   newPage: boolean
+   toggleNewPage: () => void
+   setSidebar: (state: boolean | ISetSidebar<boolean>) => void
+   isSidebar: boolean
+}
+
+export const AppContext = createContext<IAppContext>({
    newPage: false,
-   toggleNewPage: () => {}
+   toggleNewPage: () => {},
+   setSidebar: (state: boolean | ISetSidebar<boolean>) => {},
+   isSidebar: false
 })
 
 function MyApp({ Component, pageProps }: AppProps) {
+   // TODO exit component animation is lagging after build
+
+   const { isNormalLaptop, isBigLaptop } = useMedia()
 
    const pageVariants = {
       initial: {
@@ -25,37 +39,37 @@ function MyApp({ Component, pageProps }: AppProps) {
          opacity: 1,
          transition: {
             duration: .4,
-            delay: .4
          }
       },
-      exit: {
+      exit: (bigScreen: boolean) => ({
          opacity: 0,
          transition: {
-            duration: .4
+            duration: bigScreen ? 0 : .4,
          }
-      }
+      })
    }
 
-   const curtainVariants = {
-      initial: {
-         opacity: 0
-      },
-      active: {
-         opacity: 1,
-         transition: {
-            duration: .3
-         }
-      },
-      exit: {
-         opacity: 0,
-         transition: {
-            duration: .5
-         }
-      }
-   }
+   // const curtainVariants = {
+   //    initial: {
+   //       opacity: 0
+   //    },
+   //    active: {
+   //       opacity: 1,
+   //       transition: {
+   //          duration: .3
+   //       }
+   //    },
+   //    exit: {
+   //       opacity: 0,
+   //       transition: {
+   //          duration: .5
+   //       }
+   //    }
+   // }
 
    const [newPage, setNewPage] = useState(false)
    const [showFooter, setShowFooter] = useState(true)
+   const [isSidebar, setSidebar] = useState(false)
 
    const toggleNewPage = () => {
       setNewPage(prev => !prev)
@@ -66,7 +80,9 @@ function MyApp({ Component, pageProps }: AppProps) {
    useEffect(() => {
       const startHandler = async () => {
          setNewPage(true)
-         document.body.scrollTo(0, 0)
+         setTimeout(() => {
+            document.body.scrollTo(0, 0)
+         } , 400)
          window.scrollTo(0, 0)
       }
 
@@ -94,25 +110,18 @@ function MyApp({ Component, pageProps }: AppProps) {
    }, [router.pathname])
 
    return (
-      <AppContext.Provider value={{ newPage, toggleNewPage }}>
+      <AppContext.Provider value={{ newPage, toggleNewPage, isSidebar, setSidebar }}>
          <MainLayout footer={showFooter}>
             <AnimatePresence mode='wait'>
-               {/*{ newPage &&*/}
-               {/*   <motion.div*/}
-               {/*      className={classes.curtain}*/}
-               {/*      variants={curtainVariants}*/}
-               {/*      initial='initial'*/}
-               {/*      animate='active'*/}
-               {/*      exit='exit'*/}
-               {/*   /> }*/}
                { newPage ?
                   <PageLoader/> :
                   <motion.div
                      key={router.pathname}
                      variants={pageVariants}
                      initial='initial'
-                     animate='active'
-                     exit='exit'
+                     animate={isSidebar ? '' : 'active'}
+                     exit={isSidebar ? '' : 'exit'}
+                     custom={isNormalLaptop}
                   >
                      <Component {...pageProps} />
                   </motion.div>

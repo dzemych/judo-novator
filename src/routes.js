@@ -17,6 +17,7 @@ router.use('/album', albumRouter)
 router.use('/auth', authRouter)
 
 router.use('*', (req, res) => {
+
    res.status(404).json({
       ok: false,
       status: 'fail',

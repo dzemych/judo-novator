@@ -32,17 +32,16 @@ const curtainVariants = {
 const Header: FC = () => {
    const { isNormalLaptop } = useMedia()
 
-   const {toggleNewPage} = useContext(AppContext)
+   const {toggleNewPage, setSidebar, isSidebar} = useContext(AppContext)
    const router = useRouter()
 
-   const [openSidebar, setOpenSidebar] = useState(false)
    const [sidebarAnimation, setSidebarAnimation] = useState(false)
    const [showCurtain, setShowCurtain] = useState(false)
 
    const backCls = [classes.curtain]
    const burgerCls = [classes.menuBtn]
 
-   if (openSidebar)
+   if (isSidebar)
       burgerCls.push(classes.open)
 
    if (showCurtain)
@@ -55,12 +54,12 @@ const Header: FC = () => {
       toggleNewPage()
 
       router.push('/')
-      setOpenSidebar(false)
+      setSidebar(false)
    }
 
    const toggleSidebar = () => {
       if (!sidebarAnimation)
-         setOpenSidebar(prev => !prev)
+         setSidebar(prev => !prev)
    }
 
    const scrollHandler = () => {
@@ -82,18 +81,19 @@ const Header: FC = () => {
 
    useEffect(() => {
       setSidebarAnimation(true)
+
       setTimeout(() => {
          setSidebarAnimation(false)
       }, 500)
 
-      if (openSidebar)
+      if (isSidebar)
          document.body.style.overflow = 'hidden'
 
-      if (!openSidebar)
+      if (!isSidebar)
          setTimeout(() => {
             document.body.style.overflow = 'auto'
          },  450)
-   }, [openSidebar])
+   }, [isSidebar])
 
    return (
       <div className={classes.container}>
@@ -104,7 +104,7 @@ const Header: FC = () => {
             animate={showCurtain ? 'open' : 'close'}
          />
 
-         <Sidebar isOpen={openSidebar} toggleSidebar={toggleSidebar}/>
+         <Sidebar isOpen={isSidebar}/>
 
          <OpacityDiv className={classes.judo_logo_container}>
             <img
