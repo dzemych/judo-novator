@@ -19,7 +19,6 @@
       "@components/*": ["./src/components/*"],
       "@images/*": ["./src/public/images/*"]
     }
-
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"],

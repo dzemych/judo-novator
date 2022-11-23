@@ -1,12 +1,18 @@
 import React, {FC} from 'react'
-import classes from './App.module.sass'
+import {BrowserRouter} from "react-router-dom";
+import Router from "./Router";
+import MainLayout from "./components/MainLayout";
 
 
 const App: FC = () => {
    return (
-      <div className={classes.container}>
-         <h1>App</h1>
-      </div>
+      <MainLayout>
+         <main>
+            <BrowserRouter>
+               <Router/>
+            </BrowserRouter>
+         </main>
+      </MainLayout>
    )
 }
 
