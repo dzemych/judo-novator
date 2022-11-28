@@ -7,6 +7,7 @@ const router = Router()
 
 router.post(
    '/:folderId',
+   tempImgController.uploadMulter,
    tempImgController.uploadTempImg
 )
 
