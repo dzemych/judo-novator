@@ -1,15 +1,14 @@
 const express = require('express')
 const path = require('path')
-const errorController = require('./controllers/error.controller')
-const routes = require('./routes.js')
 const rateLimiter = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xssClean = require('xss-clean')
 const cors = require('cors')
-
-
 const app = express()
+const errorController = require('./controllers/error.controller')
+const routes = require('./routes.js')
+const imgTemp = require('./routes/tempImg.router')
 
 
 // 1) SECURITY middlewares
@@ -47,6 +46,7 @@ app.use(express.json())
 
 // 3) Routes
 app.use('/api', routes)
+app.use('/img/temp', imgTemp)
 app.use('/img', express.static(path.resolve('public/img')))
 
 app.use(errorController)

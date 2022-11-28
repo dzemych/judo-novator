@@ -61,13 +61,16 @@ function MyApp({ Component, pageProps }: AppProps) {
    // TODO when trying to go to the same page nothing loads
    useEffect(() => {
       const startHandler = async () => {
+         setShowFooter(false)
          setNewPage(true)
          setTimeout(() => {
             document.body.scrollTo(0, 0)
-         } , 400)
+         } , 50)
       }
+      // For more smoothness timout can be set to 400
 
       const completeHandler = () => {
+         setShowFooter(true)
          setNewPage(false)
       }
 
@@ -100,7 +103,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                      key={router.pathname}
                      variants={pageVariants}
                      initial='initial'
-                     animate={isSidebar ? '' : 'active'}
+                     animate={'active'}
                      exit={isSidebar ? '' : 'exit'}
                      custom={isNormalLaptop}
                   >

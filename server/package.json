@@ -9,11 +9,9 @@
       "npm": "use-yarn-istead"
    },
    "scripts": {
-      "production": "cross-env NODE_ENV=production node server.js",
-      "start": "cross-env NODE_ENV=production nodemon server.js",
-      "server": "cross-env NODE_ENV=development nodemon server.js",
-      "client:dev": "yarn --cwd ./client dev",
-      "dev": "cross-env NODE_ENV=development concurrently \"nodemon server.js\" \"yarn run client:dev\""
+      "start": "cross-env TYPE=client_back cross-env NODE_ENV=production node server.js",
+      "server": "cross-env TYPE=back cross-env NODE_ENV=development nodemon server.js",
+      "client": "cross-env TYPE=client_back cross-env NODE_ENV=development nodemon server.js"
    },
    "keywords": [],
    "author": "",

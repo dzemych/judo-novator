@@ -17,12 +17,22 @@ interface IProps {
 
 const drawerWidth: number = 240
 
-const mdTheme = createTheme()
+const mdTheme = createTheme({
+   breakpoints: {
+      values: {
+         xs: 0,
+         sm: 600,
+         md: 950,
+         lg: 1150,
+         xl: 1536,
+      },
+   },
+})
 
 const MainLayout: FC<IProps> = ({ children }) => {
    const [open, setOpen] = useState(false)
-   const toggleDrawer = () => {
-      setOpen(prev => !prev)
+   const toggleDrawer = (state?: boolean) => {
+      setOpen(prev => (state !== undefined)? state : !prev)
    }
 
    return (

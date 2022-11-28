@@ -1,254 +1,251 @@
-import {useEffect, useState} from "react";
-import {CardType, ICard} from "../types/card";
-import ex from "@images/ex.jpg";
-import exTwo from "@images/ex2.jpeg";
-import back from "@images/back.jpg";
+import {useCallback, useEffect, useState} from "react"
+import ex from "../assets/images/ex.jpg"
+import exTwo from "../assets/images/ex2.jpeg"
+import back from "../assets/images/back.jpg"
+import {CardType, ICardItem} from "src/types/card"
 
 
-type IUseNavigation = ( length: number, type: string, ) => {
+type IUseNavigation = ( length: number, type: CardType ) => {
    page: number
    pagesCount: number
-   elements: ICard[]
+   elements: ICardItem[]
    nextPageHandler: () => void
    prevPageHandler: () => void
    loading: boolean
 }
 
-const blogs: ICard[] = [
+const blogs: ICardItem[] = [
    {
-      to: '/',
+      slug: 'some-blog-id',
       beforeTitle: 'Before title',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
-      slug: '/blog'
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/halls',
+      slug: '/halls',
       title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
       date: new Date(),
       text: 'Sub title with super description Sub title with super description and other imp stuff',
-      photoSrc: exTwo.src,
+      photoSrc: exTwo,
       beforeTitle: '65 Photographs'
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       text: 'sfasdaf sdfjklsd fjkdsjf kldsjfk sdfkjfsf jsdklfj',
-      photoSrc: back.src
+      photoSrc: back
    },
 ]
 
-const albums: ICard[] = [
+const albums: ICardItem[] = [
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper titl mooper title Some super supere',
-      photoSrc: ex.src,
+      photoSrc: ex,
       beforeTitle: '65 Photographs'
    },
    {
-      to: '/halls',
+      slug: '/halls',
       title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
-      photoSrc: exTwo.src,
+      photoSrc: exTwo,
       beforeTitle: '65 Photographs'
    },
 ]
 
-const team: ICard[] = [
+const team: ICardItem[] = [
    {
-      to: '/',
-      photoSrc: ex.src,
+      slug: '/',
+      photoSrc: ex,
       title: 'Developer'
    },
    {
-      to: '/teams',
-      photoSrc: exTwo.src,
+      slug: '/teams',
+      photoSrc: exTwo,
       title: 'Trainer'
    },
    {
-      to: '/23',
-      photoSrc: back.src,
+      slug: '/23',
+      photoSrc: back,
       title: 'Doctor'
    },
    {
-      to: '/4',
-      photoSrc: back.src,
+      slug: '/4',
+      photoSrc: back,
       title: 'Doctor'
    },
    {
-      to: '/5',
-      photoSrc: back.src,
+      slug: '/5',
+      photoSrc: back,
       title: 'Doctor'
    },
 ]
 
-const events: ICard[] = [
+const events: ICardItem[] = [
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/',
+      slug: '/',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: ex.src,
+      photoSrc: ex,
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/halls',
+      slug: '/halls',
       title: 'Some super super mooper title Some super super mooper titleSome super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: exTwo.src,
+      photoSrc: exTwo,
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: back.src
+      photoSrc: back
    },
    {
-      to: '/teams',
+      slug: '/teams',
       title: 'Some super super mooper title',
       date: new Date(),
       beforeTitle: 'City Canada',
-      photoSrc: back.src
+      photoSrc: back
    },
 ]
 
 const useNavigation: IUseNavigation = (length, type) => {
-   // const { isPhone, isBigPhone, isTablet } = useMedia.tsx()
-
    const [page, setPage] = useState(1)
-   const [elements, setElements] = useState<ICard[]>([])
+   const [elements, setElements] = useState<ICardItem[]>([])
    const [loading, setLoading] = useState(false)
 
    const [pagesCount, setPagesCount] = useState(0)
 
-   const fetchElements = () => {
+   const fetchElements = useCallback(() => {
       setTimeout(() => {
          let startIdx = ((page - 1) * length)
          if (startIdx < 0) startIdx = 0
 
-         const setArrs = (initArr: ICard[]) => {
+         const setArrs = (initArr: ICardItem[]) => {
             const arr = initArr.slice(startIdx, startIdx + length)
 
             setElements(arr)
@@ -276,30 +273,30 @@ const useNavigation: IUseNavigation = (length, type) => {
 
          setLoading(false)
       }, 300)
-   }
+   }, [page, length, type])
 
-   const scrollHandler = () => {
-      const vh = window.innerHeight
-      document.body.scrollTo(0, .5 * vh)
-   }
+   // const scrollHandler = () => {
+   //    const vh = window.innerHeight
+   //    document.body.scrollTo(0, .5 * vh)
+   // }
 
    // 1) Load initial elements
    useEffect(() => {
       setLoading(true)
 
       fetchElements()
-   }, [page])
+   }, [page, fetchElements])
 
    const nextPageHandler = () => {
       if (page < pagesCount) {
-         scrollHandler()
+         // scrollHandler()
          setPage(prev => prev + 1)
       }
    }
 
    const prevPageHandler = () => {
       if (page > 1) {
-         scrollHandler()
+         // scrollHandler()
          setPage(prev => prev - 1)
       }
    }

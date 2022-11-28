@@ -1,19 +1,11 @@
 const AppError = require('../utils/AppError')
 const multer = require('multer')
 const catchAsync = require('../utils/catchAsync')
+const photoUtils = require('../utils/photoUtils')
 
-
-const multerFilter = (req, file, cb) => {
-   const fileExt = file.mimetype.split('/')[0]
-
-   if (fileExt !== 'image')
-      return cb(new AppError('Upload only images', 415), false)
-
-   cb(null, true)
-}
 
 const upload = multer({
-   fileFilter: multerFilter,
+   fileFilter: photoUtils.multerFilter,
    storage: multer.memoryStorage()
 })
 

@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const fsPromise = require('fs/promises')
 const sharp = require('sharp')
+const AppError = require("./AppError");
 
 
 const resizePhoto = async (photo, path, width) => {
@@ -13,8 +14,19 @@ const resizePhoto = async (photo, path, width) => {
       .toFile(path)
 }
 
+exports.resizePhoto = resizePhoto
+
 const getPhotoPath = (collection, id, name) => {
    return `public/img/${collection}/${id}/${name}-${id}.jpg`
+}
+
+exports.multerFilter = (req, file, cb) => {
+   const fileExt = file.mimetype.split('/')[0]
+
+   if (fileExt !== 'image')
+      return cb(new AppError('Upload only images', 415), false)
+
+   cb(null, true)
 }
 
 exports.checkPhotoDirExist = async (collection, id) => {

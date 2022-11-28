@@ -2,17 +2,18 @@ import React, {FC} from 'react'
 import {BrowserRouter} from "react-router-dom";
 import Router from "./Router";
 import MainLayout from "./components/MainLayout";
+import 'src/assets/styles/global.sass'
 
 
 const App: FC = () => {
    return (
-      <MainLayout>
-         <main>
-            <BrowserRouter>
+      <BrowserRouter>
+         <MainLayout>
+            <main>
                <Router/>
-            </BrowserRouter>
-         </main>
-      </MainLayout>
+            </main>
+         </MainLayout>
+      </BrowserRouter>
    )
 }
 

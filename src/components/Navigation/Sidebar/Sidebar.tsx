@@ -21,6 +21,8 @@ const Sidebar: FC<IProps> = ({ isOpen = undefined }) => {
    const { toggleNewPage, setSidebar, isSidebar } = useContext(AppContext)
    const [state, setState] = useState('init')
 
+   // TODO strange blinking on iphone when open sidebar
+
    const bottomVariants = {
       inactive: {
          opacity: 0,
