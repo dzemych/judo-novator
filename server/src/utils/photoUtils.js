@@ -5,7 +5,7 @@ const sharp = require('sharp')
 const AppError = require("./AppError");
 
 
-const resizePhoto = async (photo, path, width) => {
+const resizeAndWritePhoto = async (photo, path, width) => {
    await sharp(photo)
       .resize({ width })
       .withMetadata()
@@ -14,11 +14,11 @@ const resizePhoto = async (photo, path, width) => {
       .toFile(path)
 }
 
-exports.resizePhoto = resizePhoto
-
 const getPhotoPath = (collection, id, name) => {
    return `public/img/${collection}/${id}/${name}-${id}.jpg`
 }
+
+exports.resizeAndWritePhoto = resizeAndWritePhoto
 
 exports.multerFilter = (req, file, cb) => {
    const fileExt = file.mimetype.split('/')[0]
@@ -29,18 +29,19 @@ exports.multerFilter = (req, file, cb) => {
    cb(null, true)
 }
 
-exports.checkPhotoDirExist = async (collection, id) => {
-   if (!fs.existsSync(path.resolve('public')))
-      await fsPromise.mkdir(path.resolve('public'))
+exports.checkAndCreateDir = async (pathArr, returnPath) => {
+   // All directions are inside public folder
+   const pathPromised = pathArr.map((el, i) => {
+      const checkPath = path.resolve('public', pathArr.slice(0, i + 1).join('/'))
 
-   if (!fs.existsSync(path.resolve('public/img')))
-      await fsPromise.mkdir(path.resolve('public/img'))
+      if (!fs.existsSync(checkPath))
+         return fsPromise.mkdir(checkPath)
+   })
 
-   if (!fs.existsSync(path.resolve(`public/img/${collection}`)))
-      await fsPromise.mkdir(path.resolve(`public/img/${collection}`))
+   await Promise.all(pathPromised)
 
-   if (!fs.existsSync(path.resolve(`public/img/${collection}/${id}`)))
-      await fsPromise.mkdir(path.resolve(`public/img/${collection}/${id}`))
+   if (returnPath)
+      return path.resolve('public', pathArr.join('/'))
 }
 
 exports.writeAndGetPhotos = async (files, id, collection) => {
@@ -50,14 +51,14 @@ exports.writeAndGetPhotos = async (files, id, collection) => {
    for (i in files) {
       const photoPath = getPhotoPath(collection, id, i)
 
-      await resizePhoto(files[i].buffer, photoPath, 2000)
+      await resizeAndWritePhoto(files[i].buffer, photoPath, 2000)
 
       photos.push(photoPath)
    }
 
    // 2) Write and resize main photo, make it small for fast download
    const mainPhoto = getPhotoPath(collection, id, 'main')
-   await resizePhoto(files[0].buffer, mainPhoto, 500)
+   await resizeAndWritePhoto(files[0].buffer, mainPhoto, 500)
 
    // 3) Return photo paths
    return { photos, mainPhoto, backgroundPhoto: getPhotoPath(collection, id, 0)}

@@ -8,11 +8,11 @@ const cors = require('cors')
 const app = express()
 const errorController = require('./controllers/error.controller')
 const routes = require('./routes.js')
-const imgTemp = require('./routes/tempImg.router')
 
 
 // 1) SECURITY middlewares
 app.use(helmet({
+   crossOriginResourcePolicy: false,
    contentSecurityPolicy: {
       directives: {
          "script-src": ["'self'", "'unsafe-eval'"],
@@ -21,11 +21,12 @@ app.use(helmet({
          "font-src": ["'self'", "https:", "data:"],
          "form-action": ["'self'"],
          "frame-ancestors": ["'self'"],
-         "img-src": ["'self'", "data:"],
+         "img-src": ["'self'", "data:", "http://localhost"],
          "object-src": ["'none'"],
          "script-src-attr": ["'none'"],
          "style-src": ["'self'", "https:", "'unsafe-inline'"],
-         "upgrade-insecure-requests": ''
+         "upgrade-insecure-requests": '',
+         // 'Cross-Origin-Resource-Policy': 'same-site'
       }
    }
 }))
@@ -46,7 +47,6 @@ app.use(express.json())
 
 // 3) Routes
 app.use('/api', routes)
-app.use('/img/temp', imgTemp)
 app.use('/img', express.static(path.resolve('public/img')))
 
 app.use(errorController)

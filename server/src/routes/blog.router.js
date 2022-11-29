@@ -11,9 +11,9 @@ router
    .route('/')
    .get(handlerFactory.getAll(Blog))
    .post(
-      photoController.uploadPhotos,
-      photoController.checkBlogPhotos('post'),
-      handlerFactory.createOneWithFormData(Blog)
+      // photoController.uploadPhotos,
+      // photoController.checkBlogPhotos('post'),
+      handlerFactory.createOne(Blog)
    )
 
 router.use(handlerFactory.checkExistence(Event))

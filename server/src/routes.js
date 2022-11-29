@@ -5,6 +5,7 @@ const hallRouter = require('./routes/hall.router')
 const eventRouter = require('./routes/event.router')
 const albumRouter = require('./routes/album.router')
 const authRouter = require('./routes/auth.router')
+const tempImgRouter = require('./routes/tempImg.router')
 
 
 const router = Router()
@@ -15,6 +16,7 @@ router.use('/halls', hallRouter)
 router.use('/event', eventRouter)
 router.use('/album', albumRouter)
 router.use('/auth', authRouter)
+router.use('/img', tempImgRouter)
 
 router.use('*', (req, res) => {
 

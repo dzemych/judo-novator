@@ -2,15 +2,27 @@
   display: flex
   flex-wrap: wrap
   width: 100%
-  align-items: center
+  position: relative
 
-.editor_wrapper
+.scrollDiv
+  position: relative
+  top: 0
+  width: 1px
+  height: 1px
+  background: transparent !important
+  transform: translateY(-90px)
+
+.editor_container
   width: 100%
   max-width: 100%
-  margin: 0 auto 40px
+  margin: 0 auto 60px
 
-.btn_confirm
-  padding: 16px 48px
-  font-size: 1.5rem
-  border-radius: 5px
-  margin: 40px auto 0
+.editor_error
+  color: #d32f2f
+  font-family: "Roboto","Helvetica","Arial",sans-serif
+  font-weight: 400
+  font-size: 0.75rem
+  line-height: 1.66
+  letter-spacing: 0.03333em
+  text-align: left
+  margin: 3px 14px 0

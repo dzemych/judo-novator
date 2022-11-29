@@ -6,9 +6,11 @@ const authController = require('../controllers/auth.controller')
 const router = Router()
 
 router.post(
-   '/:folderId',
+   '/temp/:collection/:timeStamp',
    tempImgController.uploadMulter,
    tempImgController.uploadTempImg
 )
+
+router.route('/temp/*', tempImgController.notFound)
 
 module.exports = router

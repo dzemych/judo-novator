@@ -2,7 +2,7 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
 const APIfeatures = require('../utils/APIfeatures')
 const {
-   checkPhotoDirExist,
+   checkAndCreateDir,
    deleteDir,
    deletePhotoFiles,
    writeAndGetPhotos
@@ -26,7 +26,7 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
    const modelName = item.constructor.modelName
 
    // 2) Check if we have all necessary directories for photo
-   await checkPhotoDirExist(modelName.toLowerCase(), item._id)
+   await checkAndCreateDir(['img', modelName.toLowerCase(),], item._id)
 
    // 3) Write and resize photos and get their paths
    const photoObj = await writeAndGetPhotos(req.files, item._id, modelName.toLowerCase())
@@ -63,7 +63,7 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
    // 2) Write photos and add them to db
    if (req.files.length > 0) {
       // 2) Check if we have all necessary directories for photo
-      await checkPhotoDirExist(modelName, id)
+      await checkAndCreateDir(['img', modelName, id])
 
       await deletePhotoFiles(modelName, id)
       const photosObj = await writeAndGetPhotos(req.files, id, modelName)
@@ -82,7 +82,11 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
    })
 })
 
-exports.createOne = collection => catchAsync(async (req, res) => {
+exports.createOne = collection => catchAsync(async (req, res, next) => {
+
+   if (!req.body.folderId)
+      return next(new AppError('Provide folder id to take photos from there', 400))
+
    const item = await collection.create(req.body)
 
    res.status(201).json({
