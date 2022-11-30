@@ -2,7 +2,7 @@ const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
 const multer = require("multer");
 const path = require('path')
-const { checkAndCreateDir, resizeAndWritePhoto, multerFilter } = require("../utils/photoUtils");
+const { checkAndCreateDir, resizeAndWritePhoto, multerFilter, deleteDir } = require("../utils/photoUtils");
 
 
 const upload = multer({
@@ -15,14 +15,19 @@ exports.uploadMulter = upload.single('upload')
 exports.uploadTempImg = catchAsync(async (req, res, next) => {
    const folderPath = `${req.params.collection}-${req.params.timeStamp}`
    const fileName = `${folderPath}-${Date.now() + 1000}.jpg`
+   const dirPath = `public/img/temp/${folderPath}`
 
-   const dirPath = await checkAndCreateDir([
-      'img',
-      'temp',
-      folderPath
-   ], true)
+   try {
+      await checkAndCreateDir(dirPath)
+   } catch (e) {
+      return next(new AppError(`Error during directory check: ${e.message}`, 400))
+   }
 
-   await resizeAndWritePhoto( req.file.buffer, path.join(dirPath, fileName) )
+   try {
+      await resizeAndWritePhoto( req.file.buffer, path.join(dirPath, fileName) )
+   } catch (e) {
+      return next(new AppError(`Error during file writing: ${e.message}`, 400))
+   }
 
    res.json({
       ok: true,

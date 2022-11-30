@@ -32,12 +32,6 @@ const initialState = {
    text: '',
 }
 
-// const initialErrorsState = {
-//    title: false,
-//    photo: false,
-//    editor: false
-// }
-
 const NewItem: FC = () => {
 
    const editorRef = useRef<IEditor>()
@@ -50,7 +44,6 @@ const NewItem: FC = () => {
    const [editorError, setEditorError] = useState(false)
    const [titleError, setTitleError] = useState(false)
    const [imgError, setImgError] = useState(false)
-   // const [errorsState, setErrorsState] = useState(initialErrorsState)
 
    const inputs: IInput[] = [
       { label: 'Заголовок', key: 'title', helperText: 'Мінімум 2 символи', error: titleError },
@@ -67,29 +60,6 @@ const NewItem: FC = () => {
       e.preventDefault()
       setState(prev => ({ ...prev, [key]: e.target.value }))
    }
-
-   // const checkState = (editorData: string | undefined) => {
-   //    let isError = false
-   //    let newErrors = initialErrorsState
-   //
-   //    if (!editorData) {
-   //       isError = true
-   //       newErrors.editor = true
-   //    }
-   //
-   //    if (!state.title) {
-   //       isError = true
-   //       newErrors.title = true
-   //    }
-   //
-   //    if (!imgState) {
-   //       isError = true
-   //       newErrors.photo = true
-   //    }
-   //
-   //    setErrorsState(newErrors)
-   //    return isError
-   // }
 
    const onSubmit = async (e: React.SyntheticEvent) => {
       e.preventDefault()

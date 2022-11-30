@@ -1,13 +1,22 @@
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
 const APIfeatures = require('../utils/APIfeatures')
+const path = require('path')
 const {
    checkAndCreateDir,
    deleteDir,
    deletePhotoFiles,
-   writeAndGetPhotos
+   writeAndGetPhotos,
+   resizeAndWritePhoto,
 } = require('../utils/photoUtils')
+const {log} = require("sharp/lib/libvips");
 
+
+const processContent = (content) => {
+   // const formatedContent
+
+   return content
+}
 
 exports.checkExistence = collection => catchAsync(async (req, res, next) => {
    const itemExists = await collection.exists({ _id: req.params.id })
@@ -22,20 +31,45 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
       return next(new AppError('Put all necessary fields in data field', 400))
 
    // 1) Create item from data field in request
-   const item = await collection.create(JSON.parse(req.body.data))
-   const modelName = item.constructor.modelName
+   const data = JSON.parse(req.body.data)
+   const item = await collection.create(data)
 
-   // 2) Check if we have all necessary directories for photo
-   await checkAndCreateDir(['img', modelName.toLowerCase(),], item._id)
+   const modelName = item.constructor.modelName.toLowerCase()
+   const uid = item._id
 
-   // 3) Write and resize photos and get their paths
-   const photoObj = await writeAndGetPhotos(req.files, item._id, modelName.toLowerCase())
+   // ! Format content field (change src)
+   if (req.body.folderName)
+      item.formatContent(req.body.folderName)
 
-   // 4) Save photo paths to db
-   Object.keys(photoObj).forEach(photoKey => {
-      item[photoKey] = photoObj[photoKey]
-   })
+   // 2) Create dir for main img
+   const dirPath = `public/img/${modelName}/${uid}`
 
+   // * If error during directory creating delete db document
+   try {
+      await checkAndCreateDir(dirPath)
+   } catch (e) {
+      await item.remove()
+      return next(new AppError(`Error during dir check: ${e.message}`, 500))
+   }
+
+   // 3) Write main photo(450px width) and back photo (full width)
+   const backPhotoName = `back-${modelName}-${uid}.jpg`
+   const mainPhotoName = `main-${modelName}-${uid}.jpg`
+
+   // * If error during photo write delete db document and dir for photos
+   try {
+      await resizeAndWritePhoto(req.file.buffer, path.join(dirPath, backPhotoName))
+      await resizeAndWritePhoto(req.file.buffer, path.join(dirPath, mainPhotoName), 300)
+   } catch(e) {
+      deleteDir(`public/img/${modelName}/${uid}`)
+      await item.remove()
+
+      return next(new AppError(`Error during photo writing: ${e.message}`, 500))
+   }
+
+   // 4) Save item
+   item.mainPhoto = `${dirPath}/${mainPhotoName}`
+   item.backgroundPhoto = `${dirPath}/${backPhotoName}`
    await item.save({ new: true })
 
    res.status(201).json({
@@ -84,8 +118,8 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
 
 exports.createOne = collection => catchAsync(async (req, res, next) => {
 
-   if (!req.body.folderId)
-      return next(new AppError('Provide folder id to take photos from there', 400))
+   // if (!req.body.folderId)
+   //    return next(new AppError('Provide folder id to take photos from there', 400))
 
    const item = await collection.create(req.body)
 

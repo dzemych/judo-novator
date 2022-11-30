@@ -1,14 +1,13 @@
 const {model, Schema, ObjectId} = require('mongoose')
-const LanguageSchema = require('./languages.schema')
 
 
 const hallSchema = new Schema({
    photos: [String],
    mainPhoto: String,
    backgroundPhoto: String,
-   title: LanguageSchema,
-   address: LanguageSchema,
-   text: LanguageSchema,
+   title: String,
+   address: String,
+   text: String,
    location: {
       // GeoJSON
       type: {

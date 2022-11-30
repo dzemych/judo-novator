@@ -1,14 +1,13 @@
 const {model, Schema} = require('mongoose')
-const LanguageSchema = require('./languages.schema')
 
 
 const teamSchema = new Schema({
    photos: [String],
    mainPhoto: String,
    backgroundPhoto: String,
-   name: LanguageSchema,
-   position: LanguageSchema,
-   description: LanguageSchema,
+   name: String,
+   position: String,
+   description: String,
    tel: String,
    email: String,
    instagram: String,

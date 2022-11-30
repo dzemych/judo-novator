@@ -11,12 +11,13 @@ router
    .route('/')
    .get(handlerFactory.getAll(Blog))
    .post(
-      // photoController.uploadPhotos,
+      photoController.uploadOnePhoto,
       // photoController.checkBlogPhotos('post'),
-      handlerFactory.createOne(Blog)
+      photoController.atLeastOnePhotoCheck,
+      handlerFactory.createOneWithFormData(Blog)
    )
 
-router.use(handlerFactory.checkExistence(Event))
+router.use(handlerFactory.checkExistence(Blog))
 
 router
    .route('/:id')

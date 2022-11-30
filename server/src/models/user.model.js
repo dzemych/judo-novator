@@ -37,6 +37,7 @@ const userSchema = new Schema({
    }
 })
 
+
 userSchema.methods.createResetToken = async function() {
    const resetHash = crypto.randomBytes(32).toString('hex')
 

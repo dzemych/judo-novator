@@ -11,6 +11,15 @@ const upload = multer({
 
 exports.uploadPhotos = upload.array('photos')
 
+exports.uploadOnePhoto = upload.single('photo')
+
+exports.atLeastOnePhotoCheck = catchAsync(async (req, res, next) => {
+   if (!req.file)
+      return next(new AppError('Please provide photo in req in photo filed with form data', 400))
+
+   next()
+})
+
 exports.checkAlbumPhotos = method => catchAsync(async (req, res, next) => {
    if (method === 'post')
       if (!req.files || req.files.length < 4)

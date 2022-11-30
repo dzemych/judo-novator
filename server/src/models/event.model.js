@@ -1,12 +1,11 @@
 const {model, Schema} = require('mongoose')
-const LanguageSchema = require('./languages.schema')
 
 
 const eventSchema = new Schema({
    photo: String,
-   title: LanguageSchema,
-   address: LanguageSchema,
-   text: LanguageSchema,
+   title: String,
+   address: String,
+   text: String,
    startDate: Date,
    endDate: Date,
    location: {
