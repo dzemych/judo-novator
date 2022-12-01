@@ -1,11 +1,10 @@
-const {model, Schema} = require('mongoose')
+const {model} = require('mongoose')
+const BaseArticleSchema = require("./base.model");
+const {formatImgSrcToRelative, getAbsPhotoPaths} = require("../utils/formatContent");
 
 
-const eventSchema = new Schema({
-   photo: String,
-   title: String,
+const eventSchema = new BaseArticleSchema({
    address: String,
-   text: String,
    startDate: Date,
    endDate: Date,
    location: {
@@ -19,5 +18,8 @@ const eventSchema = new Schema({
    },
 })
 
+eventSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
 
-module.exports = model('Schema', eventSchema)
+eventSchema.pre('save', formatImgSrcToRelative)
+
+module.exports = model('Event', eventSchema)

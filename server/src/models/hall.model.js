@@ -1,13 +1,10 @@
-const {model, Schema, ObjectId} = require('mongoose')
+const {model, ObjectId} = require('mongoose')
+const BaseArticleSchema = require("./base.model");
+const {formatImgSrcToRelative, getAbsPhotoPaths} = require("../utils/formatContent");
 
 
-const hallSchema = new Schema({
-   photos: [String],
-   mainPhoto: String,
-   backgroundPhoto: String,
-   title: String,
+const hallSchema = new BaseArticleSchema({
    address: String,
-   text: String,
    location: {
       // GeoJSON
       type: {
@@ -20,5 +17,8 @@ const hallSchema = new Schema({
    members: [ObjectId],
 })
 
+hallSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
+
+hallSchema.pre('save', formatImgSrcToRelative)
 
 module.exports = model('Hall', hallSchema)

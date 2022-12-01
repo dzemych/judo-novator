@@ -36,6 +36,27 @@ exports.uploadTempImg = catchAsync(async (req, res, next) => {
    })
 })
 
+exports.deleteFolder = catchAsync(async (req, res, next) => {
+   deleteDir([
+      'public/img/temp',
+      `${req.params.collection}-${req.params.timeStamp}`
+   ].join('/'))
+
+   res.status(204).json()
+})
+
+exports.deleteTempImg = catchAsync(async (req, res, next) => {
+   deleteDir(
+      [
+         'public/img/temp',
+         `${req.params.collection}-${req.params.timeStamp}`,
+         `${req.params.imgId}`,
+      ].join('/')
+   )
+
+   res.status(204).json()
+})
+
 exports.notFound = catchAsync(async (req, res, next) => {
    res.status(404).json({
       ok: false,

@@ -10,15 +10,19 @@ router
    .route('/')
    .get(handlerFactory.getAll(Hall))
    .post(
-      photoController.uploadPhotos,
-      photoController.checkHallPhoto,
+      photoController.uploadOnePhoto,
+      photoController.atLeastOnePhotoCheck,
       handlerFactory.createOneWithFormData(Hall)
    )
 
 router
    .route('/:id')
    .get(handlerFactory.getOneById(Hall))
-   .patch(handlerFactory.updateOne(Hall))
+   .patch(
+      handlerFactory.checkExistence(Hall),
+      photoController.uploadOnePhoto,
+      handlerFactory.updateOneWithFormData(Hall)
+   )
    .delete(handlerFactory.deleteOne(Hall))
 
 

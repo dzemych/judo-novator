@@ -55,8 +55,8 @@
    select(selectOpt) {
       let select = '-__v'
 
-      if (this.queryObj.fields) {
-         select = this.queryObj.fields.split(',').join(' ')
+      if (this.queryObj.select) {
+         select = this.queryObj.select.split(',').join(' ')
       }
       else if (selectOpt) {
          select = selectOpt

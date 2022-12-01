@@ -1,12 +1,13 @@
-const {Schema, model} = require('mongoose')
+const {model} = require('mongoose')
+const BaseArticleSchema = require("./base.model");
+const {formatImgSrcToRelative, getAbsPhotoPaths} = require("../utils/formatContent");
 
 
-const albumSchema = new Schema({
-   title: String,
-   mainPhoto: String,
-   backgroundPhoto: String,
-   photos: [String]
-})
+const albumSchema = new BaseArticleSchema()
+
+albumSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
+
+albumSchema.pre('save', formatImgSrcToRelative)
 
 
-module.exports = model('AlbumList', albumSchema)
+module.exports = model('Album', albumSchema)

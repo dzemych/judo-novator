@@ -1,25 +1,17 @@
-const {model, Schema} = require('mongoose')
+const {model} = require('mongoose')
+const BaseArticleSchema = require('./base.model')
+const {formatImgSrcToRelative, getAbsPhotoPaths} = require('../utils/formatContent')
 
 
-const blogSchema = new Schema({
-   title: {
-      type: String,
-      required: true
-   },
+const blogSchema = new BaseArticleSchema({
    subTitle: String,
    text: String,
    date: Date,
-   mainPhoto: String,
-   backgroundPhoto: String,
-   content: String
 })
 
-blogSchema.methods.formatContent = function(folderName) {
-   const rgx = /^(http|https)\/\//
-   // const arr = this.content.split('/').map(el => {
-   //    console.log(el)
-   // })
-}
+blogSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
+
+blogSchema.pre('save', formatImgSrcToRelative)
 
 blogSchema.pre('save', function(next) {
    if (this.isNew)
@@ -27,5 +19,6 @@ blogSchema.pre('save', function(next) {
 
    next()
 })
+
 
 module.exports = model('Blog', blogSchema)

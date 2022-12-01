@@ -92,8 +92,19 @@ const NewItem: FC = () => {
          setImgError(false)
       }
 
-      if (isError)
+      if (isError) {
          document.getElementById('div-for-scroll')?.scrollIntoView()
+      } else {
+         console.log(imgState)
+         const formData = new FormData()
+
+         // formData.append()
+
+         await fetch("http://localhost:5000/api/blog", {
+            method: 'POST',
+            // body: {}
+         })
+      }
 
       // Send to server
 
@@ -101,7 +112,7 @@ const NewItem: FC = () => {
       console.log(imgState)
       console.log(state)
       console.log(date)
-      console.log(editorData)
+      console.log(editorData?.replace(/"/g, "'"))
    }
 
    const renderInput = (el: IInput) => (

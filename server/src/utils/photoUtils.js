@@ -1,4 +1,5 @@
 const fs = require('fs')
+const fsPromises = require('fs/promises')
 const path = require('path')
 const sharp = require('sharp')
 const AppError = require("./AppError");
@@ -13,9 +14,19 @@ const resizeAndWritePhoto = async (photo, path, width) => {
       .toFile(path)
 }
 
-const getPhotoPath = (collection, id, name) => {
-   return `public/img/${collection}/${id}/${name}-${id}.jpg`
+const getPhotoPath = (modelName, id, name) => {
+   return `public/img/${modelName}/${id}/${name}-${modelName}-${id}.jpg`
 }
+
+const deleteDir = (dirPath) => {
+   const dir = path.resolve(dirPath)
+   console.log(dir)
+
+   if (fs.existsSync(dir))
+      fs.rmSync(dir, { recursive: true, force: true })
+}
+
+exports.deleteDir = deleteDir
 
 exports.resizeAndWritePhoto = resizeAndWritePhoto
 
@@ -40,31 +51,28 @@ exports.checkAndCreateDir = async (dirPath) => {
    })
 }
 
-// exports.writeAndGetPhotos = async (files, id, collection) => {
-//    const photos = []
-//
-//    // 1) Write and resize all photos to db
-//    for (i in files) {
-//       const photoPath = getPhotoPath(collection, id, i)
-//
-//       await resizeAndWritePhoto(files[i].buffer, photoPath, 2000)
-//
-//       photos.push(photoPath)
-//    }
-//
-//    // 2) Write and resize main photo, make it small for fast download
-//    const mainPhoto = getPhotoPath(collection, id, 'main')
-//    await resizeAndWritePhoto(files[0].buffer, mainPhoto, 500)
-//
-//    // 3) Return photo paths
-//    return { photos, mainPhoto, backgroundPhoto: getPhotoPath(collection, id, 0)}
-// }
+exports.writeAndGetPhotos = async (relativePaths, id, modelName) => {
+   const photos = []
 
-exports.deleteDir = (dirPath) => {
-   const dir = path.resolve(dirPath)
+   // 1) Write and resize all photos to proper folder
+   for (i in relativePaths) {
+      const newRelPath = getPhotoPath(modelName, id, i)
+      const oldAbsPath = path.resolve('public', relativePaths[i].join('/'))
 
-   if (fs.existsSync(dir))
-      fs.rmSync(dir, { recursive: true, force: true })
+      try {
+         await fsPromises.rename(oldAbsPath, path.resolve(newRelPath))
+      } catch (e) {
+         throw new AppError(`Error during renaming photos: ${e.message}`, 500)
+      }
+
+      photos.push(newRelPath)
+   }
+
+   // 2) Delete temp folder
+   deleteDir(`public/img/temp/${relativePaths[0][2]}`)
+
+   // 3) Return photo paths
+   return photos
 }
 
 exports.deletePhotoFiles = async (collection, id) => {

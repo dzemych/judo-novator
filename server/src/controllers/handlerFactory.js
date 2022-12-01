@@ -9,17 +9,44 @@ const {
    writeAndGetPhotos,
    resizeAndWritePhoto,
 } = require('../utils/photoUtils')
-const {log} = require("sharp/lib/libvips");
 
 
-const processContent = (content) => {
-   // const formatedContent
+const updateMainPhotoAndBack = async (file, modelName, item, next) => {
+   const id = item._id
 
-   return content
+   // 2) Create dir for main img
+   const dirPath = `public/img/${modelName}/${id}`
+   try {
+      await checkAndCreateDir(dirPath)
+   } catch (e) {
+      await item.remove()
+      return next(new AppError(`Error during dir check: ${e.message}`, 500))
+   }
+
+   // 3) Write main photo(450px width) and back photo (full width)
+   const backPhotoName = `back-${modelName}-${id}.jpg`
+   const mainPhotoName = `main-${modelName}-${id}.jpg`
+
+   // * If error during photo write delete db document and dir for photos
+   try {
+      await resizeAndWritePhoto(file, path.join(dirPath, backPhotoName))
+      await resizeAndWritePhoto(file, path.join(dirPath, mainPhotoName), 300)
+   } catch(e) {
+      deleteDir(`public/img/${modelName}/${id}`)
+      await item.remove()
+
+      return next(new AppError(`Error during main photo writing: ${e.message}`, 500))
+   }
+
+   item.mainPhoto = `${dirPath}/${mainPhotoName}`
+   item.backPhoto = `${dirPath}/${backPhotoName}`
 }
 
+
 exports.checkExistence = collection => catchAsync(async (req, res, next) => {
-   const itemExists = await collection.exists({ _id: req.params.id })
+   console.log(req.params.id)
+   const itemExists = await collection.findById(req.params.id).select('_id').lean().count()
+   console.log(itemExists)
    if (!itemExists)
       return next(new AppError('No item exists with such id', 404))
 
@@ -35,41 +62,15 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
    const item = await collection.create(data)
 
    const modelName = item.constructor.modelName.toLowerCase()
-   const uid = item._id
 
-   // ! Format content field (change src)
-   if (req.body.folderName)
-      item.formatContent(req.body.folderName)
-
-   // 2) Create dir for main img
-   const dirPath = `public/img/${modelName}/${uid}`
-
-   // * If error during directory creating delete db document
-   try {
-      await checkAndCreateDir(dirPath)
-   } catch (e) {
-      await item.remove()
-      return next(new AppError(`Error during dir check: ${e.message}`, 500))
-   }
-
-   // 3) Write main photo(450px width) and back photo (full width)
-   const backPhotoName = `back-${modelName}-${uid}.jpg`
-   const mainPhotoName = `main-${modelName}-${uid}.jpg`
-
-   // * If error during photo write delete db document and dir for photos
-   try {
-      await resizeAndWritePhoto(req.file.buffer, path.join(dirPath, backPhotoName))
-      await resizeAndWritePhoto(req.file.buffer, path.join(dirPath, mainPhotoName), 300)
-   } catch(e) {
-      deleteDir(`public/img/${modelName}/${uid}`)
-      await item.remove()
-
-      return next(new AppError(`Error during photo writing: ${e.message}`, 500))
-   }
+   await updateMainPhotoAndBack(
+      req.file.buffer,
+      modelName,
+      item,
+      next
+   )
 
    // 4) Save item
-   item.mainPhoto = `${dirPath}/${mainPhotoName}`
-   item.backgroundPhoto = `${dirPath}/${backPhotoName}`
    await item.save({ new: true })
 
    res.status(201).json({
@@ -86,26 +87,20 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
       .split('').slice(0, -1).join('')
 
    // 1) Update document in database
-   if (req.body.data) {
-      await collection.findByIdAndUpdate(
-         id,
-         JSON.parse(req.body.data),
-         { runValidators: true }
-      )
-   }
+   const data = req.body.data ? JSON.parse(req.body.data) : ''
+   const item = await collection.findByIdAndUpdate(
+      id,
+      data,
+      { runValidators: true, new: true }
+   )
 
-   // 2) Write photos and add them to db
-   if (req.files.length > 0) {
-      // 2) Check if we have all necessary directories for photo
-      await checkAndCreateDir(['img', modelName, id])
-
-      await deletePhotoFiles(modelName, id)
-      const photosObj = await writeAndGetPhotos(req.files, id, modelName)
-
-      await collection.findByIdAndUpdate(
-         id,
-         photosObj,
-         { runValidators: true }
+   // 2) Update main photo
+   if (req.file) {
+      await updateMainPhotoAndBack(
+         req.file.buffer,
+         modelName,
+         item,
+         next
       )
    }
 
@@ -117,10 +112,6 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
 })
 
 exports.createOne = collection => catchAsync(async (req, res, next) => {
-
-   // if (!req.body.folderId)
-   //    return next(new AppError('Provide folder id to take photos from there', 400))
-
    const item = await collection.create(req.body)
 
    res.status(201).json({
@@ -158,6 +149,12 @@ exports.getOneById = collection => catchAsync(async (req, res, next) => {
    if (!item)
       return next(new AppError('No item found with that id', 404))
 
+   const absPhotoPaths = item.getAbsPhotoPaths(req.get('host'))
+
+   item.content = absPhotoPaths.content
+   item.mainPhoto = absPhotoPaths.mainPhoto
+   item.backPhoto = absPhotoPaths.backPhoto
+
    res.json({
       ok: true,
       status: 'success',
@@ -193,7 +190,12 @@ exports.deleteOne = collection => catchAsync(async (req, res) => {
    const deletedItem = await collection.findByIdAndRemove(req.params.id)
    const modelName = deletedItem.constructor.modelName
 
-   await deleteDir(modelName.toLowerCase(), req.params.id)
+   deleteDir([
+      'public/img',
+      modelName.toLowerCase(),
+      req.params.id
+   ].join('/')
+   )
 
    res.status(204).json()
 })

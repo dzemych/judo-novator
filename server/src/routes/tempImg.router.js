@@ -11,6 +11,16 @@ router.post(
    tempImgController.uploadTempImg
 )
 
+router.delete(
+   '/temp/:collection/:timeStamp',
+   tempImgController.deleteFolder
+)
+
+router.delete(
+   '/temp/:collection/:timeStamp/:imgId',
+   tempImgController.deleteTempImg
+)
+
 router.route('/temp/*', tempImgController.notFound)
 
 module.exports = router
