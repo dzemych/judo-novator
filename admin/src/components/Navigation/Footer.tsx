@@ -15,12 +15,16 @@ const Footer: FC<IProps> = props => {
          variant="body1"
          color="text.secondary"
          align="center"
-         sx={{ padding: theme.spacing(5, 0, 3, 0) }}
+         // alignSelf={'flex-end'}
+         sx={{
+            padding: theme.spacing(5, 0, 3, 0),
+            margin: 'auto auto 0'
+         }}
       >
-         {'Copyright © '}
-         <Link color="inherit" href="https://www.linkedin.com/in/dzemych/" target="_blank">
+         {' Copyright © '}
+         &nbsp;<Link color="inherit" href="https://www.linkedin.com/in/dzemych/" target="_blank">
             Dzemych Ivan
-         </Link>
+         </Link>&nbsp;
          {` ${new Date().getFullYear()}.`}
       </Typography>
    )

@@ -1,13 +1,11 @@
-import {FC} from "react";
-import {Container, Typography} from "@mui/material";
-import NewItem from "src/components/NewItem/NewItem";
+import React, {FC} from "react";
+import {Container} from "@mui/material";
+import {CollectionType} from "../../types/collection";
+import ItemLayout from "../../layout/ItemLayout";
+import ArticleForms from "../../components/ItemForms/ArticleForms";
 
 
-interface IProps {
-
-}
-
-const AddBlog: FC<IProps> = () => {
+const AddBlog: FC = () => {
 
    return (
       <Container
@@ -16,18 +14,17 @@ const AddBlog: FC<IProps> = () => {
             flexDirection: 'column',
             alignItems: 'center',
             mt: 2,
-            minHeight: '100vh'
          }}
       >
-         <Typography
-            variant='h4'
-            textAlign='center'
-            sx={{ mb: 4 }}
-         >
-            Додайте новий запис до блогу
-         </Typography>
-
-         <NewItem/>
+         <ItemLayout
+            collectionType={CollectionType.BLOG}
+            title={'Блог'}
+            type={'create'}
+            // @ts-ignore
+            // Props will be added in this component (this was made for not repeating all submit
+            // actions and status states that invokes different popup based on forms answer)
+            children={<ArticleForms/>}
+         />
       </Container>
    )
 }

@@ -6,9 +6,9 @@ import {
    ThemeProvider,
    Toolbar,
 } from "@mui/material"
-import Footer from "./Navigation/Footer";
-import Header from "./Navigation/Header";
-import Sidebar from "./Navigation/Sidebar";
+import Footer from "../components/Navigation/Footer";
+import Header from "../components/Navigation/Header";
+import Sidebar from "../components/Navigation/Sidebar";
 
 
 interface IProps {
@@ -37,7 +37,7 @@ const MainLayout: FC<IProps> = ({ children }) => {
 
    return (
       <ThemeProvider theme={mdTheme}>
-         <Box sx={{display: 'flex'}}>
+         <Box sx={{ display: 'flex' }}>
             <CssBaseline/>
 
             <Header
@@ -53,7 +53,8 @@ const MainLayout: FC<IProps> = ({ children }) => {
             />
 
             <Box
-               component="main"
+               display='flex'
+               flexDirection='column'
                sx={{
                   backgroundColor: (theme) =>
                      theme.palette.mode === 'light'
@@ -63,10 +64,16 @@ const MainLayout: FC<IProps> = ({ children }) => {
                   height: '100vh',
                   overflow: 'auto',
                }}
+               id='main-root'
             >
                <Toolbar/>
 
-               {children}
+               <main style={{
+                  display: 'flex',
+                  justifySelf: 'flex-start'
+               }}>
+                  {children}
+               </main>
 
                <Footer sx={{pt: 4}}/>
             </Box>

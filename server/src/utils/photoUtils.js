@@ -1,5 +1,4 @@
 const fs = require('fs')
-const fsPromises = require('fs/promises')
 const path = require('path')
 const sharp = require('sharp')
 const AppError = require("./AppError");
@@ -9,6 +8,9 @@ const resizeAndWritePhoto = async (photo, path, width) => {
    await sharp(photo)
       .resize({ width })
       .withMetadata()
+      .flatten({
+         background: {r: 255, g: 255, b: 255, alpha: 1}
+      })
       .toFormat('jpeg')
       .jpeg({ quality: 90 })
       .toFile(path)
@@ -20,7 +22,6 @@ const getPhotoPath = (modelName, id, name) => {
 
 const deleteDir = (dirPath) => {
    const dir = path.resolve(dirPath)
-   console.log(dir)
 
    if (fs.existsSync(dir))
       fs.rmSync(dir, { recursive: true, force: true })
@@ -39,7 +40,7 @@ exports.multerFilter = (req, file, cb) => {
    cb(null, true)
 }
 
-exports.checkAndCreateDir = async (dirPath) => {
+exports.checkAndCreateDir = (dirPath) => {
    // All directions are inside public folder
    const dirArr = dirPath.split("/")
 
@@ -51,7 +52,7 @@ exports.checkAndCreateDir = async (dirPath) => {
    })
 }
 
-exports.writeAndGetPhotos = async (relativePaths, id, modelName) => {
+exports.writeAndGetPhotos = (relativePaths, id, modelName) => {
    const photos = []
 
    // 1) Write and resize all photos to proper folder
@@ -60,7 +61,7 @@ exports.writeAndGetPhotos = async (relativePaths, id, modelName) => {
       const oldAbsPath = path.resolve('public', relativePaths[i].join('/'))
 
       try {
-         await fsPromises.rename(oldAbsPath, path.resolve(newRelPath))
+         fs.renameSync(oldAbsPath, path.resolve(newRelPath))
       } catch (e) {
          throw new AppError(`Error during renaming photos: ${e.message}`, 500)
       }

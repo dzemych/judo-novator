@@ -1,6 +1,5 @@
 const {model, ObjectId} = require('mongoose')
-const BaseArticleSchema = require("./base.model");
-const {formatImgSrcToRelative, getAbsPhotoPaths} = require("../utils/formatContent");
+const BaseArticleSchema = require("./baseArticle.model");
 
 
 const hallSchema = new BaseArticleSchema({
@@ -16,9 +15,5 @@ const hallSchema = new BaseArticleSchema({
    },
    members: [ObjectId],
 })
-
-hallSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
-
-hallSchema.pre('save', formatImgSrcToRelative)
 
 module.exports = model('Hall', hallSchema)

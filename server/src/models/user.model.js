@@ -98,5 +98,4 @@ userSchema.pre(/^find/, function(next) {
    next()
 })
 
-
 module.exports = model('User', userSchema)

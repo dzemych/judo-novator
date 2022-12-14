@@ -6,6 +6,8 @@ const photoController = require('../controllers/photo.controller')
 
 const router = Router()
 
+router.get('/check/:slug', handlerFactory.checkUniqueSlug(Album))
+
 router
    .route('/')
    .get(handlerFactory.getAll(Album))
@@ -17,7 +19,7 @@ router
 
 router
    .route('/:id')
-   .get(handlerFactory.getOneById(Album))
+   .get(handlerFactory.getOne(Album))
    .patch(
       handlerFactory.checkExistence(Album),
       photoController.uploadOnePhoto,

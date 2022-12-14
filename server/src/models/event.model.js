@@ -1,6 +1,5 @@
 const {model} = require('mongoose')
-const BaseArticleSchema = require("./base.model");
-const {formatImgSrcToRelative, getAbsPhotoPaths} = require("../utils/formatContent");
+const BaseArticleSchema = require("./baseArticle.model");
 
 
 const eventSchema = new BaseArticleSchema({
@@ -17,9 +16,5 @@ const eventSchema = new BaseArticleSchema({
       coordinates: [Number]
    },
 })
-
-eventSchema.methods.getAbsPhotoPaths = getAbsPhotoPaths
-
-eventSchema.pre('save', formatImgSrcToRelative)
 
 module.exports = model('Event', eventSchema)

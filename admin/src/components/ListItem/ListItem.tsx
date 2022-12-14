@@ -14,6 +14,7 @@ import {CardType, ICardItem} from "../../types/card";
 import useFormatDate from "../../hooks/useFormatDate";
 import {useNavigate} from "react-router-dom";
 import addImg from '../../assets/images/add.png'
+import classes from './ListItem.module.sass'
 
 
 interface IProps {
@@ -42,16 +43,6 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
 
    const formatedDate = useFormatDate(card.date)
    const navigate = useNavigate()
-
-   let photoStyles = {}
-
-   if (mock) {
-      photoStyles = {
-         objectPosition: 'center',
-         objectFit: 'contain',
-         padding: 20
-      }
-   }
 
    const goTo = (type: string) => {
       navigate(`/${type}/${card.slug}`)
@@ -97,10 +88,9 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
             >
                <CardMedia
                   component="img"
-                  height="180px"
-                  image={mock ? addImg : card.photoSrc}
+                  image={mock ? addImg : card.mainPhoto}
                   alt={card.title}
-                  style={photoStyles}
+                  className={mock ? classes.mock_img : classes.img}
                />
 
                <Container sx={{ mt: 1, pb: 2 }}>

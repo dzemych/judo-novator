@@ -18,7 +18,7 @@ router.get(
    '/me',
    authController.protectAndSetId,
    authController.setIdAsParams,
-   handlerFactory.getOneById(User)
+   handlerFactory.getOne(User)
 )
 
 router.use(
@@ -34,6 +34,6 @@ router.patch(
 )
 
 router.get('/users', handlerFactory.getAll(User))
-router.get('/users/:id', handlerFactory.getOneById(User))
+router.get('/users/:id', handlerFactory.getOne(User))
 
 module.exports = router

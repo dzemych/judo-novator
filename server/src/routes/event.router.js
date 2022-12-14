@@ -6,6 +6,8 @@ const photoController = require('../controllers/photo.controller')
 
 const router = Router()
 
+router.get('/check/:slug', handlerFactory.checkUniqueSlug(Event))
+
 router
    .route('/')
    .get(handlerFactory.getAll(Event))
@@ -17,7 +19,7 @@ router
 
 router
    .route('/:id')
-   .get(handlerFactory.getOneById(Event))
+   .get(handlerFactory.getOne(Event))
    .patch(
       handlerFactory.checkExistence(Event),
       photoController.uploadOnePhoto,

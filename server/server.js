@@ -3,10 +3,12 @@ const path = require('path')
 const dotenv = require('dotenv')
 const expressApp = require('./src/app')
 const next = require('next')
-const express = require('express')
 
 
 dotenv.config({path: path.resolve('config.env')})
+
+// Export cur host domain, cause for some reason I cannot access it from model file
+curHost = process.env.HOST_DOMAIN
 
 const PORT = process.env.PORT
 const dev = process.env.NODE_ENV !== 'production'

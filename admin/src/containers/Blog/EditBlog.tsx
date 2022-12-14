@@ -1,22 +1,22 @@
-import {FC} from "react";
-import {Container, Typography} from "@mui/material";
-import {useParams} from "react-router-dom";
+import React, {FC} from "react";
+import {Container} from "@mui/material";
+import {CollectionType} from "../../types/collection";
+import ArticleForms from "../../components/ItemForms/ArticleForms";
+import ItemLayout from "../../layout/ItemLayout";
 
 
-interface IProps {
-
-}
-
-const EditBlog: FC<IProps> = () => {
-
-   const params = useParams()
-
+const EditBlog: FC = () => {
    return (
       <Container>
-         <Typography variant='h3' sx={{ mt: 3, mb: 3 }}>
-            Edit Blog {params.slug}
-         </Typography>
-
+         <ItemLayout
+            collectionType={CollectionType.BLOG}
+            title={'Блог'}
+            type={'update'}
+            // @ts-ignore
+            // Props will be added in this component (this was made for not repeating all submit
+            // actions and status states that invokes different popup based on forms answer)
+            children={<ArticleForms/>}
+         />
       </Container>
    )
 }

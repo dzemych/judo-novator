@@ -6,6 +6,7 @@ const photoController = require('../controllers/photo.controller')
 
 const router = Router()
 
+router.get('/check/:slug', handlerFactory.checkUniqueSlug(Team))
 
 router
    .route('/')
@@ -18,7 +19,7 @@ router
 
 router
    .route('/:id')
-   .get(handlerFactory.getOneById(Team))
+   .get(handlerFactory.getOne(Team))
    .patch(
       photoController.uploadPhotos,
       photoController.checkTeamPhoto('patch'),

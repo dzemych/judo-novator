@@ -5,10 +5,9 @@ const path = require('path')
 const {
    checkAndCreateDir,
    deleteDir,
-   deletePhotoFiles,
-   writeAndGetPhotos,
    resizeAndWritePhoto,
 } = require('../utils/photoUtils')
+const ObjectId = require('mongoose').Types.ObjectId
 
 
 const updateMainPhotoAndBack = async (file, modelName, item, next) => {
@@ -40,15 +39,35 @@ const updateMainPhotoAndBack = async (file, modelName, item, next) => {
 
    item.mainPhoto = `${dirPath}/${mainPhotoName}`
    item.backPhoto = `${dirPath}/${backPhotoName}`
+
+   await item.save({ new: true })
 }
 
 
+exports.checkUniqueSlug = collection => catchAsync(async (req, res, next) => {
+   const is = await collection.findOne({ slug: req.params.slug }).select('_id').lean().count()
+   if (is)
+      return next(new AppError('This slug is not unique', 422))
+
+   res.json({
+      ok: true,
+      message: 'This slug is unique',
+      slug: req.params.slug
+   })
+})
+
 exports.checkExistence = collection => catchAsync(async (req, res, next) => {
-   console.log(req.params.id)
-   const itemExists = await collection.findById(req.params.id).select('_id').lean().count()
-   console.log(itemExists)
+   const id = req.params.id
+   const isId = ObjectId.isValid(id)
+
+   const itemExists = await collection
+      .findOne(isId ? { _id: id } : { slug: id })
+      .select('_id')
+      .lean()
+      .count()
+
    if (!itemExists)
-      return next(new AppError('No item exists with such id', 404))
+      return next(new AppError('No item.tsx exists with such id', 404))
 
    next()
 })
@@ -57,7 +76,7 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
    if (!req.body.data)
       return next(new AppError('Put all necessary fields in data field', 400))
 
-   // 1) Create item from data field in request
+   // 1) Create item.tsx from data field in request
    const data = JSON.parse(req.body.data)
    const item = await collection.create(data)
 
@@ -70,7 +89,7 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
       next
    )
 
-   // 4) Save item
+   // 4) Save item.tsx
    await item.save({ new: true })
 
    res.status(201).json({
@@ -83,16 +102,20 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
 
 exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) => {
    const id = req.params.id
+   const isId = ObjectId.isValid(id)
+
    const modelName = collection.collection.collectionName
       .split('').slice(0, -1).join('')
 
    // 1) Update document in database
    const data = req.body.data ? JSON.parse(req.body.data) : ''
-   const item = await collection.findByIdAndUpdate(
-      id,
-      data,
-      { runValidators: true, new: true }
-   )
+   const item = await collection.findOne(isId ? { _id: id } : { slug: id })
+
+   Object.keys(data).forEach(key => {
+      item[key] = data[key]
+   })
+
+   await item.save({ new: true })
 
    // 2) Update main photo
    if (req.file) {
@@ -108,6 +131,7 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
       ok: true,
       statusText: 'OK',
       message: `${modelName} was successfully updated.`,
+      item
    })
 })
 
@@ -134,26 +158,27 @@ exports.getAll = (collection, optQuery = {}) => catchAsync(async (req, res) => {
       .paginate()
 
    // 3) Get queried data
-   const data = await features.query.lean()
+   const data = await features.query
+   const collectionLength = await collection.count()
 
    res.json({
       status: 'success',
       message: 'Data successfully received',
       results: data.length,
-      data
+      colLength: collectionLength,
+      items: data
    })
 })
 
-exports.getOneById = collection => catchAsync(async (req, res, next) => {
-   const item = await collection.findById(req.params.id)
+exports.getOne = collection => catchAsync(async (req, res, next) => {
+   const id = req.params.id
+   const isId = ObjectId.isValid(id)
+
+   const item = await collection
+      .findOne(isId ? { _id: id } : { slug: id })
+
    if (!item)
-      return next(new AppError('No item found with that id', 404))
-
-   const absPhotoPaths = item.getAbsPhotoPaths(req.get('host'))
-
-   item.content = absPhotoPaths.content
-   item.mainPhoto = absPhotoPaths.mainPhoto
-   item.backPhoto = absPhotoPaths.backPhoto
+      return next(new AppError('No item.tsx found with that id', 404))
 
    res.json({
       ok: true,
@@ -170,7 +195,7 @@ exports.updateOne = collection => catchAsync(async (req, res, next) => {
    const item = await collection.findById(req.params.id)
 
    if (!item)
-      return next(new AppError('No item found with that id', 404))
+      return next(new AppError('No item.tsx found with that id', 404))
 
    Object.keys(req.body).forEach(key => {
       item[key] = req.body[key]

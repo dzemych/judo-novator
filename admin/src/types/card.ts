@@ -1,5 +1,5 @@
 export interface ICardItem {
-   photoSrc: string
+   mainPhoto: string
    title: string
    slug: string
    afterTitle?: string

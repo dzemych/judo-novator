@@ -1,4 +1,4 @@
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor.js'
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor.js';
 import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat.js'
 import Autosave from '@ckeditor/ckeditor5-autosave/src/autosave.js'
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote.js'
@@ -22,13 +22,19 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph.js'
 import PasteFromOffice from '@ckeditor/ckeditor5-paste-from-office/src/pastefromoffice.js'
 import TextTransformation from '@ckeditor/ckeditor5-typing/src/texttransformation.js'
 import SimpleUploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/simpleuploadadapter'
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
+import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
+import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
 
 
-class Editor extends ClassicEditor {
+class Editor extends BalloonEditor {
 }
 
 // Plugins to include in the build.
 Editor.builtinPlugins = [
+   BlockToolbar,
+   HeadingButtonsUI,
+   ParagraphButtonUI,
    Autoformat,
    Autosave,
    BlockQuote,
@@ -56,6 +62,13 @@ Editor.builtinPlugins = [
 
 // Editor configuration.
 Editor.defaultConfig = {
+   blockToolbar: [
+      'paragraph', 'heading1', 'heading2', 'heading3',
+      '|',
+      'bulletedList', 'numberedList',
+      '|',
+      'blockQuote', 'uploadImage', 'mediaEmbed',
+   ],
    toolbar : {
       items: [
          'heading',
