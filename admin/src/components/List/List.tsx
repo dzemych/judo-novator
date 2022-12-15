@@ -29,7 +29,7 @@ const List: FC<IProps> = ({type}) => {
       pagesCount,
       loading,
       changeParams,
-   } = useNavigation(10, type, initSort)
+   } = useNavigation(10, type, '&sort=-createdAt')
 
    const mockItem: ICardItem = {
       slug: 'new',
@@ -40,8 +40,11 @@ const List: FC<IProps> = ({type}) => {
    }
 
    useEffect(() => {
-      const sortVal = Object.keys(sortState).reduce((acc, key) => {
-         acc = `${acc}${sortState[key as keyof typeof sortState] > 0 ? '' : '-'}${key},`
+      const sortVal = Object.keys(sortState).reduce((acc, key, i, arr) => {
+         const sign = sortState[key as keyof typeof sortState] > 0 ? '' : '-'
+         const comma = i < arr.length - 1 ? ',' : ''
+
+         acc = acc + sign + key + comma
 
          return acc
       }, '')

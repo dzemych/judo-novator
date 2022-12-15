@@ -4,6 +4,6 @@ export interface ItemFormProps {
    collectionType: CollectionType
    submitHandler: (formData: FormData) => void
    type: 'update' | 'create'
-   deleteHandler?: () => void
+   deleteHandler: () => void
    item?: any
 }

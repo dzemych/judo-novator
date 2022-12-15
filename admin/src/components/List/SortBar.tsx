@@ -11,13 +11,7 @@ interface IProps {
 
 type ISortVar = 1 | -1
 
-// interface ISortState {
-//    createdAt: ISortVar
-// }
-
 const SortBar: FC<IProps> = ({ state, setState }) => {
-
-   // const [sortState, setSortState] = useState<ISortState>(state)
 
    const changeState = (key: keyof typeof state) => () => {
       // @ts-ignore
@@ -32,16 +26,6 @@ const SortBar: FC<IProps> = ({ state, setState }) => {
          text: "Дата створення"
       }
    ]
-
-   // useEffect(() => {
-   //    const val = Object.keys(sortState).reduce((acc, key) => {
-   //       acc = `${acc}${sortState[key as keyof typeof sortState] > 0 ? '' : '-'}${key},`
-   //
-   //       return acc
-   //    }, '')
-   //
-   //    setState(val)
-   // }, [sortState])
 
    return (
       <div className={classes.container}>

@@ -1,8 +1,8 @@
-import React, {FC} from "react";
-import {Container} from "@mui/material";
-import {CollectionType} from "../../types/collection";
-import ItemLayout from "../../layout/ItemLayout";
-import ArticleForms from "../../components/ItemForms/ArticleForms";
+import React, {FC} from "react"
+import {Container} from "@mui/material"
+import {CollectionType} from "../../types/collection"
+import FormsBase from "../../components/forms/FormsBase"
+import ArticleForms from "../../components/forms/ArticleForms/ArticleForms"
 
 
 const AddBlog: FC = () => {
@@ -16,9 +16,9 @@ const AddBlog: FC = () => {
             mt: 2,
          }}
       >
-         <ItemLayout
+         <FormsBase
             collectionType={CollectionType.BLOG}
-            title={'Блог'}
+            title={'Додайте новий блог'}
             type={'create'}
             // @ts-ignore
             // Props will be added in this component (this was made for not repeating all submit

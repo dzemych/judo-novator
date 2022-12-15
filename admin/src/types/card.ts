@@ -11,7 +11,7 @@ export interface ICardItem {
 export enum CardType {
    BLOGS = 'blog',
    ALBUMS = 'album',
-   TEAM = 'person',
+   TEAM = 'team',
    SPORTSMEN = 'sportsmen',
    EVENTS = 'events',
    HALLS = 'halls',

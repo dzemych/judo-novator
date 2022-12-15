@@ -1,14 +1,14 @@
 import React, {FC} from "react";
 import {Container} from "@mui/material";
 import {CollectionType} from "../../types/collection";
-import ArticleForms from "../../components/ItemForms/ArticleForms";
-import ItemLayout from "../../layout/ItemLayout";
+import ArticleForms from "../../components/forms/ArticleForms/ArticleForms";
+import FormsBase from "../../components/forms/FormsBase";
 
 
 const EditBlog: FC = () => {
    return (
       <Container>
-         <ItemLayout
+         <FormsBase
             collectionType={CollectionType.BLOG}
             title={'Блог'}
             type={'update'}

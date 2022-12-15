@@ -1,12 +1,12 @@
 import React, {FC, JSXElementConstructor, ReactElement, useEffect, useState} from "react";
-import {CollectionType} from "../types/collection";
+import {CollectionType} from "../../types/collection";
 import {Typography} from "@mui/material";
-import PopUpLoading from "../components/PopUp/PopUpLoading";
-import PopUpError from "../components/PopUp/PopUpError";
-import useItemApi from "../hooks/useItemApi";
-import SuccessArticleForm from "../components/ItemForms/SuccessArticleForm";
+import PopUpLoading from "../PopUp/PopUpLoading";
+import PopUpError from "../PopUp/PopUpError";
+import useItemApi from "../../hooks/useItemApi";
+import SuccessArticleForm from "./ArticleForms/SuccessArticleForm";
 import {useParams} from "react-router-dom";
-import Loader from "../components/UI/Loader";
+import Loader from "../UI/Loader";
 
 
 interface IProps {
@@ -16,7 +16,7 @@ interface IProps {
    type: 'create' | 'update'
 }
 
-const ItemLayout: FC<IProps> = ({ collectionType, title, children, type }) => {
+const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
 
    const params = useParams()
 
@@ -110,7 +110,7 @@ const ItemLayout: FC<IProps> = ({ collectionType, title, children, type }) => {
       <Typography
          variant='h4'
          textAlign='center'
-         sx={{ mb: 4, mt: 2 }}
+         sx={{ mb: 3, mt: 2 }}
       >
          { title }
       </Typography>
@@ -122,4 +122,4 @@ const ItemLayout: FC<IProps> = ({ collectionType, title, children, type }) => {
    </>
 }
 
-export default ItemLayout
+export default FormsBase

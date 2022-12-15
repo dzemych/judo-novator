@@ -13,6 +13,13 @@ interface BaseState {
    mainPhoto: null | File | string
 }
 
+interface SocialMediaLinks {
+   instagram: string
+   facebook: string
+   telegram: string
+   viber: string
+}
+
 export interface ArticleState extends BaseState {
    afterTitle: string
    beforeTitle: string
@@ -23,5 +30,14 @@ export interface ArticleState extends BaseState {
 }
 
 export interface TeamState {
-
+   position: string
+   name: string
+   surname: string
+   positionType: 'worker' | 'sportsman'
+   mainPhoto: null | File | string
+   mediaLinks: SocialMediaLinks
+   birth: null | Dayjs
+   description: string
+   tel: string
+   email: string
 }

@@ -51,7 +51,7 @@ const ImgInput: FC<IProps> = ({ error, changeHandler, photo }) => {
             id="img-input"
             helperText={error ? 'Додайте фото' : ''}
             error={error}
-            label="Головне фото запису"
+            label="Головне фото запису*"
             defaultValue="Додати фото"
             InputProps={{
                readOnly: true,

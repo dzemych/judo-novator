@@ -3,7 +3,7 @@ import {CardType, ICardItem} from "src/types/card"
 import useHttp, {METHOD} from "./useHttp";
 
 
-type IUseNavigation = ( limit: number, type: CardType, initParams?: any ) => {
+type IUseNavigation = ( limit: number, type: CardType, initParams?: string ) => {
    page: number
    pagesCount: number
    elements: ICardItem[]
@@ -16,7 +16,7 @@ type IUseNavigation = ( limit: number, type: CardType, initParams?: any ) => {
 const useNavigation: IUseNavigation = (limit, type, initParams) => {
    const [page, setPage] = useState(1)
    const [elements, setElements] = useState<ICardItem[]>([])
-   const [params, setParams] = useState('')
+   const [params, setParams] = useState(initParams)
    const { requestJson, loading } = useHttp()
 
    const [pagesCount, setPagesCount] = useState(0)
@@ -35,7 +35,8 @@ const useNavigation: IUseNavigation = (limit, type, initParams) => {
          METHOD.get
       )
 
-      changeElements(res.items, startIdx, res.colLength)
+      if (res.items)
+         changeElements(res.items, startIdx, res.colLength)
    }, [page, params])
 
    const changeParams = (paramsObj: any) => {
@@ -58,9 +59,9 @@ const useNavigation: IUseNavigation = (limit, type, initParams) => {
    }
 
    // * set init params
-   useEffect(() => {
-      changeParams(initParams)
-   }, [])
+   // useEffect(() => {
+   //    changeParams(initParams)
+   // }, [])
 
    // 1) Load initial elements
    useEffect(() => {

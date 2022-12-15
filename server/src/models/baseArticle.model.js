@@ -41,7 +41,12 @@ function BaseArticleSchema() {
       title      : {
          type    : String,
          required: true,
-         unique  : true
+         unique  : true,
+         set: function (val) {
+            this.slug = slugify(val, {lower: true})
+
+            return val
+         }
       },
       content    : {
          type    : String,

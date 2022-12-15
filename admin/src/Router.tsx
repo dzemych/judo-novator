@@ -5,6 +5,7 @@ import Blog from "./containers/Blog/Blog";
 import EditBlog from "./containers/Blog/EditBlog";
 import AddBlog from "./containers/Blog/AddBlog";
 import Team from "./containers/Team/Team";
+import AddTeam from "./containers/Team/AddTeam";
 
 
 const Router: FC = () => {
@@ -15,6 +16,7 @@ const Router: FC = () => {
          <Route element={<AddBlog/>} path='/blog/new' />
          <Route element={<EditBlog/>} path='/blog/:slug' />
          <Route element={<Team/>} path='/team' />
+         <Route element={<AddTeam/>} path='/team/new' />
       </Routes>
    )
 }
