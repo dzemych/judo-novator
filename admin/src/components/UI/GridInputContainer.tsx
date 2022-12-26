@@ -5,11 +5,12 @@ import { FC, ReactNode } from 'react'
 interface IProps {
    // key?: string
    children: ReactNode
+   id?: string
 }
 
-const GridInputContainer: FC<IProps> = ({ children }) => {
+const GridInputContainer: FC<IProps> = ({ children, id }) => {
    return (
-      <Grid item xs={12} sx={{ mb: 2 }} >
+      <Grid item xs={12} sx={{ mb: 2 }} id={id ? id : ''}>
          {children}
       </Grid>
    )

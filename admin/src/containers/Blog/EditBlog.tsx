@@ -1,14 +1,15 @@
 import React, {FC} from "react";
-import {Container} from "@mui/material";
 import {CollectionType} from "../../types/collection";
-import ArticleForms from "../../components/forms/ArticleForms/ArticleForms";
 import FormsBase from "../../components/forms/FormsBase";
+import FormsBaseLayout from "../../components/forms/FormsBaseLayout";
+import ArticleForms from "../../components/forms/ArticleForms/ArticleForms";
 
 
 const EditBlog: FC = () => {
    return (
-      <Container>
+      <FormsBaseLayout>
          <FormsBase
+            key={'blog-edit'}
             collectionType={CollectionType.BLOG}
             title={'Блог'}
             type={'update'}
@@ -17,7 +18,7 @@ const EditBlog: FC = () => {
             // actions and status states that invokes different popup based on forms answer)
             children={<ArticleForms/>}
          />
-      </Container>
+      </FormsBaseLayout>
    )
 }
 

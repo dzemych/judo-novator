@@ -40,7 +40,7 @@ const useHttp: IHook = () => {
 
          return res.data
       } catch(e: any) {
-         setError(e.message)
+         setError(e.response.data.message)
          return null
       } finally {
          setLoading(false)

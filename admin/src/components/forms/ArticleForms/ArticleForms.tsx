@@ -1,19 +1,18 @@
 import React, {FC, useState, useRef} from 'react'
-import classes from './ArticleEdit.module.sass'
 import Box from '@mui/material/Box'
 import {Grid, Typography} from '@mui/material'
 import { Dayjs } from 'dayjs'
-import Editor from "../Editor/Editor";
-import ImgInput from '../../UI/ImgInput'
+import Editor from "../Editor/Editor"
+import ImgInput from '../../ImgInput/ImgInput'
 import GridInputContainer from '../../UI/GridInputContainer'
 import DatePicker from '../../UI/DatePicker'
-import useFormsState from "../../../hooks/useFormsState";
-import {ArticleState} from "../../../types/collection";
-import PopUpConfirm from "../../PopUp/PopUpConfirm";
-import {ItemFormProps} from "../../../types/item";
-import {ITextInput} from "../../../types/textInput";
-import TextInputs from "../TextInputs";
-import ActionBtns from "../ActionBtns";
+import useFormsState from "../../../hooks/useFormsState"
+import {ArticleState} from "../../../types/collection"
+import {ItemFormProps} from "../../../types/item"
+import {ITextInput} from "../../../types/textInput"
+import TextInputs from "../TextInputs"
+import ActionBtns from "../ActionBtns"
+import FormsLayout from "../FormsLayout"
 
 
 type IHandleDate = (newValue: Dayjs | null) => void
@@ -46,9 +45,8 @@ const ArticleForms: FC<ItemFormProps> = (
       formErrors,
       getFormData
    } = useFormsState(item ? item : initialState, type, collectionType)
-   const [showDelete, setShowDelete] = useState(false)
    // Without changing global is valid state react doesn't update component on formErrors change
-   const [isAllValid, setIsAllValid] = useState(true)
+   const [__, setIsAllValid] = useState(true)
 
    const inputs: ITextInput[] = [
       {
@@ -106,53 +104,54 @@ const ArticleForms: FC<ItemFormProps> = (
    }
 
    return (
-      <Box className={classes.container}>
-         <PopUpConfirm
-            text={"Запис буде видалено назавжди"}
-            isOpen={showDelete}
-            onConfirm={deleteHandler}
-            onClose={() => {setShowDelete(false)}}
-         />
+      <FormsLayout>
+         <>
+            <Grid container>
+               <GridInputContainer key='img-input'>
+                  <ImgInput
+                     label='Головне фото запису*'
+                     changeHandler={val => { handleFormsChange('mainPhoto')(undefined, val) }}
+                     deleteHandler={() => { handleFormsChange('mainPhoto')(undefined, null) }}
+                     error={formErrors.mainPhoto}
+                     state={formsState.mainPhoto}
+                  />
+               </GridInputContainer>
 
-         <Grid container>
-            <GridInputContainer key='img-input'>
-               <ImgInput
-                  changeHandler={handleFormsChange('mainPhoto')}
-                  error={formErrors.mainPhoto}
-                  photo={formsState.mainPhoto}
+               <TextInputs inputs={inputs}/>
+
+               <GridInputContainer key='date-picker'>
+                  <DatePicker
+                     title={"Оберіть дату поста"}
+                     value={formsState.date ? formsState.date : null}
+                     handleChange={handleDateChange}
+                  />
+               </GridInputContainer>
+            </Grid>
+
+            <Box ref={editorContainerRef} style={{
+               margin: '0 auto 10px',
+               width: '100%',
+               maxWidth: '100%'
+            }}>
+               <Typography variant='h5' gutterBottom>
+                  Тіло запису*
+               </Typography>
+
+               <Editor
+                  collectionName={collectionType}
+                  error={formErrors.content}
+                  state={formsState.content}
+                  changeHandler={handleFormsChange('content')}
                />
-            </GridInputContainer>
+            </Box>
 
-            <TextInputs inputs={inputs}/>
-
-            <GridInputContainer key='date-picker'>
-               <DatePicker
-                  title={"Оберіть дату поста"}
-                  value={formsState.date}
-                  handleChange={handleDateChange}
-               />
-            </GridInputContainer>
-         </Grid>
-
-         <Box className={classes.editor_container} ref={editorContainerRef}>
-            <Typography variant='h5' gutterBottom>
-               Тіло запису*
-            </Typography>
-
-            <Editor
-               collectionName={collectionType}
-               error={formErrors.content}
-               state={formsState.content}
-               changeHandler={handleFormsChange('content')}
+            <ActionBtns
+               type={type}
+               onSubmit={onSubmit}
+               deleteHandler={deleteHandler}
             />
-         </Box>
-
-         <ActionBtns
-            type={type}
-            onSubmit={onSubmit}
-            onDelete={() => setShowDelete(true)}
-         />
-      </Box>
+         </>
+      </FormsLayout>
    )
 }
 

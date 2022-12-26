@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 interface IProps {
    isOpen: boolean | string | null
    onClose: () => void
+   text?: string
 }
 
 const style = {
@@ -21,7 +22,7 @@ const style = {
    p: 4,
 }
 
-const PopUpError: FC<IProps> = ({ isOpen, onClose }) => {
+const PopUpError: FC<IProps> = ({ isOpen, onClose, text }) => {
 
    useEffect(() => {
       if (isOpen)
@@ -65,7 +66,7 @@ const PopUpError: FC<IProps> = ({ isOpen, onClose }) => {
                   component="h2"
                   color="#cb4d4d"
                >
-                  Виникла неочікувана помилка
+                  {text ? text : 'Виникла неочікувана помилка'}
                </Typography>
 
                {/*<Typography id="keep-mounted-modal-description" sx={{ mt: 2, mb: 2 }}>*/}

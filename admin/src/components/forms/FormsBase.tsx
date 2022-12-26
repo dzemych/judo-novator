@@ -1,12 +1,12 @@
-import React, {FC, JSXElementConstructor, ReactElement, useEffect, useState} from "react";
-import {CollectionType} from "../../types/collection";
-import {Typography} from "@mui/material";
-import PopUpLoading from "../PopUp/PopUpLoading";
-import PopUpError from "../PopUp/PopUpError";
-import useItemApi from "../../hooks/useItemApi";
-import SuccessArticleForm from "./ArticleForms/SuccessArticleForm";
-import {useParams} from "react-router-dom";
-import Loader from "../UI/Loader";
+import React, {FC, JSXElementConstructor, ReactElement, useEffect, useState} from "react"
+import {CollectionType} from "../../types/collection"
+import {Typography} from "@mui/material"
+import PopUpLoading from "../PopUp/PopUpLoading"
+import PopUpError from "../PopUp/PopUpError"
+import useItemApi from "../../hooks/useItemApi"
+import SuccessArticleForm from "./ArticleForms/SuccessArticleForm"
+import {useParams} from "react-router-dom"
+import Loader from "../UI/Loader"
 
 
 interface IProps {
@@ -67,7 +67,8 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
 
    const fetchItem = async () => {
       const res = await getOneItem(params.slug)
-      setItem({ ...res, date: res.date ? res.date : null })
+
+      setItem(res)
       setStatus('loaded')
    }
 
@@ -76,10 +77,10 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
          fetchItem()
    }, [params, type])
 
-   if (type === 'update' && !item && status === 'init')
+   if (type === 'update' && !item && !error)
       return <Loader/>
 
-   if (type === 'update' && !item)
+   if (type === 'update' && error?.match(/no item found/i))
       return <Typography
          variant='h3'
          sx={{

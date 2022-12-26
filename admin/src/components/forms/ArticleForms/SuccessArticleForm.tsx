@@ -1,9 +1,9 @@
 import React, {FC} from "react";
-import classes from "./ArticleEdit.module.sass";
 import Box from "@mui/material/Box";
 import {Link, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
+import FormsLayout from "../FormsLayout";
 
 
 interface IProps {
@@ -16,7 +16,7 @@ const SuccessArticleForm: FC<IProps> = ({ itemLink, setAllInitial, status }) => 
    const navigate = useNavigate()
 
    return (
-      <Box className={classes.container}>
+      <FormsLayout>
          <Box
             display='flex'
             justifyContent='center'
@@ -60,7 +60,7 @@ const SuccessArticleForm: FC<IProps> = ({ itemLink, setAllInitial, status }) => 
                >Додати запис</Button>
             </div>
          </Box>
-      </Box>
+      </FormsLayout>
    )
 }
 

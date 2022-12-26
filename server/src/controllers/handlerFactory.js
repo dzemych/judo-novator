@@ -1,47 +1,11 @@
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
 const APIfeatures = require('../utils/APIfeatures')
-const path = require('path')
 const {
-   checkAndCreateDir,
    deleteDir,
-   resizeAndWritePhoto,
+   updateMainPhotoAndBack
 } = require('../utils/photoUtils')
 const ObjectId = require('mongoose').Types.ObjectId
-
-
-const updateMainPhotoAndBack = async (file, modelName, item, next) => {
-   const id = item._id
-
-   // 2) Create dir for main img
-   const dirPath = `public/img/${modelName}/${id}`
-   try {
-      await checkAndCreateDir(dirPath)
-   } catch (e) {
-      await item.remove()
-      return next(new AppError(`Error during dir check: ${e.message}`, 500))
-   }
-
-   // 3) Write main photo(450px width) and back photo (full width)
-   const backPhotoName = `back-${modelName}-${id}.jpg`
-   const mainPhotoName = `main-${modelName}-${id}.jpg`
-
-   // * If error during photo write delete db document and dir for photos
-   try {
-      await resizeAndWritePhoto(file, path.join(dirPath, backPhotoName))
-      await resizeAndWritePhoto(file, path.join(dirPath, mainPhotoName), 300)
-   } catch(e) {
-      deleteDir(`public/img/${modelName}/${id}`)
-      await item.remove()
-
-      return next(new AppError(`Error during main photo writing: ${e.message}`, 500))
-   }
-
-   item.mainPhoto = `${dirPath}/${mainPhotoName}`
-   item.backPhoto = `${dirPath}/${backPhotoName}`
-
-   await item.save({ new: true })
-}
 
 
 exports.checkUniqueSlug = collection => catchAsync(async (req, res, next) => {
@@ -58,7 +22,8 @@ exports.checkUniqueSlug = collection => catchAsync(async (req, res, next) => {
 
 exports.checkExistence = collection => catchAsync(async (req, res, next) => {
    const id = req.params.id
-   const isId = ObjectId.isValid(id)
+   // ObjectId.isValid not working correctly with certain slugs
+   const isId = ObjectId.isValid(id) && id.split('-').length < 2
 
    const itemExists = await collection
       .findOne(isId ? { _id: id } : { slug: id })
@@ -82,6 +47,7 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
 
    const modelName = item.constructor.modelName.toLowerCase()
 
+   // 2) Write proper main and back photo paths
    await updateMainPhotoAndBack(
       req.file.buffer,
       modelName,
@@ -89,20 +55,18 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
       next
    )
 
-   // 4) Save item.tsx
-   await item.save({ new: true })
-
    res.status(201).json({
       ok: true,
       statusText: 'OK',
       message: `${modelName} successfully created`,
-      item
+      item: { _id: item._id, slug: item.slug }
    })
 })
 
 exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) => {
    const id = req.params.id
-   const isId = ObjectId.isValid(id)
+   // ObjectId.isValid not working correctly with certain slugs
+   const isId = ObjectId.isValid(id) && id.split('-').length < 2
 
    const modelName = collection.collection.collectionName
       .split('').slice(0, -1).join('')
@@ -172,13 +136,14 @@ exports.getAll = (collection, optQuery = {}) => catchAsync(async (req, res) => {
 
 exports.getOne = collection => catchAsync(async (req, res, next) => {
    const id = req.params.id
-   const isId = ObjectId.isValid(id)
+   // ObjectId.isValid not working correctly with certain slugs
+   const isId = ObjectId.isValid(id) && id.split('-').length < 2
 
    const item = await collection
       .findOne(isId ? { _id: id } : { slug: id })
 
    if (!item)
-      return next(new AppError('No item.tsx found with that id', 404))
+      return next(new AppError('No item found with that id', 404))
 
    res.json({
       ok: true,

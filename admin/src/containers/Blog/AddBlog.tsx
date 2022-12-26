@@ -1,22 +1,16 @@
 import React, {FC} from "react"
-import {Container} from "@mui/material"
 import {CollectionType} from "../../types/collection"
 import FormsBase from "../../components/forms/FormsBase"
 import ArticleForms from "../../components/forms/ArticleForms/ArticleForms"
+import FormsBaseLayout from "../../components/forms/FormsBaseLayout";
 
 
 const AddBlog: FC = () => {
 
    return (
-      <Container
-         sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            mt: 2,
-         }}
-      >
+      <FormsBaseLayout>
          <FormsBase
+            key={'blog-add'}
             collectionType={CollectionType.BLOG}
             title={'Додайте новий блог'}
             type={'create'}
@@ -25,7 +19,7 @@ const AddBlog: FC = () => {
             // actions and status states that invokes different popup based on forms answer)
             children={<ArticleForms/>}
          />
-      </Container>
+      </FormsBaseLayout>
    )
 }
 

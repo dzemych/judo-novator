@@ -1,20 +1,29 @@
-import React, {FC} from "react";
+import React, {FC, useState} from "react";
 import {Grid} from "@mui/material";
 import BigButton from "../UI/BigBtn";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
+import PopUpConfirm from "../PopUp/PopUpConfirm";
 
 
 interface IProps {
    type: 'create' | 'update'
    onSubmit: (e: React.SyntheticEvent) => void
-   onDelete: () => void
+   deleteHandler: () => void
 }
 
-const ActionBtns: FC<IProps> = ({ type, onDelete, onSubmit }) => {
+const ActionBtns: FC<IProps> = ({ type, deleteHandler, onSubmit }) => {
    const navigate = useNavigate()
+   const [showDelete, setShowDelete] = useState(false)
 
-   return (
+   return <>
+      <PopUpConfirm
+         text={"Запис буде видалено назавжди"}
+         isOpen={showDelete}
+         onConfirm={deleteHandler}
+         onClose={() => {setShowDelete(false)}}
+      />
+
       <Grid
          container
          justifyContent='center'
@@ -39,14 +48,14 @@ const ActionBtns: FC<IProps> = ({ type, onDelete, onSubmit }) => {
                <Button
                   variant='contained'
                   color='error'
-                  onClick={onDelete}
+                  onClick={() => setShowDelete(true)}
                >
                   Видалити запис
                </Button>
             </Grid>
          }
       </Grid>
-   )
+   </>
 }
 
 export default ActionBtns

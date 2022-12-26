@@ -1,37 +1,8 @@
 const {Schema} = require('mongoose')
 const util = require("util");
 const slugify = require('slugify')
-const {checkAndCreateDir, writeAndGetPhotos} = require("../utils/photoUtils");
+const { getAbsPath, processNewTempPhotos} = require("../utils/photoUtils");
 
-
-const getAbsPath = (dir) => {
-   const relDir = dir.split('/').slice(1).join('/')
-   return `http://${curHost}:5000/${relDir}`
-}
-
-const processNewPhotos = function (val, srcArr, modelName) {
-   if (srcArr.length < 1) {
-      return val
-   } else {
-      let newVal = val
-
-      // 1) Get relative paths and photo names
-      const relativePaths = srcArr.map(el => el.split('/').slice(-4))
-
-      // 2) Write photos to proper dirs
-      checkAndCreateDir(`public/img/${modelName}/${this._id}`)
-
-      const photos = writeAndGetPhotos(relativePaths, this._id.toString(), modelName)
-
-      // 3) Change content srcs with relative paths
-      srcArr.forEach((el, i) => {
-         newVal = newVal.replace(el, photos[i])
-      })
-
-      this.photos = photos
-      return newVal
-   }
-}
 
 function BaseArticleSchema() {
    Schema.apply(this, arguments)
@@ -75,7 +46,7 @@ function BaseArticleSchema() {
 
             // If saving fresh document
             if (this.isNew) {
-               newVal = processNewPhotos.apply(this, [val, srcArr, modelName])
+               newVal = processNewTempPhotos.apply(this, [val, srcArr, modelName])
                // If changing old content
             } else {
                // Replace all already existing photo srcs with relative paths
@@ -91,7 +62,7 @@ function BaseArticleSchema() {
                   return acc
                }, srcArr)
 
-               newVal = processNewPhotos.apply(this, [val, newPhotos, modelName])
+               newVal = processNewTempPhotos.apply(this, [val, newPhotos, modelName])
             }
 
             return newVal
@@ -109,6 +80,7 @@ function BaseArticleSchema() {
       },
       slug       : {
          type   : String,
+         unique: true,
          default: function () {
             return slugify(this.title, {lower: true})
          }

@@ -21,8 +21,22 @@ const useNavigation: IUseNavigation = (limit, type, initParams) => {
 
    const [pagesCount, setPagesCount] = useState(0)
 
-   const changeElements = (initArr: ICardItem[], start: number, colLength: number) => {
-      setElements(initArr)
+   const changeElements = (initArr: any[], start: number, colLength: number) => {
+      let newArr = [...initArr]
+
+      // Change team item to be a proper card
+      if (type === CardType.TEAM)
+         newArr = initArr.map(el => {
+            return {
+               title: el.position,
+               beforeTitle: el.surname + ' ' + el.name,
+               afterTitle: el.positionType === 'worker' ? 'Працівник' : 'Спортсмен',
+               mainPhoto: el.mainPhoto,
+               slug: el.slug
+            }
+         })
+
+      setElements(newArr)
       setPagesCount(Math.ceil(colLength / limit))
    }
 
@@ -30,8 +44,10 @@ const useNavigation: IUseNavigation = (limit, type, initParams) => {
       let startIdx = ((page - 1) * limit)
       if (startIdx < 0) startIdx = 0
 
+      const select = `select=-backPhoto,-_id,-photos,-content,-mediaLinks`
+
       const res = await requestJson(
-         `/api/${type}?limit=${limit}&page=${page}${params}`,
+         `/api/${type}?limit=${limit}&page=${page}${params}&${select}`,
          METHOD.get
       )
 

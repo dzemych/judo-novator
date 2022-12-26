@@ -1,25 +1,25 @@
 import React, {FC} from "react";
-import FormsBase from "../../components/forms/FormsBase";
-import {CollectionType} from "../../types/collection";
-import TeamForms from "../../components/forms/TeamForms/TeamForms";
 import FormsBaseLayout from "../../components/forms/FormsBaseLayout";
+import {CollectionType} from "../../types/collection";
+import FormsBase from "../../components/forms/FormsBase";
+import AlbumForms from "../../components/forms/AlbumForms/AlbumForms";
 
 
-const AddTeam: FC = () => {
+const AddAlbum: FC = () => {
    return (
       <FormsBaseLayout>
          <FormsBase
-            key={'team-add'}
-            collectionType={CollectionType.TEAM}
-            title={'Додайте нову людину'}
+            key={'album-add'}
+            collectionType={CollectionType.ALBUM}
+            title={'Додайте новий альбом'}
             type={'create'}
             // @ts-ignore
             // Props will be added in this component (this was made for not repeating all submit
             // actions and status states that invokes different popup based on forms answer)
-            children={<TeamForms/>}
+            children={<AlbumForms/>}
          />
       </FormsBaseLayout>
    )
 }
 
-export default AddTeam
+export default AddAlbum

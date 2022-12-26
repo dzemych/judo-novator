@@ -32,7 +32,7 @@ exports.uploadTempImg = catchAsync(async (req, res, next) => {
    res.json({
       ok: true,
       message: 'File has been temporary uploaded to server',
-      url: `http://localhost:5000/img/temp/${folderPath}/${fileName}`
+      url: `http://${curHost}:5000/img/temp/${folderPath}/${fileName}`
    })
 })
 

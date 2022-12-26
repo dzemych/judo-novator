@@ -11,6 +11,10 @@ export enum CollectionType {
 interface BaseState {
    title: string
    mainPhoto: null | File | string
+   afterTitle: string
+   beforeTitle: string
+   text: string
+   date: null | Dayjs
 }
 
 interface SocialMediaLinks {
@@ -20,12 +24,20 @@ interface SocialMediaLinks {
    viber: string
 }
 
-export interface ArticleState extends BaseState {
+export interface ArticleState {
+   title: string
+   mainPhoto: null | File | string
    afterTitle: string
    beforeTitle: string
    text: string
    date: null | Dayjs
    content: undefined | string
+   _id?: string
+}
+
+export interface AlbumState extends BaseState{
+   photos: Array<null | File | string>
+   description: string
    _id?: string
 }
 

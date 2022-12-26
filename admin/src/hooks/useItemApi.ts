@@ -19,7 +19,6 @@ type IFunction = (collectionType: CollectionType) => {
 }
 
 const useItemApi: IFunction = (collectionType) => {
-
    const { loading, requestJson, error, clearError } = useHttp()
 
    const updateItem: IUpdateRequest = useCallback(async (id, formData) => {
@@ -28,6 +27,8 @@ const useItemApi: IFunction = (collectionType) => {
          METHOD.patch,
          formData
       )
+
+      if (!res) return null
 
       return res.item.slug
    }, [collectionType, requestJson])
@@ -39,11 +40,15 @@ const useItemApi: IFunction = (collectionType) => {
          formData
       )
 
+      if (!res) return null
+
       return res.item.slug
    }, [requestJson, collectionType])
 
    const getOneItem: IGetOneRequest = useCallback(async (id) => {
       const res = await requestJson(`/api/${collectionType}/${id}`, METHOD.get)
+
+      if (!res) return null
 
       return res.item
    }, [requestJson, collectionType])
@@ -51,7 +56,7 @@ const useItemApi: IFunction = (collectionType) => {
    const deleteItem: IDeleteRequest = useCallback(async (id) => {
       const res = await requestJson(`/api/${collectionType}/${id}`, METHOD.delete)
 
-      return !res;
+      return !res
    }, [requestJson, collectionType])
 
    return { updateItem, createItem, getOneItem, deleteItem, clearError, error, loading }

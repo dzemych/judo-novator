@@ -7,6 +7,7 @@ declare module '*.png'
 declare module '@ckeditor/ckeditor5-build-classic'
 declare module '@mui/x-data-grid'
 declare module '@mui/x-data-grid-generator'
+declare module 'uuid'
 declare module '@ckeditor/ckeditor5-react' {
    import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
    import Event from '@ckeditor/ckeditor5-utils/src/eventinfo'

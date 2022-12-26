@@ -2,6 +2,7 @@ const { Router } = require('express')
 const Album = require('../models/album.model')
 const handlerFactory = require('../controllers/handlerFactory')
 const photoController = require('../controllers/photo.controller')
+const albumController = require('../controllers/album.controller')
 
 
 const router = Router()
@@ -13,17 +14,15 @@ router
    .get(handlerFactory.getAll(Album))
    .post(
       photoController.uploadOnePhoto,
-      photoController.atLeastOnePhotoCheck,
-      handlerFactory.createOneWithFormData(Album)
+      albumController.createOne
    )
 
 router
    .route('/:id')
-   .get(handlerFactory.getOne(Album))
+   .get(albumController.getOne)
    .patch(
-      handlerFactory.checkExistence(Album),
       photoController.uploadOnePhoto,
-      handlerFactory.updateOneWithFormData(Album)
+      albumController.updateOne
    )
    .delete(handlerFactory.deleteOne(Album))
 

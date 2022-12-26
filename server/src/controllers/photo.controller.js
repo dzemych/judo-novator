@@ -2,12 +2,15 @@ const AppError = require('../utils/AppError')
 const multer = require('multer')
 const catchAsync = require('../utils/catchAsync')
 const photoUtils = require('../utils/photoUtils')
+const {checkAndCreateDir, resizeAndWritePhoto, deleteDir} = require("../utils/photoUtils");
+const path = require("path");
 
 
 const upload = multer({
    fileFilter: photoUtils.multerFilter,
    storage: multer.memoryStorage()
 })
+
 
 exports.uploadPhotos = upload.array('photos')
 

@@ -1,4 +1,4 @@
-import React, {useMemo, FC, useEffect} from 'react'
+import React, {useMemo, FC} from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import CustomEditor from './editorConfig'
 import classes from "./Editor.module.sass";
@@ -29,7 +29,7 @@ const Editor: FC<IProps> = (props: IProps ) => {
                config={{
                   simpleUpload: {
                      // The URL that the images are uploaded to.
-                     uploadUrl: `http://localhost:5000/api/img/temp/${props.collectionName}/${uid}`,
+                     uploadUrl: `/api/img/temp/${props.collectionName}/${uid}`,
                      // Enable the XMLHttpRequest.withCredentials property.
                      withCredentials: false,
                   }}

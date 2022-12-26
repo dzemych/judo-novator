@@ -1,4 +1,4 @@
-import {Dispatch, FC, SetStateAction, useEffect, useState} from "react"
+import {Dispatch, FC, SetStateAction} from "react"
 import classes from './SortBar.module.sass'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
@@ -8,8 +8,6 @@ interface IProps {
    state: any
    setState: Dispatch<SetStateAction<any>>
 }
-
-type ISortVar = 1 | -1
 
 const SortBar: FC<IProps> = ({ state, setState }) => {
 

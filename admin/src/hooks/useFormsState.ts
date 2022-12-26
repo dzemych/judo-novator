@@ -1,7 +1,7 @@
-import React, { useState } from "react"
-import {ArticleState, CollectionType, TeamState} from "../types/collection";
+import React, {useMemo, useState} from "react"
+import {AlbumState, ArticleState, CollectionType, TeamState} from "../types/collection";
 import useHttp from "./useHttp";
-import { matchIsValidTel } from 'mui-tel-input'
+import {matchIsValidTel} from 'mui-tel-input'
 
 
 type IChangeHandler =
@@ -9,23 +9,50 @@ type IChangeHandler =
    (e: undefined | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, val?: any) =>
       void
 
-type IFunction = <T extends (ArticleState | TeamState)>(initialState: T, type?: 'create' | 'update', collectionType?: CollectionType) => {
-   formsState: T,
-   handleFormsChange: IChangeHandler,
-   isValid: () => Promise<boolean> | boolean,
+type IFunction = <T extends (ArticleState | TeamState | AlbumState)>(initialState: T, type?: 'create' | 'update', collectionType?: CollectionType) => {
+   formsState: T
+   handleFormsChange: IChangeHandler
+   isValid: () => Promise<boolean> | boolean
    formErrors: any
-   getFormData: (prevState: any) => FormData
+   getFormData: (prevState?: any) => FormData
+   getFilteredState: (prev?: any) => object
 }
 
 const useFormsState: IFunction = (initialState, type, collectionType) => {
-   const initialErrors = Object.keys(initialState).reduce((acc, key) => {
-      // @ts-ignore
-      acc[key] = false
-      return acc
-   }, {})
+   const initialErrors = useMemo(() => {
+      const obj = Object.keys(initialState).reduce((acc, key) => {
+         // @ts-ignore
+         acc[key] = false
+         return acc
+      }, {})
+
+      if (collectionType === CollectionType.TEAM)
+         // @ts-ignore
+         obj.mediaLinks = obj.mediaLinks ? obj.mediaLinks : {
+            instagram: false,
+            facebook: false,
+            viber: false,
+            telegram: false
+         }
+
+      return obj
+   }, [initialState])
 
    const { requestJson } = useHttp()
-   const [formsState, setFormsState] = useState(initialState)
+   const [formsState, setFormsState] = useState(() => {
+      const obj = {...initialState}
+
+      if (collectionType === CollectionType.TEAM)
+         // @ts-ignore
+         obj.mediaLinks = obj.mediaLinks ? obj.mediaLinks : {
+            instagram: '',
+            facebook: '',
+            viber: '',
+            telegram: ''
+         }
+
+      return obj
+   })
    const [formErrors, setFormErrors] = useState(initialErrors)
 
    //// Valid checkers
@@ -56,15 +83,17 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
    }
 
    const isEmail = () => {
-      // @ts-ignore
-      if (!formsState.email)
-         return true
+      if ('email' in formsState) {
+         if (!formsState.email)
+            return true
 
-      // @ts-ignore
-      return formsState.email.toLowerCase()
-         .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-         )
+         return !!(formsState.email.toLowerCase()
+            .match(
+               /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            ))
+      }
+
+      return true
    }
 
    const isPhone = () => {
@@ -79,12 +108,17 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       // @ts-ignore
       return matchIsValidTel(formsState.tel)
    }
+
+   const titleCheck = (key: string) => {
+      // @ts-ignore
+      return formsState[key as keyof typeof formsState].trim() !== 'new'
+   }
    ////
 
    const validate = async (key: string): Promise<boolean> => {
       switch(key) {
          case 'title':
-            return longerThanTwo(key) && await isUnique(key)
+            return longerThanTwo(key) && await isUnique(key) && titleCheck(key)
 
          case 'content':
             return notEmpty(key)
@@ -135,7 +169,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
    }
 
    const handleFormsChange: IChangeHandler = key => (e , val) => {
-      let v: string | undefined = e?.target.value
+      let v: string | undefined
 
       if (val || key === 'content')
          v = val
@@ -144,6 +178,11 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
          v = e?.target.value.toString()
 
       setFormsState(prev => {
+         // * If we try to change something that is not in initial state return
+         if (!(key in prev))
+            return prev
+
+         // 1) Check if phone is not too long, take only allowed count of numbers
          if (key === 'tel') {
             const numCount = val.split(' ').join('').split('').length
 
@@ -151,6 +190,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
                return {...prev, [key]: v.split('').slice(0, 14).join('')}
          }
 
+         // 2) If trying to change nested fields change only necessary
          if (key.split('.').length === 2) {
             const keyArr = key.split('.')
 
@@ -163,31 +203,48 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
             }
          }
 
+         // 3) If v is undefined set it to default target value
+         if (!v && !val) v = e?.target.value
+
          return { ...prev, [key]: v }
       })
    }
 
-   const getFormData = (prevState?: any) => {
-      // State with only filled fields
-      const filteredState = Object.keys(formsState).reduce((acc, el) => {
+   const getFilteredState = (prevState?: any) => {
+      return Object.keys(formsState).reduce((acc, el) => {
          const key = el as keyof typeof formsState
 
          const isFilled = notEmpty(key as string)
+
+         if (!isFilled)
+            return acc
+
+         // Process media links field, to contain only filled
+         if (formsState[key] === "mediaLinks") {
+            // @ts-ignore
+            const obj = Object.keys(formsState[key]).reduce((acc, el) => {
+               // @ts-ignore
+               const val = formsState[key][el]
+               if (val)
+                  acc = val
+
+               return acc
+            }, {})
+
+            return Object.keys(obj).length > 0 ? obj : acc
+         }
 
          if (key === 'mainPhoto')
             return acc
 
          // @ts-ignore
          if (key === 'tel' && formsState[key].length < 6)
-               return acc
-
-         if (!isFilled)
             return acc
 
          if (type === 'update' && prevState && formsState[key] === prevState[key])
             return acc
 
-         // Format date from DateJs to normal Date type
+         // Process date from DateJs to normal Date type
          if (key === 'date') { // @ts-ignore
             acc[key] = formsState.date?.unix()
          } else {// @ts-ignore
@@ -196,6 +253,11 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
 
          return acc
       }, {})
+   }
+
+   const getFormData = (prevState?: any) => {
+      // State with only filled fields
+      const filteredState = getFilteredState(prevState)
 
       const formData = new FormData()
 
@@ -207,7 +269,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       return formData
    }
 
-   return { formsState, handleFormsChange, isValid, formErrors, getFormData }
+   return { formsState, handleFormsChange, isValid, formErrors, getFormData, getFilteredState }
 }
 
 export default useFormsState
