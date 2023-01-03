@@ -38,7 +38,8 @@ const AlbumForms: FC<ItemFormProps> = (
       handleFormsChange,
       isValid,
       formErrors,
-      getFilteredState
+      getFilteredState,
+      formsLoading
    } = useFormsState(item ? item : initialState, type, collectionType)
    const {
       photos,
@@ -49,6 +50,7 @@ const AlbumForms: FC<ItemFormProps> = (
       firstPhotoHandler,
       isValidPhotos,
       photosError,
+      photosLoading
    } = usePhotosState(item?.photos ? item.photos : [])
    // Without changing global is valid state react doesn't update component on formErrors change
    const [isAllValid, setIsAllValid] = useState(true)
@@ -69,7 +71,6 @@ const AlbumForms: FC<ItemFormProps> = (
          filteredForms.photos = photos
 
          const formData = new FormData()
-         formData.append('upload', formsState.mainPhoto)
          formData.append('data', JSON.stringify(filteredForms))
 
          await submitHandler(formData)
@@ -121,7 +122,7 @@ const AlbumForms: FC<ItemFormProps> = (
 
    useEffect(() => {
       if (!isAllValid) {
-         if (formErrors.mainPhoto || formErrors.title) {
+         if (formsState.mainPhoto || formErrors.title) {
             document.getElementById('main-root')?.scrollTo(0, 125)
          } else {
             document.getElementById('photos-input')?.scrollIntoView()
@@ -164,6 +165,7 @@ const AlbumForms: FC<ItemFormProps> = (
             type={type}
             onSubmit={onSubmit}
             deleteHandler={deleteHandler}
+            disabled={formsLoading || photosLoading}
          />
       </>
    </FormsLayout>

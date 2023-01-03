@@ -2,7 +2,6 @@ const {Router} = require('express')
 const handlerFactory = require('../controllers/handlerFactory')
 const Team = require('../models/team.model')
 const photoController = require('../controllers/photo.controller')
-const Blog = require("../models/blog.model");
 
 
 const router = Router()
@@ -13,7 +12,6 @@ router
    .route('/')
    .post(
       photoController.uploadOnePhoto,
-      photoController.atLeastOnePhotoCheck,
       handlerFactory.createOneWithFormData(Team)
    )
    .get(handlerFactory.getAll(Team))

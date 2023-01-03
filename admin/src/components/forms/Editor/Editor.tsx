@@ -1,21 +1,31 @@
-import React, {useMemo, FC} from 'react'
+import React, {FC, useContext} from 'react'
 import { CKEditor } from '@ckeditor/ckeditor5-react'
 import CustomEditor from './editorConfig'
-import classes from "./Editor.module.sass";
+import classes from "./Editor.module.sass"
+import TempImgContext from "../../context/tempImgContext"
 
 
 interface IProps {
    collectionName: string
    error?: boolean
-   state: string | undefined
+   state: string
    changeHandler: (e: React.ChangeEvent<HTMLInputElement>, val: any) => void
 }
 
 const Editor: FC<IProps> = (props: IProps ) => {
 
-   const uid = useMemo(() => {
-      return Date.now()
-   }, [])
+   const { uploadUrl } = useContext(TempImgContext)
+
+   const findDiff = (str1: string, str2: string) => {
+      let diff= ""
+
+      str2.split('').forEach(function(val, i){
+         if (val != str1.charAt(i))
+            diff += val 
+      })
+
+      return diff
+   }
 
    return (
       <>
@@ -29,13 +39,15 @@ const Editor: FC<IProps> = (props: IProps ) => {
                config={{
                   simpleUpload: {
                      // The URL that the images are uploaded to.
-                     uploadUrl: `/api/img/temp/${props.collectionName}/${uid}`,
+                     uploadUrl: uploadUrl,
                      // Enable the XMLHttpRequest.withCredentials property.
                      withCredentials: false,
                   }}
                }
                onChange={ ( event, editor ) => {
-                  props.changeHandler(event, editor.getData())
+                  const newState = editor.getData()
+
+                  props.changeHandler(event, newState)
                } }
             />
          </div>

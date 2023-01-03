@@ -13,20 +13,19 @@ const routes = require('./routes.js')
 // 1) SECURITY middlewares
 app.use(helmet({
    crossOriginResourcePolicy: false,
-   contentSecurityPolicy: {
+   contentSecurityPolicy    : {
       directives: {
-         "script-src": ["'self'", "'unsafe-eval'"],
-         "default-src": ["'self'"],
-         "base-uri": ["'self'"],
-         "font-src": ["'self'", "https:", "data:"],
-         "form-action": ["'self'"],
-         "frame-ancestors": ["'self'"],
-         "img-src": ["'self'", "data:", "http://localhost"],
-         "object-src": ["'none'"],
-         "script-src-attr": ["'none'"],
-         "style-src": ["'self'", "https:", "'unsafe-inline'"],
+         "script-src"               : ["'self'", "'unsafe-eval'"],
+         "default-src"              : ["'self'"],
+         "base-uri"                 : ["'self'"],
+         "font-src"                 : ["'self'", "https:", "data:"],
+         "form-action"              : ["'self'"],
+         "frame-ancestors"          : ["'self'"],
+         "img-src"                  : ["'self'", "data:", "http://localhost"],
+         "object-src"               : ["'none'"],
+         "script-src-attr"          : ["'none'"],
+         "style-src"                : ["'self'", "https:", "'unsafe-inline'"],
          "upgrade-insecure-requests": '',
-         // 'Cross-Origin-Resource-Policy': 'same-site'
       }
    }
 }))
@@ -34,9 +33,9 @@ app.use(mongoSanitize())
 app.use(xssClean())
 
 app.use(rateLimiter({
-   max: 500,
+   max     : 500,
    windowMs: 60 * 500,
-   message: 'To many requests from this IP'
+   message : 'To many requests from this IP'
 }))
 
 // * Cors
@@ -44,6 +43,17 @@ app.use(cors())
 
 // 2) PARSING middlewares
 app.use(express.json())
+
+function sleep(ms) {
+   return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+   })
+}
+
+app.use(async (req, res, next) => {
+   await sleep(500)
+   next()
+})
 
 // 3) Routes
 app.use('/api', routes)

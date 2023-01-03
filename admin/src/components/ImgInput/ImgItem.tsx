@@ -89,7 +89,17 @@ const ImgItem: FC<IProps> = (props) => {
             </div>
 
             <div className={classes.item_img_wrapper}>
-               { imgSrc === 'loading' ? <Loader/> : <img src={imgSrc} alt=""/> }
+               { imgSrc === 'loading' &&
+                  <div className={classes.item_img_loader}>
+                     <Loader/>
+                  </div>
+               }
+
+               {/*{ imgSrc === 'loading'*/}
+               {/*   ? <Loader/>*/}
+               {/*   : <img src={imgSrc} alt=""/>*/}
+               {/*}*/}
+               <img src={imgSrc} alt=""/>
             </div>
          </div>
       </Grid>

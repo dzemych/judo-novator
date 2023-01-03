@@ -50,7 +50,8 @@ const TeamForms: FC<ItemFormProps> = (
       formErrors,
       handleFormsChange,
       isValid,
-      getFormData
+      getFormData,
+      formsLoading
    } = useFormsState(item ? item : initialState, type, collectionType)
    // Without changing global is valid state react doesn't update component on formErrors change
    const [allValid, setAllValid] = useState(true)
@@ -91,8 +92,7 @@ const TeamForms: FC<ItemFormProps> = (
       const isUnique = await uniqueCheck()
 
       if (valid && isUnique) {
-         const formData = await getFormData(item)
-         await submitHandler(formData)
+         await submitHandler(getFormData(item))
       }
    }
 
@@ -252,6 +252,7 @@ const TeamForms: FC<ItemFormProps> = (
             </Grid>
 
             <ActionBtns
+               disabled={formsLoading}
                type={type}
                onSubmit={onSubmit}
                deleteHandler={deleteHandler}

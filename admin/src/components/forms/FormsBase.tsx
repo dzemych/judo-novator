@@ -5,8 +5,11 @@ import PopUpLoading from "../PopUp/PopUpLoading"
 import PopUpError from "../PopUp/PopUpError"
 import useItemApi from "../../hooks/useItemApi"
 import SuccessArticleForm from "./ArticleForms/SuccessArticleForm"
-import {useParams} from "react-router-dom"
+import {useNavigate, useParams} from "react-router-dom"
 import Loader from "../UI/Loader"
+import useUid from "../../hooks/useUid";
+import TempImgContext from "../context/tempImgContext"
+import useTempImg from "../../hooks/useTempImg";
 
 
 interface IProps {
@@ -27,13 +30,23 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       getOneItem,
       error,
       clearError,
-      loading
+      loading: itemLoading
    } = useItemApi(collectionType)
 
+   const {
+      uploadTempImg,
+      deleteTempImg,
+      uploadUrl,
+      deleteTempFolder,
+      loading: tempImgLoading
+   } = useTempImg(collectionType)
+   // TODO global state for temp photos
+   const navigate = useNavigate()
+   const { getV1 } = useUid()
    const [status, setStatus] = useState<'init' | 'loaded' |'created' | 'updated' | 'deleted'>('init')
    const [itemLink, setItemLink] = useState('')
-   const [editorKey, setEditorKey] = useState(Math.random() * 1000)
    const [item, setItem] = useState<any>(null)
+   const [editorKey, setEditorKey] = useState(getV1())
 
    const createHandler = async (formData: FormData) => {
       const slug = await createItem(formData)
@@ -61,8 +74,7 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    }
 
    const setToInitial = () => {
-      setStatus('init')
-      setEditorKey(Math.random() * 10000)
+      navigate(`/${collectionType}/new`)
    }
 
    const fetchItem = async () => {
@@ -107,7 +119,9 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       item: type === 'create' ? undefined : item,
    })
 
-   return <>
+   return <TempImgContext.Provider value={{
+      uploadUrl, uploadTempImg, deleteTempImg, deleteTempFolder, loading: tempImgLoading
+   }}>
       <Typography
          variant='h4'
          textAlign='center'
@@ -118,9 +132,9 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
 
       {childrenWithProps}
 
-      <PopUpLoading isOpen={loading}/>
+      <PopUpLoading isOpen={itemLoading}/>
       <PopUpError isOpen={error} onClose={clearError}/>
-   </>
+   </TempImgContext.Provider>
 }
 
 export default FormsBase

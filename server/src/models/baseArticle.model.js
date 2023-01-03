@@ -1,7 +1,14 @@
 const {Schema} = require('mongoose')
 const util = require("util");
 const slugify = require('slugify')
-const { getAbsPath, processNewTempPhotos} = require("../utils/photoUtils");
+const {
+   getAbsPath,
+   getTempPhotoAndChangeContent,
+   deleteDir
+} = require("../utils/photoUtils");
+const fs = require("fs");
+const path = require("path");
+const AppError = require("../utils/AppError");
 
 
 function BaseArticleSchema() {
@@ -31,7 +38,7 @@ function BaseArticleSchema() {
                .split('').slice(0, -1).join('')
 
             // * Regex for img src
-            const srcRegex = /(http|https):\/\/.{3,30}\/img\/temp.*\.(jpg|jpeg|png|gif)/gi
+            const srcRegex = /(http|https):\/\/.{3,30}\/img\/.*\.(jpg|jpeg|png|gif)/gi
 
             // 1) Get array of img srcs
             const elArr = val.replace(/([<>])/g, "|").split("|")
@@ -44,25 +51,56 @@ function BaseArticleSchema() {
                return acc
             }, [])
 
-            // If saving fresh document
+            // If saving new document
             if (this.isNew) {
-               newVal = processNewTempPhotos.apply(this, [val, srcArr, modelName])
+               const { newPhotos, newValue } = getTempPhotoAndChangeContent.apply(this, [newVal, srcArr, modelName])
+               this.photos = newPhotos
+               newVal = newValue
                // If changing old content
             } else {
-               // Replace all already existing photo srcs with relative paths
-               const newPhotos = this.photos.reduce((acc, el) => {
-                  const idx = srcArr.findIndex(src => src.includes(el))
+               let newPhotosArr = []
 
-                  if (idx) {
-                     // Replace abs path in content with relative
-                     val.replace(this.photos[idx], el)
-                     acc.splice(idx, 1)
+               // Get new temp photos and change old abs paths to rel
+               const newSrcs = srcArr.reduce((acc, absElPath) => {
+                  const relElPath = `public/${absElPath.split('/').slice(-4).join('/')}`
+
+                  if (this.photos.includes(relElPath)) {
+                     newVal = newVal.replace(absElPath, relElPath)
+                     newPhotosArr.push(relElPath)
                   }
+                  else
+                     acc.push(absElPath)
 
                   return acc
-               }, srcArr)
+               }, [])
 
-               newVal = processNewTempPhotos.apply(this, [val, newPhotos, modelName])
+               if (newSrcs.length) {
+                  const { newPhotos, newValue } = getTempPhotoAndChangeContent.apply(this, [newVal, newSrcs, modelName])
+
+                  this.photos = [...newPhotosArr, ...newPhotos]
+                  newVal = newValue
+               } else
+                  this.photos = newPhotosArr
+
+               // Delete old photos
+               try {
+                  const relDirPath = `public/img/${modelName}/${this._id}`
+                  const files = fs.readdirSync(path.resolve(relDirPath))
+
+                  files.forEach(el => {
+                     const photoPath = `${relDirPath}/${el}`
+
+                     if (
+                        !(newVal.includes(photoPath)) &&
+                        el.split('-')[0] !== 'back' &&
+                        el.split('-')[0] !== 'main'
+                     )
+                        deleteDir(photoPath)
+                  })
+               }
+               catch (e) {
+                  throw new AppError(`Error during deleting old photos: ${e.message}`, 500)
+               }
             }
 
             return newVal
@@ -86,11 +124,11 @@ function BaseArticleSchema() {
          }
       },
       photos     : [String],
-      mainPhoto  : {
+      backPhoto  : {
          type: String,
          get : getAbsPath
       },
-      backPhoto  : {
+      mainPhoto  : {
          type: String,
          get : getAbsPath
       },

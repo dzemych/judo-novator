@@ -43,23 +43,27 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
 
    // 1) Create item.tsx from data field in request
    const data = JSON.parse(req.body.data)
-   const item = await collection.create(data)
+   if (!data.mainPhoto && !req.file)
+      return next(new AppError('Provide main photo or in upload field as file or in data.mainPhoto', 400))
 
+   const item = await collection.create(data)
    const modelName = item.constructor.modelName.toLowerCase()
 
-   // 2) Write proper main and back photo paths
-   await updateMainPhotoAndBack(
-      req.file.buffer,
-      modelName,
-      item,
-      next
-   )
+   // 2) Write proper main and back photo paths main photo is provided as file
+   if (req.file || data.mainPhoto)
+      await updateMainPhotoAndBack(
+         data.mainPhoto || req.file.buffer,
+         modelName,
+         item,
+         next
+      )
 
    res.status(201).json({
       ok: true,
       statusText: 'OK',
       message: `${modelName} successfully created`,
-      item: { _id: item._id, slug: item.slug }
+      // item: { _id: item._id, slug: item.slug }
+      item
    })
 })
 
@@ -82,9 +86,9 @@ exports.updateOneWithFormData = collection => catchAsync(async (req, res, next) 
    await item.save({ new: true })
 
    // 2) Update main photo
-   if (req.file) {
+   if (req.file || data.mainPhoto) {
       await updateMainPhotoAndBack(
-         req.file.buffer,
+         data.mainPhoto || req.file.buffer,
          modelName,
          item,
          next

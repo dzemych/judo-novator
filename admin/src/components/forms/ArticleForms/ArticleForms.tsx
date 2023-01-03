@@ -13,6 +13,7 @@ import {ITextInput} from "../../../types/textInput"
 import TextInputs from "../TextInputs"
 import ActionBtns from "../ActionBtns"
 import FormsLayout from "../FormsLayout"
+import useOnePhotoState from "../../../hooks/useOnePhotoState";
 
 
 type IHandleDate = (newValue: Dayjs | null) => void
@@ -27,6 +28,8 @@ const initialState: ArticleState = {
    content: ''
 }
 
+
+// TODO go to main photo in casa of error
 const ArticleForms: FC<ItemFormProps> = (
    {
       collectionType,
@@ -43,9 +46,9 @@ const ArticleForms: FC<ItemFormProps> = (
       handleFormsChange,
       isValid,
       formErrors,
-      getFormData
+      getFormData,
+      formsLoading,
    } = useFormsState(item ? item : initialState, type, collectionType)
-   // Without changing global is valid state react doesn't update component on formErrors change
    const [__, setIsAllValid] = useState(true)
 
    const inputs: ITextInput[] = [
@@ -94,11 +97,8 @@ const ArticleForms: FC<ItemFormProps> = (
       const valid = await isValid()
       setIsAllValid(valid)
 
-      if (valid) {
-         const formData = getFormData(item)
-
-         await submitHandler(formData)
-      }
+      if (valid)
+         await submitHandler(getFormData(item))
 
       document.getElementById('main-root')?.scrollTo(0, 125)
    }
@@ -146,6 +146,7 @@ const ArticleForms: FC<ItemFormProps> = (
             </Box>
 
             <ActionBtns
+               disabled={formsLoading}
                type={type}
                onSubmit={onSubmit}
                deleteHandler={deleteHandler}

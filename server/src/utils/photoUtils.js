@@ -23,7 +23,10 @@ const getPhotoPath = (modelName, id, name) => {
 }
 
 const deleteDir = (dirPath) => {
-   const dir = path.resolve(dirPath)
+   let dir = path.resolve(dirPath)
+
+   if (/^(http|https)/.test(dirPath))
+      dir = path.resolve(`public/${dirPath.split('/').slice(-3).join('/')}`)
 
    if (fs.existsSync(dir))
       fs.rmSync(dir, { recursive: true, force: true })
@@ -41,8 +44,8 @@ const checkAndCreateDir = (dirPath) => {
    })
 }
 
-const renamePhotoAndGetPath = (modelName, id, idx, oldRelPath) => {
-   const newRelPath = getPhotoPath(modelName, id, idx)
+const renamePhotoAndGetPath = (modelName, id, name, oldRelPath) => {
+   const newRelPath = getPhotoPath(modelName, id, name)
    let oldAbsPath = path.resolve('public', oldRelPath)
 
    if (oldRelPath.split('/')[0] === 'public')
@@ -68,7 +71,9 @@ const writeAndGetNewPhotos = (relativePaths, id, modelName) => {
    }
 
    // 2) Delete temp folder
-   deleteDir(`public/img/temp/${relativePaths[0][2]}`)
+   const tempFiles = fs.readdirSync(`public/img/temp/${relativePaths[0][2]}`)
+   if (tempFiles.length < 1)
+      deleteDir(`public/img/temp/${relativePaths[0][2]}`)
 
    // 3) Return photo paths
    return photos
@@ -87,32 +92,59 @@ exports.writeAndGetPhotos = writeAndGetNewPhotos
 
 exports.renamePhotoAndGetPath = renamePhotoAndGetPath
 
-exports.updateMainPhotoAndBack = async (file, modelName, item, next) => {
+exports.updateMainPhotoAndBack = async (photo, modelName, item, next) => {
    const id = item._id
 
-   // 2) Create dir for main img
+   // 2) Create dir for main and back imgs
    const dirPath = `public/img/${modelName}/${id}`
+   const tempDir = `public/${photo.split('/').slice(3, -1).join('/')}`
    try {
       await checkAndCreateDir(dirPath)
    } catch (e) {
       await item.remove()
-      return next(new AppError(`Error during dir check: ${e.message}`, 500))
+      throw next(new AppError(`Error during dir check: ${e.message}`, 500))
    }
 
    // 3) Write main photo(450px width) and back photo (full width)
    const backPhotoName = `back-${modelName}-${id}.jpg`
    const mainPhotoName = `main-${modelName}-${id}.jpg`
 
-   // * If error during photo write delete db document and dir for photos
-   try {
-      await resizeAndWritePhoto(file, path.join(dirPath, backPhotoName))
-      await resizeAndWritePhoto(file, path.join(dirPath, mainPhotoName), 300)
-   } catch(e) {
-      deleteDir(`public/img/${modelName}/${id}`)
-      await item.remove()
+   // Process photo if it is provided as File
+   if (Buffer.isBuffer(photo)) {
+      try {
+         await resizeAndWritePhoto(photo, path.join(dirPath, backPhotoName))
+         await resizeAndWritePhoto(photo, path.join(dirPath, mainPhotoName), 300)
+      } catch(e) {
+         deleteDir(`public/img/${modelName}/${id}`)
+         await item.remove()
 
-      return next(new AppError(`Error during main photo writing: ${e.message}`, 500))
+         throw next(new AppError(`Error during main photo writing: ${e.message}`, 500))
+      }
    }
+
+   // Process photo if it is provided as temp photo dir
+   if (typeof photo === 'string') {
+      const relPhotoPath = `public/${photo.split('/').slice(-4).join('/')}`
+      const newBackPath = path.resolve(dirPath, backPhotoName)
+
+      if (item.mainPhoto === relPhotoPath)
+         return
+
+      try {
+         // Move back photo to proper dir
+         fs.renameSync(path.resolve(relPhotoPath), newBackPath)
+         // Resize and write to proper dir main photo
+         await resizeAndWritePhoto(newBackPath, path.join(dirPath, mainPhotoName), 300)
+      } catch(e) {
+         throw next(new AppError(`Error during processing photo as url to temp file: ${e.message}`, 500))
+      }
+   } else {
+      throw next(new AppError('Unknown photo format', 406))
+   }
+
+   const tempFiles = fs.readdirSync(tempDir)
+   if (tempFiles.length < 1)
+      deleteDir(tempDir)
 
    item.mainPhoto = `${dirPath}/${mainPhotoName}`
    item.backPhoto = `${dirPath}/${backPhotoName}`
@@ -134,32 +166,11 @@ exports.multerFilter = (req, file, cb) => {
    cb(null, true)
 }
 
-exports.deletePhotoFiles = async (collection, id) => {
-   const relativeDir = `public/img/${collection}/${id}`
-
-   const deletePhotosCallback = async (err, files) => {
-      if (files) {
-
-         for (const file of files) {
-            await fs.unlink(path.join(relativeDir, file), err => {
-               if (err) throw err
-            })
-         }
-
-      }
-   }
-
-   fs.readdir(
-      path.resolve(relativeDir),
-      deletePhotosCallback
-   )
-}
-
-exports.processNewTempPhotos = function (val, srcArr, modelName) {
+exports.getTempPhotoAndChangeContent = function (content, srcArr, modelName) {
    if (srcArr.length < 1) {
-      return val
+      return content
    } else {
-      let newVal = val
+      let newValue = content
 
       // 1) Get relative paths and photo names
       const relativePaths = srcArr.map(el => el.split('/').slice(-4))
@@ -171,10 +182,9 @@ exports.processNewTempPhotos = function (val, srcArr, modelName) {
 
       // 3) Change content srcs with relative paths
       srcArr.forEach((el, i) => {
-         newVal = newVal.replace(el, photos[i])
+         newValue = newValue.replace(el, photos[i])
       })
 
-      this.photos = photos
-      return newVal
+      return { newPhotos: photos, newValue }
    }
 }

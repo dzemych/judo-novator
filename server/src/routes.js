@@ -19,7 +19,6 @@ router.use('/auth', authRouter)
 router.use('/img', tempImgRouter)
 
 router.use('*', (req, res) => {
-
    res.status(404).json({
       ok: false,
       status: 'fail',

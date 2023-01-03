@@ -1,37 +1,36 @@
-import {useMemo, useState} from "react";
+import {useContext, useMemo, useState} from "react";
 import useHttp, {METHOD} from "./useHttp";
+import TempImgContext from "../components/context/tempImgContext";
 
 
-type IProps = (initialState?: Array<File>) => {
-   photos: Array<File | string>
-   changePhotosHandler: (files: FileList | File) => void
+type IProps = (initialState?: Array<string>, initialMainPhotoState?: string) => {
+   photos: Array<string>
+   changePhotosHandler: (files: FileList) => void
    deletePhotosHandler: (idx: number) => void
    nextPhotoHandler: (idx: number) => void
    prevPhotoHandler: (idx: number) => void
    firstPhotoHandler: (idx: number) => void
    isValidPhotos: () => boolean
    photosError: boolean
+   photosLoading: boolean
 }
 
-const usePhotosState: IProps = (initialState = []) => {
+const usePhotosState: IProps = (initialPhotosState = []) => {
 
-   const { requestJson } = useHttp()
+   // const { requestJson, loading } = useHttp()
+   const { uploadTempImg, loading } = useContext(TempImgContext)
 
-   const [photos, setPhotos] = useState<Array<File | string>>(initialState)
+   const [photos, setPhotos] = useState(initialPhotosState)
    const [photosError, setPhotosError] = useState(false)
 
-   const uid = useMemo(() => Date.now(), [])
+   // const uid = useMemo(() => `${Date.now()}-${Math.random() * 10000}`, [])
 
    const getPhotoPromises = (files: File[]) => {
       return files.map(el => {
-         const formData = new FormData()
-         formData.append('upload', el)
+         // const formData = new FormData()
+         // formData.append('upload', el)
 
-         return requestJson(
-            `/api/img/temp/album/${uid}`,
-            METHOD.post,
-            formData
-         )
+         return uploadTempImg(el)
       })
    }
 
@@ -43,23 +42,23 @@ const usePhotosState: IProps = (initialState = []) => {
       await setPhotos(prev => [...prev, ...loadingArr])
 
       for (const i in photoPromises) {
-         const res = await photoPromises[i]
+         const url = await photoPromises[i]
          const idx = parseInt(i) + initLength
 
          // @ts-ignore
          await setPhotos(prev => prev.map((el, index) => {
-            if (index === idx) return res.url
+            if (index === idx) return url
 
             return el
          }))
       }
    }
 
-   const changePhotosHandler = async (files: FileList | File) => {
+   const changePhotosHandler = (files: FileList) => {
       if (files instanceof FileList) {
          const filesArr = Array.from(files)
 
-         await uploadPhotos(filesArr)
+         uploadPhotos(filesArr)
       }
    }
 
@@ -120,6 +119,7 @@ const usePhotosState: IProps = (initialState = []) => {
       firstPhotoHandler,
       isValidPhotos,
       photosError,
+      photosLoading: loading,
    }
 }
 

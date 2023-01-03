@@ -1,7 +1,8 @@
-import React, {useMemo, useState} from "react"
+import React, {useContext, useMemo, useState} from "react"
 import {AlbumState, ArticleState, CollectionType, TeamState} from "../types/collection";
 import useHttp from "./useHttp";
 import {matchIsValidTel} from 'mui-tel-input'
+import TempImgContext from "../components/context/tempImgContext";
 
 
 type IChangeHandler =
@@ -16,6 +17,7 @@ type IFunction = <T extends (ArticleState | TeamState | AlbumState)>(initialStat
    formErrors: any
    getFormData: (prevState?: any) => FormData
    getFilteredState: (prev?: any) => object
+   formsLoading: boolean
 }
 
 const useFormsState: IFunction = (initialState, type, collectionType) => {
@@ -38,7 +40,8 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       return obj
    }, [initialState])
 
-   const { requestJson } = useHttp()
+   const { requestJson, loading } = useHttp()
+   const { uploadTempImg, loading: tempImgLoading } = useContext(TempImgContext)
    const [formsState, setFormsState] = useState(() => {
       const obj = {...initialState}
 
@@ -147,7 +150,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
 
    const isValid = async (): Promise<boolean> => {
       let isValid = true
-      const newErrors = initialErrors
+      const newErrors = {...initialErrors}
 
       const objKeys = Object.keys(formErrors)
 
@@ -168,14 +171,43 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       return isValid
    }
 
-   const handleFormsChange: IChangeHandler = key => (e , val) => {
-      let v: string | undefined
+   const handleMainPhotoChange = async (file: any) => {
+      if (!file) {
+         setFormsState(prev => ({...prev, mainPhoto: ''}))
+         return
+      }
 
-      if (val || key === 'content')
-         v = val
+      if (file instanceof FileList) {
+         await setFormsState(prev => ({...prev, mainPhoto: 'loading'}))
+
+         const formData = new FormData()
+         formData.append('upload', file[0])
+
+         const url = await uploadTempImg(file[0])
+         if (url)
+            setFormsState(prev => ({...prev, mainPhoto: url}))
+      }
+
+      if (typeof file === 'string')
+         setFormsState(prev => ({...prev, mainPhoto: file}))
+   }
+
+   // TODO change temp file dir naming
+
+   // TODO social links and phone not working correctly
+   const handleFormsChange: IChangeHandler = key => (e , val) => {
+      if (key === 'mainPhoto') {
+         handleMainPhotoChange(val)
+         return
+      }
+
+      let newValue: string | undefined
+
+      if (val !== null && val !== undefined)
+         newValue = val
 
       if (key === 'positionType')
-         v = e?.target.value.toString()
+         newValue = e?.target.value.toString()
 
       setFormsState(prev => {
          // * If we try to change something that is not in initial state return
@@ -186,8 +218,8 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
          if (key === 'tel') {
             const numCount = val.split(' ').join('').split('').length
 
-            if (v && numCount > 13)
-               return {...prev, [key]: v.split('').slice(0, 14).join('')}
+            if (newValue && numCount > 13)
+               return {...prev, [key]: newValue.split('').slice(0, 14).join('')}
          }
 
          // 2) If trying to change nested fields change only necessary
@@ -198,15 +230,21 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
                ...prev,
                [keyArr[0]]: {
                   ...prev[keyArr[0] as keyof typeof prev],
-                  [keyArr[1]]: v
+                  [keyArr[1]]: newValue
                }
             }
          }
 
          // 3) If v is undefined set it to default target value
-         if (!v && !val) v = e?.target.value
+         if (newValue === undefined) {
+            if (!e || !e.target || !e.target.value) {
+               newValue = ''
+            } else {
+               newValue = e.target.value
+            }
+         }
 
-         return { ...prev, [key]: v }
+         return { ...prev, [key]: newValue }
       })
    }
 
@@ -234,7 +272,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
             return Object.keys(obj).length > 0 ? obj : acc
          }
 
-         if (key === 'mainPhoto')
+         if (key === 'mainPhoto' && formsState.mainPhoto instanceof File)
             return acc
 
          // @ts-ignore
@@ -260,7 +298,6 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       const filteredState = getFilteredState(prevState)
 
       const formData = new FormData()
-
       formData.append('data', JSON.stringify(filteredState))
 
       if (formsState.mainPhoto instanceof File)
@@ -269,7 +306,15 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
       return formData
    }
 
-   return { formsState, handleFormsChange, isValid, formErrors, getFormData, getFilteredState }
+   return {
+      formsState,
+      handleFormsChange,
+      isValid,
+      formErrors,
+      getFormData,
+      getFilteredState,
+      formsLoading: loading || tempImgLoading
+   }
 }
 
 export default useFormsState

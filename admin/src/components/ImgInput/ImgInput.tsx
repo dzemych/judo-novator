@@ -9,8 +9,8 @@ interface IProps {
    label: string
    helperText?: string
    error: boolean
-   state: File | null | string | Array<File | string>
-   changeHandler: (val: FileList | File) => void
+   state: File | null | string | Array<string>
+   changeHandler: (val: FileList) => Promise<void> | void
    deleteHandler: (idx: number) => void
    nextHandler?: (idx: number) => void
    prevHandler?: (idx: number) => void
@@ -32,23 +32,19 @@ const ImgInput: FC<IProps> = (
       helperText
    }) => {
 
-   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
-
-   const getUuid = useCallback(() => {
+   const getUid = useCallback(() => {
       return `${Date.now()}-${Math.random() * 10000}`
    }, [])
+
+   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
 
    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault()
       const files = inputRef.current.files
+      inputRef.current.files = new DataTransfer().files
 
-      if (files?.length) {
-         if (!multiple)
-            await changeHandler(files[0])
-
-         if (multiple)
-            await changeHandler(files)
-      }
+      if (files?.length)
+         await changeHandler(files)
    }
 
    const onInputClick = () => {
@@ -56,34 +52,35 @@ const ImgInput: FC<IProps> = (
    }
 
    const photosList = useMemo(() => {
+      if (!state) return
+
       if (state instanceof File || typeof state === 'string' ) return (
          <ImgItem
             idx={0}
-            key={getUuid()}
+            key={'main-img'}
             img={state}
             type={'single'}
             deleteHandler={deleteHandler}
-            nextHandler={nextHandler}
-            prevHandler={prevHandler}
-            firstHandler={firstHandler}
          />
       )
 
       // @ts-ignore
       if (Array.isArray(state) && Object.keys(state).length > 0)
          return (
-            state.map((el, i) => (
-               <ImgItem
-                  key={getUuid()}
-                  img={el}
-                  idx={i}
-                  type={'multi'}
-                  deleteHandler={deleteHandler}
-                  nextHandler={nextHandler}
-                  prevHandler={prevHandler}
-                  firstHandler={firstHandler}
-               />
-            ))
+            state.map((el, i) => {
+               return (
+                  <ImgItem
+                     key={el === 'loading' ? getUid() : el}
+                     img={el}
+                     idx={i}
+                     type={'multi'}
+                     deleteHandler={deleteHandler}
+                     nextHandler={nextHandler}
+                     prevHandler={prevHandler}
+                     firstHandler={firstHandler}
+                  />
+               )
+            })
          )
    }, [state])
 

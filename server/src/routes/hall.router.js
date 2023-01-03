@@ -13,7 +13,6 @@ router
    .get(handlerFactory.getAll(Hall))
    .post(
       photoController.uploadOnePhoto,
-      photoController.atLeastOnePhotoCheck,
       handlerFactory.createOneWithFormData(Hall)
    )
 

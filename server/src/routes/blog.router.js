@@ -13,7 +13,6 @@ router
    .get(handlerFactory.getAll(Blog))
    .post(
       photoController.uploadOnePhoto,
-      photoController.atLeastOnePhotoCheck,
       handlerFactory.createOneWithFormData(Blog)
    )
 
