@@ -51,8 +51,8 @@ const TeamForms: FC<ItemFormProps> = (
       handleFormsChange,
       isValid,
       getFormData,
-      formsLoading
-   } = useFormsState(item ? item : initialState, type, collectionType)
+      formsLoading,
+   } = useFormsState(initialState, item, type, collectionType)
    // Without changing global is valid state react doesn't update component on formErrors change
    const [allValid, setAllValid] = useState(true)
    const [uniqueError, setUniqueError] = useState(false)
@@ -171,7 +171,7 @@ const TeamForms: FC<ItemFormProps> = (
       if (formErrors.tel || formErrors.email) {
          document.getElementById('tel-input')?.scrollIntoView()
       } else {
-         document.getElementById('main-root')?.scrollTo(0, 125)
+         document.getElementById('main-root')?.scrollTo(0, 120)
       }
    }, [formErrors, allValid, uniqueError])
 

@@ -34,6 +34,12 @@ const teamSchema = new Schema({
    description: String,
    tel: String,
    email: String,
+   birth: {
+      type: Date,
+      set: function(val) {
+         return val === 0 ? undefined : val
+      }
+   },
    positionType: {
       type: String,
       enum: ['worker', 'sportsman'],

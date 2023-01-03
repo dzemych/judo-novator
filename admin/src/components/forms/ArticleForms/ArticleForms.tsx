@@ -13,7 +13,6 @@ import {ITextInput} from "../../../types/textInput"
 import TextInputs from "../TextInputs"
 import ActionBtns from "../ActionBtns"
 import FormsLayout from "../FormsLayout"
-import useOnePhotoState from "../../../hooks/useOnePhotoState";
 
 
 type IHandleDate = (newValue: Dayjs | null) => void
@@ -28,14 +27,12 @@ const initialState: ArticleState = {
    content: ''
 }
 
-
-// TODO go to main photo in casa of error
 const ArticleForms: FC<ItemFormProps> = (
    {
       collectionType,
-      submitHandler,
       type ,
       item = initialState,
+      submitHandler,
       deleteHandler
    }) => {
 
@@ -48,7 +45,7 @@ const ArticleForms: FC<ItemFormProps> = (
       formErrors,
       getFormData,
       formsLoading,
-   } = useFormsState(item ? item : initialState, type, collectionType)
+   } = useFormsState(initialState, item, type, collectionType)
    const [__, setIsAllValid] = useState(true)
 
    const inputs: ITextInput[] = [
@@ -97,6 +94,7 @@ const ArticleForms: FC<ItemFormProps> = (
       const valid = await isValid()
       setIsAllValid(valid)
 
+      // @ts-ignore
       if (valid)
          await submitHandler(getFormData(item))
 

@@ -1,4 +1,4 @@
-import {FC, useMemo} from "react"
+import {FC, useEffect, useMemo, useState} from "react"
 import {Grid, Typography} from "@mui/material"
 import classes from './ImgInput.module.sass'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
@@ -6,6 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import HomeIcon from '@mui/icons-material/Home'
 import DeleteIcon from '@mui/icons-material/Delete'
 import Loader from "../UI/Loader";
+import addImg from "../../assets/images/add.png";
 
 
 interface IProps {
@@ -25,6 +26,7 @@ const ImgItem: FC<IProps> = (props) => {
 
       return URL.createObjectURL(props.img)
    }, [props.img])
+   const [imgLoading, setImgLoading] = useState(false)
 
    const prevClick = () => {
       if (props.prevHandler)
@@ -69,6 +71,16 @@ const ImgItem: FC<IProps> = (props) => {
    if (props.idx === 0)
       cls.push(classes.main_item)
 
+   useEffect(() => {
+      const newImg = new Image()
+
+      setImgLoading(true)
+
+      newImg.onload = () => { setImgLoading(false) }
+
+      newImg.src = imgSrc
+   }, [imgSrc])
+
    return (
       <Grid item xs={6} sm={4} md={3} sx={{
          position: 'relative',
@@ -89,16 +101,12 @@ const ImgItem: FC<IProps> = (props) => {
             </div>
 
             <div className={classes.item_img_wrapper}>
-               { imgSrc === 'loading' &&
+               { (imgSrc === 'loading' || imgLoading) &&
                   <div className={classes.item_img_loader}>
                      <Loader/>
                   </div>
                }
 
-               {/*{ imgSrc === 'loading'*/}
-               {/*   ? <Loader/>*/}
-               {/*   : <img src={imgSrc} alt=""/>*/}
-               {/*}*/}
                <img src={imgSrc} alt=""/>
             </div>
          </div>

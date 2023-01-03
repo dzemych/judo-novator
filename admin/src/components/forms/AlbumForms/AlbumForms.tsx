@@ -40,7 +40,7 @@ const AlbumForms: FC<ItemFormProps> = (
       formErrors,
       getFilteredState,
       formsLoading
-   } = useFormsState(item ? item : initialState, type, collectionType)
+   } = useFormsState(initialState, item, type, collectionType)
    const {
       photos,
       changePhotosHandler,
@@ -122,8 +122,8 @@ const AlbumForms: FC<ItemFormProps> = (
 
    useEffect(() => {
       if (!isAllValid) {
-         if (formsState.mainPhoto || formErrors.title) {
-            document.getElementById('main-root')?.scrollTo(0, 125)
+         if (formErrors.mainPhoto || formErrors.title) {
+            document.getElementById('main-root')?.scrollTo(0, 120)
          } else {
             document.getElementById('photos-input')?.scrollIntoView()
          }

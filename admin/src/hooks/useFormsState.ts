@@ -10,7 +10,11 @@ type IChangeHandler =
    (e: undefined | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, val?: any) =>
       void
 
-type IFunction = <T extends (ArticleState | TeamState | AlbumState)>(initialState: T, type?: 'create' | 'update', collectionType?: CollectionType) => {
+type IItem = (ArticleState | TeamState | AlbumState)
+
+type IFunction = <T extends IItem>
+(initialState: T, item?: T, type?: 'create' | 'update', collectionType?: CollectionType)
+   => {
    formsState: T
    handleFormsChange: IChangeHandler
    isValid: () => Promise<boolean> | boolean
@@ -20,7 +24,7 @@ type IFunction = <T extends (ArticleState | TeamState | AlbumState)>(initialStat
    formsLoading: boolean
 }
 
-const useFormsState: IFunction = (initialState, type, collectionType) => {
+const useFormsState: IFunction = (initialState, item, type, collectionType) => {
    const initialErrors = useMemo(() => {
       const obj = Object.keys(initialState).reduce((acc, key) => {
          // @ts-ignore
@@ -43,18 +47,24 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
    const { requestJson, loading } = useHttp()
    const { uploadTempImg, loading: tempImgLoading } = useContext(TempImgContext)
    const [formsState, setFormsState] = useState(() => {
-      const obj = {...initialState}
+      if (!item) return initialState
 
-      if (collectionType === CollectionType.TEAM)
-         // @ts-ignore
-         obj.mediaLinks = obj.mediaLinks ? obj.mediaLinks : {
-            instagram: '',
-            facebook: '',
-            viber: '',
-            telegram: ''
-         }
+      return Object.keys(initialState).reduce((acc, el) => {
+         const key = el as keyof typeof initialState
 
-      return obj
+         if (collectionType === CollectionType.TEAM)
+            // @ts-ignore
+            acc.mediaLinks = item.mediaLinks ? item.mediaLinks : {
+               instagram: '',
+               facebook: '',
+               viber: '',
+               telegram: ''
+            }
+
+         if (item[key]) acc[key] = item[key]
+
+         return acc
+      }, initialState)
    })
    const [formErrors, setFormErrors] = useState(initialErrors)
 
@@ -192,16 +202,13 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
          setFormsState(prev => ({...prev, mainPhoto: file}))
    }
 
-   // TODO change temp file dir naming
-
-   // TODO social links and phone not working correctly
    const handleFormsChange: IChangeHandler = key => (e , val) => {
+      let newValue: string | undefined
+
       if (key === 'mainPhoto') {
          handleMainPhotoChange(val)
          return
       }
-
-      let newValue: string | undefined
 
       if (val !== null && val !== undefined)
          newValue = val
@@ -210,10 +217,6 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
          newValue = e?.target.value.toString()
 
       setFormsState(prev => {
-         // * If we try to change something that is not in initial state return
-         if (!(key in prev))
-            return prev
-
          // 1) Check if phone is not too long, take only allowed count of numbers
          if (key === 'tel') {
             const numCount = val.split(' ').join('').split('').length
@@ -230,7 +233,7 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
                ...prev,
                [keyArr[0]]: {
                   ...prev[keyArr[0] as keyof typeof prev],
-                  [keyArr[1]]: newValue
+                  [keyArr[1]]: e?.target.value
                }
             }
          }
@@ -250,26 +253,36 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
 
    const getFilteredState = (prevState?: any) => {
       return Object.keys(formsState).reduce((acc, el) => {
-         const key = el as keyof typeof formsState
+         const key = el as keyof typeof acc
 
-         const isFilled = notEmpty(key as string)
-
-         if (!isFilled)
+         if (type === 'update' && prevState && formsState[key] === prevState[key])
             return acc
 
+         if (!item)
+            if (!notEmpty(key as string))
+               return acc
+
          // Process media links field, to contain only filled
-         if (formsState[key] === "mediaLinks") {
-            // @ts-ignore
+         if (key === "mediaLinks") {
             const obj = Object.keys(formsState[key]).reduce((acc, el) => {
-               // @ts-ignore
                const val = formsState[key][el]
                if (val)
-                  acc = val
+                  // @ts-ignore
+                  acc[el] = val
 
                return acc
             }, {})
 
-            return Object.keys(obj).length > 0 ? obj : acc
+            const isNullObj = Object.keys(obj).length < 1
+            if (!isNullObj)
+               // @ts-ignore
+               acc[key] = obj
+
+            if (isNullObj && item && item[key])
+               // @ts-ignore
+               acc[key] = {}
+
+            return acc
          }
 
          if (key === 'mainPhoto' && formsState.mainPhoto instanceof File)
@@ -277,14 +290,19 @@ const useFormsState: IFunction = (initialState, type, collectionType) => {
 
          // @ts-ignore
          if (key === 'tel' && formsState[key].length < 6)
-            return acc
-
-         if (type === 'update' && prevState && formsState[key] === prevState[key])
-            return acc
+            // @ts-ignore
+            acc[key] = null
 
          // Process date from DateJs to normal Date type
          if (key === 'date') { // @ts-ignore
-            acc[key] = formsState.date?.unix()
+
+            if (!formsState.date) { // @ts-ignore
+               acc[key] = 0
+               return acc
+            }
+
+            // @ts-ignore
+            acc[key] = formsState.date?.unix() * 1000
          } else {// @ts-ignore
             acc[key] = formsState[key]
          }

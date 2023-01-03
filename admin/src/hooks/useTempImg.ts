@@ -20,7 +20,6 @@ const useTempImg: IHook = ( collectionType ) => {
       formData.append('upload', file)
 
       const res = await requestJson(uploadUrl, METHOD.post, formData)
-      console.log(res)
 
       return res === null ? res : res.url
    }

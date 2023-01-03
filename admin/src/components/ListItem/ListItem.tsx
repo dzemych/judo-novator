@@ -1,4 +1,4 @@
-import {FC, SyntheticEvent} from "react";
+import {FC, SyntheticEvent, useEffect, useState} from "react";
 import {
    Card,
    CardActionArea,
@@ -15,6 +15,7 @@ import useFormatDate from "../../hooks/useFormatDate";
 import {useNavigate} from "react-router-dom";
 import addImg from '../../assets/images/add.png'
 import classes from './ListItem.module.sass'
+import Loader from "../UI/Loader";
 
 
 interface IProps {
@@ -43,6 +44,8 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
 
    const formatedDate = useFormatDate(card.date)
    const navigate = useNavigate()
+
+   const [imgLoading, setImgLoading] = useState(false)
 
    const goTo = (type: string) => {
       navigate(`/${type}/${card.slug}`)
@@ -73,6 +76,16 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
       }
    }
 
+   useEffect(() => {
+      const newImg = new Image()
+
+      setImgLoading(true)
+
+      newImg.onload = () => { setImgLoading(false) }
+
+      newImg.src = mock ? addImg : card.mainPhoto
+   }, [card])
+
    return (
       <Grid
          item
@@ -86,12 +99,26 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
                   alignItems: 'flex-start',
                }}
             >
-               <CardMedia
-                  component="img"
-                  image={mock ? addImg : card.mainPhoto}
-                  alt={card.title}
-                  className={mock ? classes.mock_img : classes.img}
-               />
+               {/*<CardMedia*/}
+               {/*   component="img"*/}
+               {/*   image={mock ? addImg : card.mainPhoto}*/}
+               {/*   alt={card.title}*/}
+               {/*   className={mock ? classes.mock_img : classes.img}*/}
+               {/*/>*/}
+
+               <div className={classes.img_wrapper}>
+                  { imgLoading &&
+                     <div className={classes.img_loader}>
+                        <Loader/>
+                     </div>
+                  }
+
+                  <img
+                     src={mock ? addImg : card.mainPhoto}
+                     alt={card.title}
+                     className={mock ? classes.mock_img : classes.img}
+                  />
+               </div>
 
                <Container sx={{ mt: 1, pb: 2 }}>
                   { card.beforeTitle &&

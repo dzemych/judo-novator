@@ -51,6 +51,8 @@ function BaseArticleSchema() {
                return acc
             }, [])
 
+            if (!srcArr.length) return val
+
             // If saving new document
             if (this.isNew) {
                const { newPhotos, newValue } = getTempPhotoAndChangeContent.apply(this, [newVal, srcArr, modelName])
@@ -135,7 +137,12 @@ function BaseArticleSchema() {
       beforeTitle: String,
       afterTitle : String,
       text       : String,
-      date       : Date,
+      date       : {
+         type: Date,
+         set: function(val) {
+            return val === 0 ? undefined : val
+         }
+      },
       createdAt  : {
          type: Date,
          default: function() {

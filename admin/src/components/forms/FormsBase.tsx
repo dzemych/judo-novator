@@ -40,7 +40,7 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       deleteTempFolder,
       loading: tempImgLoading
    } = useTempImg(collectionType)
-   // TODO global state for temp photos
+
    const navigate = useNavigate()
    const { getV1 } = useUid()
    const [status, setStatus] = useState<'init' | 'loaded' |'created' | 'updated' | 'deleted'>('init')
@@ -74,6 +74,8 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    }
 
    const setToInitial = () => {
+      setStatus('init')
+      setEditorKey(getV1())
       navigate(`/${collectionType}/new`)
    }
 
@@ -87,6 +89,8 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    useEffect(() => {
       if (type === 'update')
          fetchItem()
+
+      setEditorKey(getV1())
    }, [params, type])
 
    if (type === 'update' && !item && !error)
@@ -119,22 +123,24 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       item: type === 'create' ? undefined : item,
    })
 
-   return <TempImgContext.Provider value={{
-      uploadUrl, uploadTempImg, deleteTempImg, deleteTempFolder, loading: tempImgLoading
-   }}>
-      <Typography
-         variant='h4'
-         textAlign='center'
-         sx={{ mb: 3, mt: 2 }}
-      >
-         { title }
-      </Typography>
+   return <div>
+      <TempImgContext.Provider value={{
+         uploadUrl, uploadTempImg, deleteTempImg, deleteTempFolder, loading: tempImgLoading
+      }}>
+         <Typography
+            variant='h4'
+            textAlign='center'
+            sx={{ mb: 3, mt: 2 }}
+         >
+            { title }
+         </Typography>
 
-      {childrenWithProps}
+         {childrenWithProps}
 
-      <PopUpLoading isOpen={itemLoading}/>
-      <PopUpError isOpen={error} onClose={clearError}/>
-   </TempImgContext.Provider>
+         <PopUpLoading isOpen={itemLoading}/>
+         <PopUpError isOpen={error} onClose={clearError}/>
+      </TempImgContext.Provider>
+   </div>
 }
 
 export default FormsBase
