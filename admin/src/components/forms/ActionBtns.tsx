@@ -5,28 +5,33 @@ import Button from "@mui/material/Button"
 import {useNavigate} from "react-router-dom"
 import PopUpConfirm from "../PopUp/PopUpConfirm"
 import TempImgContext from "../context/tempImgContext";
+import RecordContext from "../context/recordContext";
+import {CollectionType} from "../../types/collection";
 
 
 interface IProps {
-   type: 'create' | 'update'
    onSubmit: (e: React.SyntheticEvent) => void
    deleteHandler: () => void
    disabled: boolean
 }
 
-const ActionBtns: FC<IProps> = ({ type, deleteHandler, onSubmit, disabled }) => {
+const ActionBtns: FC<IProps> = ({ deleteHandler, onSubmit, disabled }) => {
+   const { collectionType, recordType } = useContext(RecordContext)
+
    const navigate = useNavigate()
    const [showDelete, setShowDelete] = useState(false)
    const { deleteTempFolder } = useContext(TempImgContext)
 
    const onDelete = () => {
       deleteHandler()
-      deleteTempFolder()
    }
 
    const onCancel = () => {
       navigate(-1)
+      window.localStorage.removeItem(collectionType)
       deleteTempFolder()
+      if (collectionType === CollectionType.ALBUM)
+         window.localStorage.removeItem(collectionType + '_photos')
    }
 
    return <>
@@ -51,7 +56,7 @@ const ActionBtns: FC<IProps> = ({ type, deleteHandler, onSubmit, disabled }) => 
                onClick={onSubmit}
                disabled={disabled}
             >
-               { type === 'create' ? 'Додати' : 'Оновити'}
+               { recordType === 'create' ? 'Додати' : 'Оновити'}
             </BigButton>
          </Grid>
 
@@ -66,7 +71,7 @@ const ActionBtns: FC<IProps> = ({ type, deleteHandler, onSubmit, disabled }) => 
             </BigButton>
          </Grid>
 
-         {type === 'update' &&
+         {recordType === 'update' &&
             <Grid item textAlign='center' xs={12} md={5}>
                <Button
                   variant='contained'

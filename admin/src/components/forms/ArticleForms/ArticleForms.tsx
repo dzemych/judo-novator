@@ -29,8 +29,6 @@ const initialState: ArticleState = {
 
 const ArticleForms: FC<ItemFormProps> = (
    {
-      collectionType,
-      type ,
       item = initialState,
       submitHandler,
       deleteHandler
@@ -45,7 +43,7 @@ const ArticleForms: FC<ItemFormProps> = (
       formErrors,
       getFormData,
       formsLoading,
-   } = useFormsState(initialState, item, type, collectionType)
+   } = useFormsState(initialState, item)
    const [__, setIsAllValid] = useState(true)
 
    const inputs: ITextInput[] = [
@@ -136,7 +134,6 @@ const ArticleForms: FC<ItemFormProps> = (
                </Typography>
 
                <Editor
-                  collectionName={collectionType}
                   error={formErrors.content}
                   state={formsState.content}
                   changeHandler={handleFormsChange('content')}
@@ -145,7 +142,6 @@ const ArticleForms: FC<ItemFormProps> = (
 
             <ActionBtns
                disabled={formsLoading}
-               type={type}
                onSubmit={onSubmit}
                deleteHandler={deleteHandler}
             />

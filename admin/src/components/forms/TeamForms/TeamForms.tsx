@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react"
+import React, {FC, useContext, useEffect, useState} from "react"
 import {ItemFormProps} from "../../../types/item"
 import useFormsState from "../../../hooks/useFormsState"
 import {TeamState} from "../../../types/collection"
@@ -15,6 +15,7 @@ import PopUpError from "../../PopUp/PopUpError"
 import slugify from "slugify"
 import useHttp from "src/hooks/useHttp"
 import FormsLayout from "../FormsLayout"
+import RecordContext from "../../context/recordContext";
 
 
 const initialState: TeamState = {
@@ -37,14 +38,14 @@ const initialState: TeamState = {
 
 const TeamForms: FC<ItemFormProps> = (
    {
-      collectionType,
-      type,
       item = initialState,
       submitHandler,
       deleteHandler
    }) => {
 
+   const { collectionType, recordType } = useContext(RecordContext)
    const {requestJson} = useHttp()
+
    const {
       formsState,
       formErrors,
@@ -52,7 +53,7 @@ const TeamForms: FC<ItemFormProps> = (
       isValid,
       getFormData,
       formsLoading,
-   } = useFormsState(initialState, item, type, collectionType)
+   } = useFormsState(initialState, item)
    // Without changing global is valid state react doesn't update component on formErrors change
    const [allValid, setAllValid] = useState(true)
    const [uniqueError, setUniqueError] = useState(false)
@@ -66,7 +67,7 @@ const TeamForms: FC<ItemFormProps> = (
    }
 
    const uniqueCheck = async () => {
-      if (type === 'create' && collectionType) {
+      if (recordType === 'create' && collectionType) {
          // @ts-ignore
          const slug = slugify(`${formsState.surname}-${formsState.name}`)
 
@@ -253,7 +254,6 @@ const TeamForms: FC<ItemFormProps> = (
 
             <ActionBtns
                disabled={formsLoading}
-               type={type}
                onSubmit={onSubmit}
                deleteHandler={deleteHandler}
             />

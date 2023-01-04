@@ -13,7 +13,7 @@ const upload = multer({
 exports.uploadMulter = upload.single('upload')
 
 exports.uploadTempImg = catchAsync(async (req, res, next) => {
-   const folderPath = `${req.params.collection}-${req.params.timeStamp}`
+   const folderPath = `${req.params.collection}-${req.params.folderId}`
    const fileName = `${folderPath}-${Date.now() + 1000}.jpg`
    const dirPath = `public/img/temp/${folderPath}`
 
@@ -36,10 +36,19 @@ exports.uploadTempImg = catchAsync(async (req, res, next) => {
    })
 })
 
+exports.deleteCollection = catchAsync(async (req, res, next) => {
+   deleteDir([
+      'public/img/temp',
+      `${req.params.collection}`
+   ].join('/'))
+
+   res.status(204).json()
+})
+
 exports.deleteFolder = catchAsync(async (req, res, next) => {
    deleteDir([
       'public/img/temp',
-      `${req.params.collection}-${req.params.timeStamp}`
+      `${req.params.collection}-${req.params.folderId}`
    ].join('/'))
 
    res.status(204).json()

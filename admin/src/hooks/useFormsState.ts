@@ -1,8 +1,9 @@
-import React, {useContext, useMemo, useState} from "react"
+import React, {useContext, useEffect, useMemo, useState} from "react"
 import {AlbumState, ArticleState, CollectionType, TeamState} from "../types/collection";
 import useHttp from "./useHttp";
 import {matchIsValidTel} from 'mui-tel-input'
 import TempImgContext from "../components/context/tempImgContext";
+import RecordContext from "../components/context/recordContext";
 
 
 type IChangeHandler =
@@ -10,11 +11,9 @@ type IChangeHandler =
    (e: undefined | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, val?: any) =>
       void
 
-type IItem = (ArticleState | TeamState | AlbumState)
+type IItem = ArticleState | TeamState | AlbumState
 
-type IFunction = <T extends IItem>
-(initialState: T, item?: T, type?: 'create' | 'update', collectionType?: CollectionType)
-   => {
+type IFunction = <T extends IItem>(initialState: T, item?: T, ) => {
    formsState: T
    handleFormsChange: IChangeHandler
    isValid: () => Promise<boolean> | boolean
@@ -24,7 +23,8 @@ type IFunction = <T extends IItem>
    formsLoading: boolean
 }
 
-const useFormsState: IFunction = (initialState, item, type, collectionType) => {
+const useFormsState: IFunction = (initialState, item) => {
+   const { collectionType, recordType } = useContext(RecordContext)
    const initialErrors = useMemo(() => {
       const obj = Object.keys(initialState).reduce((acc, key) => {
          // @ts-ignore
@@ -47,6 +47,14 @@ const useFormsState: IFunction = (initialState, item, type, collectionType) => {
    const { requestJson, loading } = useHttp()
    const { uploadTempImg, loading: tempImgLoading } = useContext(TempImgContext)
    const [formsState, setFormsState] = useState(() => {
+      if (recordType === 'create') {
+         const val = window.localStorage.getItem(collectionType)
+
+         if (val)
+            return JSON.parse(val) as typeof initialState
+         else return initialState
+      }
+
       if (!item) return initialState
 
       return Object.keys(initialState).reduce((acc, el) => {
@@ -64,7 +72,7 @@ const useFormsState: IFunction = (initialState, item, type, collectionType) => {
          if (item[key]) acc[key] = item[key]
 
          return acc
-      }, initialState)
+      }, {...initialState})
    })
    const [formErrors, setFormErrors] = useState(initialErrors)
 
@@ -85,7 +93,7 @@ const useFormsState: IFunction = (initialState, item, type, collectionType) => {
    }
 
    const isUnique = async (key: string) => {
-      if (type === 'create' && collectionType) {
+      if (recordType === 'create' && collectionType) {
          const res = await requestJson(
             `/api/${collectionType}?${key}=${formsState[key as keyof typeof formsState]}`
          )
@@ -255,7 +263,7 @@ const useFormsState: IFunction = (initialState, item, type, collectionType) => {
       return Object.keys(formsState).reduce((acc, el) => {
          const key = el as keyof typeof acc
 
-         if (type === 'update' && prevState && formsState[key] === prevState[key])
+         if (recordType === 'update' && prevState && formsState[key] === prevState[key])
             return acc
 
          if (!item)
@@ -323,6 +331,11 @@ const useFormsState: IFunction = (initialState, item, type, collectionType) => {
 
       return formData
    }
+
+   useEffect(() => {
+      if (recordType === 'create')
+         window.localStorage.setItem(collectionType, JSON.stringify(formsState))
+   }, [formsState])
 
    return {
       formsState,

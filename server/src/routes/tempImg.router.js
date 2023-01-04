@@ -5,13 +5,13 @@ const tempImgController = require('../controllers/tempImg.controller')
 const router = Router()
 
 router.post(
-   '/temp/:collection/:timeStamp',
+   '/temp/:collection/:folderId',
    tempImgController.uploadMulter,
    tempImgController.uploadTempImg
 )
 
 router.delete(
-   '/temp/:collection/:timeStamp',
+   '/temp/:collection/:folderId',
    tempImgController.deleteFolder
 )
 

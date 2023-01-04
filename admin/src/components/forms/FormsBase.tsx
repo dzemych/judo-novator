@@ -10,6 +10,8 @@ import Loader from "../UI/Loader"
 import useUid from "../../hooks/useUid";
 import TempImgContext from "../context/tempImgContext"
 import useTempImg from "../../hooks/useTempImg";
+import RecordContext from "../context/recordContext"
+import Button from "@mui/material/Button";
 
 
 interface IProps {
@@ -32,14 +34,13 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       clearError,
       loading: itemLoading
    } = useItemApi(collectionType)
-
    const {
       uploadTempImg,
       deleteTempImg,
       uploadUrl,
       deleteTempFolder,
       loading: tempImgLoading
-   } = useTempImg(collectionType)
+   } = useTempImg(collectionType, type)
 
    const navigate = useNavigate()
    const { getV1 } = useUid()
@@ -48,10 +49,27 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    const [item, setItem] = useState<any>(null)
    const [editorKey, setEditorKey] = useState(getV1())
 
+   const clearLocalAndTempStorage = () => {
+      deleteTempFolder()
+      window.localStorage.removeItem(collectionType)
+      if (collectionType === CollectionType.ALBUM)
+         window.localStorage.removeItem(collectionType + '_photos')
+   }
+
+   const clearAll =  () => {
+      if (type === 'create')
+         clearLocalAndTempStorage()
+
+      setStatus("init")
+      setEditorKey(getV1())
+   }
+
    const createHandler = async (formData: FormData) => {
       const slug = await createItem(formData)
 
       if (slug) {
+         clearLocalAndTempStorage()
+
          setStatus('created')
          setItemLink(`/${collectionType}/${slug}`)
       }
@@ -115,15 +133,13 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
       />
 
    const childrenWithProps = React.cloneElement(children, {
-      collectionType: collectionType,
-      type: type,
       key: editorKey,
       submitHandler: type === 'create' ? createHandler : updateHandler,
       deleteHandler: type === 'create' ? undefined : deleteHandler,
-      item: type === 'create' ? undefined : item,
+      item: (type === 'create' || status === 'init') ? undefined : item,
    })
 
-   return <div>
+   return <RecordContext.Provider value={{ collectionType, recordType: type }}>
       <TempImgContext.Provider value={{
          uploadUrl, uploadTempImg, deleteTempImg, deleteTempFolder, loading: tempImgLoading
       }}>
@@ -135,12 +151,20 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
             { title }
          </Typography>
 
+         <Button
+            variant={'outlined'}
+            style={{ margin: '20 auto' }}
+            onClick={clearAll}
+         >
+            Очистити все
+         </Button>
+
          {childrenWithProps}
 
          <PopUpLoading isOpen={itemLoading}/>
          <PopUpError isOpen={error} onClose={clearError}/>
       </TempImgContext.Provider>
-   </div>
+   </RecordContext.Provider>
 }
 
 export default FormsBase

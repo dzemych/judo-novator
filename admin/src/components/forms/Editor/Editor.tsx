@@ -6,7 +6,6 @@ import TempImgContext from "../../context/tempImgContext"
 
 
 interface IProps {
-   collectionName: string
    error?: boolean
    state: string
    changeHandler: (e: React.ChangeEvent<HTMLInputElement>, val: any) => void
@@ -15,17 +14,6 @@ interface IProps {
 const Editor: FC<IProps> = (props: IProps ) => {
 
    const { uploadUrl } = useContext(TempImgContext)
-
-   const findDiff = (str1: string, str2: string) => {
-      let diff= ""
-
-      str2.split('').forEach(function(val, i){
-         if (val != str1.charAt(i))
-            diff += val 
-      })
-
-      return diff
-   }
 
    return (
       <>

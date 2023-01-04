@@ -1,4 +1,4 @@
-import React, {FC, useEffect, useState} from "react"
+import React, {FC, useContext, useEffect, useState} from "react"
 import {ItemFormProps} from "../../../types/item"
 import FormsLayout from "../FormsLayout"
 import {Grid} from "@mui/material"
@@ -10,6 +10,7 @@ import ActionBtns from "../ActionBtns"
 import TextInputs from "../TextInputs"
 import {ITextInput} from "../../../types/textInput"
 import usePhotosState from "../../../hooks/usePhotosState"
+import RecordContext from "../../context/recordContext";
 
 
 const initialState: AlbumState = {
@@ -28,11 +29,8 @@ const AlbumForms: FC<ItemFormProps> = (
       item,
       submitHandler,
       deleteHandler,
-      collectionType,
-      type
    }
 ) => {
-
    const {
       formsState,
       handleFormsChange,
@@ -40,7 +38,7 @@ const AlbumForms: FC<ItemFormProps> = (
       formErrors,
       getFilteredState,
       formsLoading
-   } = useFormsState(initialState, item, type, collectionType)
+   } = useFormsState(initialState, item)
    const {
       photos,
       changePhotosHandler,
@@ -162,7 +160,6 @@ const AlbumForms: FC<ItemFormProps> = (
          </Grid>
 
          <ActionBtns
-            type={type}
             onSubmit={onSubmit}
             deleteHandler={deleteHandler}
             disabled={formsLoading || photosLoading}

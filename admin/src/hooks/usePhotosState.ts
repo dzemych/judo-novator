@@ -1,6 +1,6 @@
-import {useContext, useMemo, useState} from "react";
-import useHttp, {METHOD} from "./useHttp";
+import {useContext, useEffect, useState} from "react";
 import TempImgContext from "../components/context/tempImgContext";
+import RecordContext from "../components/context/recordContext";
 
 
 type IProps = (initialState?: Array<string>, initialMainPhotoState?: string) => {
@@ -17,18 +17,23 @@ type IProps = (initialState?: Array<string>, initialMainPhotoState?: string) => 
 
 const usePhotosState: IProps = (initialPhotosState = []) => {
 
-   // const { requestJson, loading } = useHttp()
+   const { collectionType, recordType } = useContext(RecordContext)
    const { uploadTempImg, loading } = useContext(TempImgContext)
 
-   const [photos, setPhotos] = useState(initialPhotosState)
-   const [photosError, setPhotosError] = useState(false)
+   const [photos, setPhotos] = useState(() => {
+      if (recordType === 'create') {
+         const savedVal = localStorage.getItem(`${collectionType}_photos`)
 
-   // const uid = useMemo(() => `${Date.now()}-${Math.random() * 10000}`, [])
+         if (savedVal)
+            return JSON.parse(savedVal) as typeof initialPhotosState
+      }
+
+      return initialPhotosState
+   })
+   const [photosError, setPhotosError] = useState(false)
 
    const getPhotoPromises = (files: File[]) => {
       return files.map(el => {
-         // const formData = new FormData()
-         // formData.append('upload', el)
 
          return uploadTempImg(el)
       })
@@ -109,6 +114,11 @@ const usePhotosState: IProps = (initialPhotosState = []) => {
          return true
       }
    }
+
+   useEffect(() => {
+      if (recordType === 'create')
+         window.localStorage.setItem(collectionType + '_photos', JSON.stringify(photos))
+   }, [photos])
 
    return {
       photos,
