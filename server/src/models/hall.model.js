@@ -1,19 +1,11 @@
-const {model, ObjectId} = require('mongoose')
+const {model} = require('mongoose')
 const BaseArticleSchema = require("./baseArticle.model");
 
 
 const hallSchema = new BaseArticleSchema({
-   address: String,
-   location: {
-      // GeoJSON
-      type: {
-         type: String,
-         default: "Point",
-         enum: ["Point"]
-      },
-      coordinates: [Number]
-   },
-   members: [ObjectId],
+   address: String
 })
+
+hallSchema.remove('content')
 
 module.exports = model('Hall', hallSchema)

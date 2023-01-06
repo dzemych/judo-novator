@@ -13,6 +13,6 @@ export enum CardType {
    ALBUMS = 'album',
    TEAM = 'team',
    SPORTSMEN = 'sportsmen',
-   EVENTS = 'events',
-   HALLS = 'halls',
+   EVENTS = 'event',
+   HALLS = 'hall',
 }

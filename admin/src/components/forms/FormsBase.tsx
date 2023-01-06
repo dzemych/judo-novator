@@ -5,7 +5,7 @@ import PopUpLoading from "../PopUp/PopUpLoading"
 import PopUpError from "../PopUp/PopUpError"
 import useItemApi from "../../hooks/useItemApi"
 import SuccessArticleForm from "./ArticleForms/SuccessArticleForm"
-import {useNavigate, useParams} from "react-router-dom"
+import {useLocation, useNavigate, useParams} from "react-router-dom"
 import Loader from "../UI/Loader"
 import useUid from "../../hooks/useUid";
 import TempImgContext from "../context/tempImgContext"
@@ -24,6 +24,8 @@ interface IProps {
 const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
 
    const params = useParams()
+   const slug = collectionType === CollectionType.HALLS ? 'main' : params.slug
+   const location = useLocation()
 
    const {
       createItem,
@@ -83,11 +85,12 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    }
 
    const updateHandler = async (formData: FormData) => {
-      const slug = await updateItem(params.slug, formData)
+      const newSlug = await updateItem(slug, formData)
 
-      if (slug) {
+
+      if (newSlug) {
          setStatus('updated')
-         setItemLink(`/${collectionType}/${slug}`)
+         setItemLink(`/${collectionType}/${collectionType === CollectionType.HALLS ? '' : newSlug}`)
       }
    }
 
@@ -98,7 +101,12 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    }
 
    const fetchItem = async () => {
-      const res = await getOneItem(params.slug)
+      let res
+
+      if (location.pathname === '/hall')
+         res = await getOneItem('main')
+      else
+         res = await getOneItem(slug)
 
       setItem(res)
       setStatus('loaded')
@@ -109,7 +117,7 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
          fetchItem()
 
       setEditorKey(getV1())
-   }, [params, type])
+   }, [slug, type])
 
    if (type === 'update' && !item && !error)
       return <Loader/>

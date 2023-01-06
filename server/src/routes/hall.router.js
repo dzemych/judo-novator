@@ -2,6 +2,7 @@ const Router = require('express')
 const Hall = require('../models/hall.model')
 const handlerFactory = require("../controllers/handlerFactory")
 const photoController = require('../controllers/photo.controller')
+const hallController = require('../controllers/hall.controller')
 
 
 const router = Router()
@@ -18,13 +19,11 @@ router
 
 router
    .route('/:id')
-   .get(handlerFactory.getOne(Hall))
+   .get(hallController.getMainHall)
    .patch(
-      handlerFactory.checkExistence(Hall),
       photoController.uploadOnePhoto,
-      handlerFactory.updateOneWithFormData(Hall)
+      hallController.updateMainHall
    )
-   .delete(handlerFactory.deleteOne(Hall))
 
 
 module.exports = router

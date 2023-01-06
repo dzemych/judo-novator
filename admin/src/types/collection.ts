@@ -2,7 +2,7 @@ import {Dayjs} from "dayjs";
 
 export enum CollectionType {
    BLOG = 'blog',
-   HALLS = 'halls',
+   HALLS = 'hall',
    TEAM = 'team',
    EVENT = 'event',
    ALBUM = 'album'
@@ -52,4 +52,19 @@ export interface TeamState {
    description: string
    tel: string
    email: string
+}
+
+export interface HallState {
+   title: string
+   address: string
+   text: string
+   mainPhoto: null | File | string
+   photos: Array<null | File | string>
+   _id?: string
+}
+
+export interface AboutState {
+   title: string
+   mainPhoto: null | File | string
+   content: undefined | string
 }

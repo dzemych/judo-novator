@@ -11,8 +11,8 @@ const {
    writeAndGetPhotos,
    deleteDir,
    getPhotoPath,
-   renamePhotoAndGetPath
-} = require('../utils/photoUtils')
+   renamePhotoAndGetPath, processAndGetNewPhotos
+      } = require('../utils/photoUtils')
 
 
 const processPhotos = (srcArr, item, type) => {
@@ -74,12 +74,12 @@ exports.updateOne = catchAsync(async (req, res, next) => {
 
    const item = await Album.findOne(isId ? { _id: searchBy } : { slug: searchBy })
 
+   if (!item)
+      return next(new AppError('No item with such slug or id', 404))
+
    Object.keys(data).forEach(key => {
       item[key] = data[key]
    })
-
-   if (!item)
-      return next(new AppError('No item with such slug or id', 404))
 
    // 2) Update main photo
    if (req.file || data.mainPhoto)
@@ -90,56 +90,8 @@ exports.updateOne = catchAsync(async (req, res, next) => {
          next
       )
 
-   // 3) Get relative paths for photos arr
-   const photosCandidate = data.photos.map(el =>
-      ['public', ...el.split('/').slice(-4)].join('/')
-   )
-
-   // 4) Get new photos arr and move newly added photos to proper dir
-   let tempRelDir
-   const newPhotos = photosCandidate.map((el, idx) => {
-      const isOld = item.photos.includes(getAbsPath(el))
-
-      // If it's old photo (order) of old path hasn't changed return it
-      if (isOld && getPhotoPath('album', item._id, idx) === el)
-         return el
-
-      // Save temp dir path to delete it later
-      if (!tempRelDir && !isOld) tempRelDir = el
-
-      // If order has changed, or it's new rename photo and get its path
-      return renamePhotoAndGetPath('album', item._id, idx, el)
-   })
-
-   // 5) Delete temp dir if it's (from newly added photos)
-   try {
-      if (tempRelDir) deleteDir(tempRelDir.split('/'))
-   } catch (e) {
-      throw new AppError(`Error during deleting temp directory (${tempRelDir}): ${e.message}`, 500)
-   }
-
-   // 6) Delete old photos that is not in new photos arr
-   try {
-      const relDirPath = `public/img/album/${item._id}`
-      const files = fs.readdirSync(path.resolve(relDirPath))
-
-      files.forEach(el => {
-         const photoPath = `${relDirPath}/${el}`
-
-         if (
-            !(newPhotos.includes(photoPath)) &&
-            el.split('-')[0] !== 'back' &&
-            el.split('-')[0] !== 'main'
-         )
-            deleteDir(photoPath)
-      })
-   }
-   catch (e) {
-      throw new AppError(`Error during deleting old photos: ${e.message}`, 500)
-   }
-
-   // 7) Save new photos to db
-   item.photos = newPhotos
+   // 3) Save new photos to db
+   item.photos = processAndGetNewPhotos(data, item, 'album')
    await item.save({ new: true })
 
    res.json({

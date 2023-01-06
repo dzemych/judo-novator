@@ -79,6 +79,10 @@ const writeAndGetNewPhotos = (relativePaths, id, modelName) => {
    return photos
 }
 
+const getAbsPath = (dir) => {
+   const relDir = dir.split('/').slice(1).join('/')
+   return `http://${curHost}:5000/${relDir}`
+}
 
 exports.deleteDir = deleteDir
 
@@ -152,10 +156,7 @@ exports.updateMainPhotoAndBack = async (photo, modelName, item, next) => {
    await item.save({ new: true })
 }
 
-exports.getAbsPath = (dir) => {
-   const relDir = dir.split('/').slice(1).join('/')
-   return `http://${curHost}:5000/${relDir}`
-}
+exports.getAbsPath = getAbsPath
 
 exports.multerFilter = (req, file, cb) => {
    const fileExt = file.mimetype.split('/')[0]
@@ -187,4 +188,56 @@ exports.getTempPhotoAndChangeContent = function (content, srcArr, modelName) {
 
       return { newPhotos: photos, newValue }
    }
+}
+
+exports.processAndGetNewPhotos = (data, item, modelName) => {
+   // 3) Get relative paths for photos arr
+   const photosCandidate = data.photos.map(el =>
+      ['public', ...el.split('/').slice(-4)].join('/')
+   )
+
+   // 4) Get new photos arr and move newly added photos to proper dir
+   let tempRelDir
+   const newPhotos = photosCandidate.map((el, idx) => {
+      const isOld = item.photos.includes(getAbsPath(el))
+
+      // If it's old photo (order) of old path hasn't changed return it
+      if (isOld && getPhotoPath(modelName, item._id, idx) === el)
+         return el
+
+      // Save temp dir path to delete it later
+      if (!tempRelDir && !isOld) tempRelDir = el
+
+      // If order has changed, or it's new rename photo and get its path
+      return renamePhotoAndGetPath(modelName, item._id, idx, el)
+   })
+
+   // 5) Delete temp dir if it's (from newly added photos)
+   try {
+      if (tempRelDir) deleteDir(tempRelDir.split('/'))
+   } catch (e) {
+      throw new AppError(`Error during deleting temp directory (${tempRelDir}): ${e.message}`, 500)
+   }
+
+   // 6) Delete old photos that is not in new photos arr
+   try {
+      const relDirPath = `public/img/${modelName}/${item._id}`
+      const files = fs.readdirSync(path.resolve(relDirPath))
+
+      files.forEach(el => {
+         const photoPath = `${relDirPath}/${el}`
+
+         if (
+            !(newPhotos.includes(photoPath)) &&
+            el.split('-')[0] !== 'back' &&
+            el.split('-')[0] !== 'main'
+         )
+            deleteDir(photoPath)
+      })
+   }
+   catch (e) {
+      throw new AppError(`Error during deleting old photos: ${e.message}`, 500)
+   }
+
+   return newPhotos
 }

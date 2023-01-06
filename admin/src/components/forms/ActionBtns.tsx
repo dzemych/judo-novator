@@ -11,7 +11,7 @@ import {CollectionType} from "../../types/collection";
 
 interface IProps {
    onSubmit: (e: React.SyntheticEvent) => void
-   deleteHandler: () => void
+   deleteHandler?: () => void
    disabled: boolean
 }
 
@@ -21,10 +21,6 @@ const ActionBtns: FC<IProps> = ({ deleteHandler, onSubmit, disabled }) => {
    const navigate = useNavigate()
    const [showDelete, setShowDelete] = useState(false)
    const { deleteTempFolder } = useContext(TempImgContext)
-
-   const onDelete = () => {
-      deleteHandler()
-   }
 
    const onCancel = () => {
       navigate(-1)
@@ -38,7 +34,7 @@ const ActionBtns: FC<IProps> = ({ deleteHandler, onSubmit, disabled }) => {
       <PopUpConfirm
          text={"Запис буде видалено назавжди"}
          isOpen={showDelete}
-         onConfirm={onDelete}
+         onConfirm={deleteHandler}
          onClose={() => {setShowDelete(false)}}
       />
 
@@ -71,7 +67,7 @@ const ActionBtns: FC<IProps> = ({ deleteHandler, onSubmit, disabled }) => {
             </BigButton>
          </Grid>
 
-         {recordType === 'update' &&
+         {(recordType === 'update' && deleteHandler) &&
             <Grid item textAlign='center' xs={12} md={5}>
                <Button
                   variant='contained'

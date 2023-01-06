@@ -1,17 +1,17 @@
-import React, {FC} from "react"
-import {CollectionType} from "../../types/collection"
 import FormsBase from "../../components/forms/FormsBase"
-import FormsBaseLayout from "../../components/forms/FormsBaseLayout"
+import {CollectionType} from "../../types/collection"
 import ArticleForms from "../../components/forms/ArticleForms/ArticleForms"
+import FormsBaseLayout from "../../components/forms/FormsBaseLayout"
+import React from "react"
 
 
-const EditBlog: FC = () => {
+const EditEvent = () => {
    return (
       <FormsBaseLayout>
          <FormsBase
-            key={'blog-edit'}
-            collectionType={CollectionType.BLOG}
-            title={'Блог'}
+            key={'event-edit'}
+            collectionType={CollectionType.EVENT}
+            title={'Подія'}
             type={'update'}
             // @ts-ignore
             // Props will be added in this component (this was made for not repeating all submit
@@ -22,4 +22,4 @@ const EditBlog: FC = () => {
    )
 }
 
-export default EditBlog
+export default EditEvent

@@ -9,6 +9,7 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import InfoIcon from '@mui/icons-material/Info';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import PlaceIcon from '@mui/icons-material/Place'
 import {Link} from "react-router-dom";
 import {FC} from "react";
 
@@ -29,7 +30,8 @@ const ListItems: FC<IProps> = ({ toggleDrawer }) => {
       { to: '/blog', icon: <ArticleIcon/>, text: 'Блог'},
       { to: '/team', icon: <GroupIcon/>, text: 'Команда'},
       { to: '/album', icon: <CollectionsIcon/>, text: 'Галерея'},
-      { to: '/events', icon: <CalendarMonthIcon/>, text: 'Календар'},
+      { to: '/event', icon: <CalendarMonthIcon/>, text: 'Календар'},
+      { to: '/hall', icon: <PlaceIcon/>, text: 'Зал'},
       { to: '/about', icon: <InfoIcon/>, text: 'Про нас'},
       { to: '/contact', icon: <PermContactCalendarIcon/>, text: 'Контакти'},
    ]

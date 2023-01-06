@@ -47,33 +47,35 @@ const ListItem: FC<IProps> = ({ card, cardType, mock= 0 }) => {
 
    const [imgLoading, setImgLoading] = useState(false)
 
-   const goTo = (type: string) => {
-      navigate(`/${type}/${card.slug}`)
-   }
+   // const goTo = (type: string) => {
+   //    navigate(`/${type}/${card.slug}`)
+   // }
 
    const onChange = (e: SyntheticEvent) => {
       e.preventDefault()
       e.stopPropagation()
 
-      switch(cardType) {
-         case CardType.BLOGS:
-            goTo('blog')
-            break
+      navigate(`/${cardType}/${card.slug}`)
 
-         case CardType.ALBUMS:
-            goTo('album')
-            break
-
-         case CardType.TEAM:
-            goTo('team')
-            break
-
-         case CardType.EVENTS:
-            goTo('events')
-            break
-
-         default: break
-      }
+      // switch(cardType) {
+      //    case CardType.BLOGS:
+      //       goTo('blog')
+      //       break
+      //
+      //    case CardType.ALBUMS:
+      //       goTo('album')
+      //       break
+      //
+      //    case CardType.TEAM:
+      //       goTo('team')
+      //       break
+      //
+      //    case CardType.EVENTS:
+      //       goTo('events')
+      //       break
+      //
+      //    default: break
+      // }
    }
 
    useEffect(() => {
