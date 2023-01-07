@@ -14,6 +14,7 @@ import Event from "./containers/Event/Event"
 import AddEvent from "./containers/Event/AddEvent"
 import EditEvent from "./containers/Event/EditEvent"
 import Hall from "./containers/Hall/Hall";
+import About from "./containers/About/About";
 
 
 const Router: FC = () => {
@@ -38,6 +39,8 @@ const Router: FC = () => {
          <Route element={<EditEvent/>} path='/event/:slug' />
 
          <Route element={<Hall/>} path='/hall' />
+
+         <Route element={<About/>} path='/About' />
       </Routes>
    )
 }

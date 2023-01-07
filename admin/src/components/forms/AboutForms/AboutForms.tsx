@@ -11,6 +11,7 @@ import {ITextInput} from "../../../types/textInput"
 import TextInputs from "../TextInputs"
 import ActionBtns from "../ActionBtns"
 import FormsLayout from "../FormsLayout"
+import usePhotosState from "../../../hooks/usePhotosState";
 
 
 const initialState: AboutState = {
@@ -35,41 +36,29 @@ const AboutForms: FC<ItemFormProps> = (
       getFormData,
       formsLoading,
    } = useFormsState(initialState, item)
+   const {
+      photos,
+      changePhotosHandler,
+      deletePhotosHandler,
+      nextPhotoHandler,
+      prevPhotoHandler,
+      firstPhotoHandler,
+      isValidPhotos,
+      photosError,
+      photosLoading
+   } = usePhotosState(item?.photos ? item.photos : [])
+
    const [__, setIsAllValid] = useState(true)
 
    const inputs: ITextInput[] = [
       {
          key: 'title',
-         label: 'Заголовок*',
+         label: 'Заголовок',
          helperText: 'Заголовок має бути унікальним та містити мінімум 2 символи',
          error: formErrors.title ,
          value: formsState.title,
          changeHandler: handleFormsChange('title')
-      },
-      {
-         key: 'text',
-         label: 'Опис',
-         helperText: '',
-         error: formErrors.text,
-         value: formsState.text,
-         changeHandler: handleFormsChange('text')
-      },
-      {
-         label: 'Текст перед заголовком',
-         helperText: '',
-         key: 'beforeTitle',
-         error: formErrors.beforeTitle,
-         value: formsState.beforeTitle,
-         changeHandler: handleFormsChange('beforeTitle')
-      },
-      {
-         label: 'Текст після заголовку',
-         helperText: '',
-         key: 'afterTitle',
-         error: formErrors.afterTitle,
-         value: formsState.afterTitle,
-         changeHandler: handleFormsChange('afterTitle')
-      },
+      }
    ]
 
    const onSubmit = async (e: React.SyntheticEvent) => {
@@ -110,7 +99,7 @@ const AboutForms: FC<ItemFormProps> = (
                maxWidth: '100%'
             }}>
                <Typography variant='h5' gutterBottom>
-                  Тіло запису*
+                  Тіло запису
                </Typography>
 
                <Editor
@@ -119,6 +108,21 @@ const AboutForms: FC<ItemFormProps> = (
                   changeHandler={handleFormsChange('content')}
                />
             </Box>
+
+            <GridInputContainer id={'photos-input'}>
+               <ImgInput
+                  label='Фотографії'
+                  helperText={'Додайте хоча б два фото'}
+                  deleteHandler={deletePhotosHandler}
+                  changeHandler={changePhotosHandler}
+                  prevHandler={prevPhotoHandler}
+                  nextHandler={nextPhotoHandler}
+                  firstHandler={firstPhotoHandler}
+                  error={photosError}
+                  state={photos}
+                  multiple={true}
+               />
+            </GridInputContainer>
 
             <ActionBtns
                disabled={formsLoading}

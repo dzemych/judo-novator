@@ -1,5 +1,5 @@
 const {model} = require('mongoose')
-const BaseArticleSchema = require('./baseArticle.model')
+const BaseArticleSchema = require('../baseArticle.shema')
 
 
 const blogSchema = new BaseArticleSchema()

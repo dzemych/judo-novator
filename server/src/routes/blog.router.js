@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const handlerFactory = require('../controllers/handlerFactory')
-const Blog = require('../models/blog.model')
+const Blog = require('../db/models/blog.model')
 const photoController = require('../controllers/photo.controller')
 
 

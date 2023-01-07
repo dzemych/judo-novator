@@ -1,5 +1,5 @@
 const Router = require('express')
-const Event = require('../models/event.model')
+const Event = require('../db/models/event.model')
 const handlerFactory = require('../controllers/handlerFactory')
 const photoController = require('../controllers/photo.controller')
 

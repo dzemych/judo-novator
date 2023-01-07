@@ -1,6 +1,6 @@
 const {Router} = require('express')
 const handlerFactory = require('../controllers/handlerFactory')
-const Team = require('../models/team.model')
+const Team = require('../db/models/team.model')
 const photoController = require('../controllers/photo.controller')
 
 

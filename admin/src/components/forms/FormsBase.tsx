@@ -87,7 +87,6 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
    const updateHandler = async (formData: FormData) => {
       const newSlug = await updateItem(slug, formData)
 
-
       if (newSlug) {
          setStatus('updated')
          setItemLink(`/${collectionType}/${collectionType === CollectionType.HALLS ? '' : newSlug}`)
@@ -105,6 +104,8 @@ const FormsBase: FC<IProps> = ({ collectionType, title, children, type }) => {
 
       if (location.pathname === '/hall')
          res = await getOneItem('main')
+      else if (location.pathname === '/about')
+         res = await getOneItem('')
       else
          res = await getOneItem(slug)
 

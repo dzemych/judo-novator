@@ -1,31 +1,14 @@
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
-const Album = require('../models/album.model')
+const Album = require('../db/models/album.model')
 const ObjectId = require('mongoose').Types.ObjectId
-const fs = require('fs')
-const path = require('path')
 const {
    updateMainPhotoAndBack,
    getAbsPath,
-   checkAndCreateDir,
-   writeAndGetPhotos,
-   deleteDir,
-   getPhotoPath,
-   renamePhotoAndGetPath, processAndGetNewPhotos
-      } = require('../utils/photoUtils')
+   processAndGetNewPhotos,
+   processPhotos
+} = require('../utils/photoUtils')
 
-
-const processPhotos = (srcArr, item, type) => {
-   // 1) Get relative paths and photo names
-   const relativePaths = srcArr.map(el => el.split('/').slice(-4))
-
-   // 2) Write photos to proper dirs
-   if (type !== 'update')
-      checkAndCreateDir(`public/img/album/${item._id}`)
-
-   // 3) Write and get photos
-   return writeAndGetPhotos(relativePaths, item._id.toString(), 'album')
-}
 
 exports.createOne = catchAsync(async (req, res, next) => {
    if (!req.body?.data)
@@ -47,7 +30,7 @@ exports.createOne = catchAsync(async (req, res, next) => {
       next
    )
 
-   item.photos = processPhotos(data.photos, item)
+   item.photos = processPhotos(data.photos, item, 'create', 'album')
 
    await item.save({ new: true })
 
@@ -91,7 +74,7 @@ exports.updateOne = catchAsync(async (req, res, next) => {
       )
 
    // 3) Save new photos to db
-   item.photos = processAndGetNewPhotos(data, item, 'album')
+   item.photos = processAndGetNewPhotos(data.photos, item, 'album')
    await item.save({ new: true })
 
    res.json({

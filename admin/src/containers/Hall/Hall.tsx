@@ -1,6 +1,5 @@
 import FormsBase from "../../components/forms/FormsBase";
 import {CollectionType} from "../../types/collection";
-import ArticleForms from "../../components/forms/ArticleForms/ArticleForms";
 import FormsBaseLayout from "../../components/forms/FormsBaseLayout";
 import React from "react";
 import HallForms from "../../components/forms/HallFroms/HallForms";

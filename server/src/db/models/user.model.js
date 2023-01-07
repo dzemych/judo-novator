@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 const validator = require('validator')
 const bcryptjs = require('bcryptjs')
 const crypto = require('crypto')
-const AppError = require('../utils/AppError')
+const AppError = require('../../utils/AppError')
 
 
 const userSchema = new Schema({

@@ -92,12 +92,11 @@ exports.checkAndCreateDir = checkAndCreateDir
 
 exports.getPhotoPath = getPhotoPath
 
-exports.writeAndGetPhotos = writeAndGetNewPhotos
-
 exports.renamePhotoAndGetPath = renamePhotoAndGetPath
 
 exports.updateMainPhotoAndBack = async (photo, modelName, item, next) => {
    const id = item._id
+   const random = Math.floor(Math.random() * 100000)
 
    // 2) Create dir for main and back imgs
    const dirPath = `public/img/${modelName}/${id}`
@@ -110,8 +109,8 @@ exports.updateMainPhotoAndBack = async (photo, modelName, item, next) => {
    }
 
    // 3) Write main photo(450px width) and back photo (full width)
-   const backPhotoName = `back-${modelName}-${id}.jpg`
-   const mainPhotoName = `main-${modelName}-${id}.jpg`
+   const backPhotoName = `back-${modelName}-${id}-${random}.jpg`
+   const mainPhotoName = `main-${modelName}-${id}-${random}.jpg`
 
    // Process photo if it is provided as File
    if (Buffer.isBuffer(photo)) {
@@ -190,9 +189,9 @@ exports.getTempPhotoAndChangeContent = function (content, srcArr, modelName) {
    }
 }
 
-exports.processAndGetNewPhotos = (data, item, modelName) => {
+exports.processAndGetNewPhotos = (photos, item, modelName) => {
    // 3) Get relative paths for photos arr
-   const photosCandidate = data.photos.map(el =>
+   const photosCandidate = photos.map(el =>
       ['public', ...el.split('/').slice(-4)].join('/')
    )
 
@@ -240,4 +239,16 @@ exports.processAndGetNewPhotos = (data, item, modelName) => {
    }
 
    return newPhotos
+}
+
+exports.processPhotos = (srcArr, item, type, modelName) => {
+   // 1) Get relative paths and photo names
+   const relativePaths = srcArr.map(el => el.split('/').slice(-4))
+
+   // 2) Write photos to proper dirs
+   if (type !== 'update')
+      checkAndCreateDir(`public/img/${modelName}/${item._id}`)
+
+   // 3) Write and get photos
+   return writeAndGetNewPhotos(relativePaths, item._id.toString(), modelName)
 }

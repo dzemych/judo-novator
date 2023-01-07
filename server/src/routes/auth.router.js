@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const handlerFactory = require('../controllers/handlerFactory')
 const authController = require('../controllers/auth.controller')
-const User = require('../models/user.model')
+const User = require('../db/models/user.model')
 
 const router = Router()
 
@@ -30,7 +30,7 @@ router.patch(
    '/users/:id',
    authController.protectAndSetId,
    authController.checkPasswordBeforeUpdate,
-   handlerFactory.updateOne(User)
+   // handlerFactory.updateOne(User)
 )
 
 router.get('/users', handlerFactory.getAll(User))

@@ -5,7 +5,8 @@ export enum CollectionType {
    HALLS = 'hall',
    TEAM = 'team',
    EVENT = 'event',
-   ALBUM = 'album'
+   ALBUM = 'album',
+   ABOUT = 'about'
 }
 
 interface BaseState {

@@ -1,4 +1,4 @@
-const User = require('../models/user.model')
+const User = require('../db/models/user.model')
 const catchAsync = require('../utils/catchAsync')
 const AppError = require('../utils/AppError')
 const Email = require('../utils/email')

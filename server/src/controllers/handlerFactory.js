@@ -62,8 +62,7 @@ exports.createOneWithFormData = collection => catchAsync(async (req, res, next) 
       ok: true,
       statusText: 'OK',
       message: `${modelName} successfully created`,
-      // item: { _id: item._id, slug: item.slug }
-      item
+      item: { _id: item._id, slug: item.slug }
    })
 })
 
@@ -153,29 +152,6 @@ exports.getOne = collection => catchAsync(async (req, res, next) => {
       ok: true,
       status: 'success',
       message: 'Item found',
-      item
-   })
-})
-
-exports.updateOne = collection => catchAsync(async (req, res, next) => {
-   if (!req.body)
-      return next(new AppError('No body to update', 400))
-
-   const item = await collection.findById(req.params.id)
-
-   if (!item)
-      return next(new AppError('No item.tsx found with that id', 404))
-
-   Object.keys(req.body).forEach(key => {
-      item[key] = req.body[key]
-   })
-
-   await item.save({ new: true })
-
-   res.json({
-      ok: true,
-      status: 'success',
-      message: 'Item successfully updated',
       item
    })
 })

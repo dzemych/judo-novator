@@ -55,13 +55,15 @@ const HallForms: FC<ItemFormProps> = ({ item, submitHandler }) => {
 
          const filteredForms = getFilteredState(item)
          // @ts-ignore
+         filteredForms._id = 'hall'
+         // @ts-ignore
          filteredForms.photos = photos
 
-         console.log(filteredForms)
+         console.log(JSON.stringify(filteredForms))
          const formData = new FormData()
          formData.append('data', JSON.stringify(filteredForms))
 
-         await submitHandler(formData)
+         // await submitHandler(formData)
       }
    }
 

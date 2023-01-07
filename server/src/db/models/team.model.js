@@ -1,6 +1,6 @@
 const {model, Schema} = require('mongoose')
 const slugify = require("slugify");
-const {getAbsPath} = require("../utils/photoUtils");
+const {getAbsPath} = require("../../utils/photoUtils");
 
 
 const teamSchema = new Schema({

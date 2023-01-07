@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const Album = require('../models/album.model')
+const Album = require('../db/models/album.model')
 const handlerFactory = require('../controllers/handlerFactory')
 const photoController = require('../controllers/photo.controller')
 const albumController = require('../controllers/album.controller')
